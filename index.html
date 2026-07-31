@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calendar Competițional U15 / U16</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .day-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-radius: 0.5rem; transition: all 0.2s; font-size: 0.875rem; color: #475569; }
+        .day-cell.empty { background: transparent; cursor: default; }
+        .day-cell:not(.empty) { background-color: #ffffff; border: 1px solid #e2e8f0; cursor: pointer; }
+        .day-cell:not(.empty):hover { background-color: #f1f5f9; border-color: #cbd5e1; }
+        .day-cell.has-event { font-weight: bold; background-color: #e0f2fe; color: #0284c7; border-color: #bae6fd; }
+        .day-cell.has-event:hover { background-color: #bae6fd; }
+        .day-cell.active { background-color: #2563eb !important; color: white !important; border-color: #1d4ed8 !important; }
+        .event-dot { width: 6px; height: 6px; background-color: #0284c7; border-radius: 50%; margin-top: 2px; }
+        .day-cell.active .event-dot { background-color: white; }
+    </style>
+</head>
+<body class="p-4 md:p-8 text-slate-800">
+
+    <div class="max-w-4xl mx-auto">
+        
+        <!-- HEADER & SELECTOR CATEGORIE -->
+        <header class="mb-8 border-b border-slate-200 pb-4 flex flex-col md:flex-row justify-between items-center gap-4">
+            <div>
+                <h1 id="main-title" class="text-3xl font-extrabold text-blue-900">⚽ Calendar U15</h1>
+                <p class="text-slate-500 mt-1">Sezonul 2026 – 2027</p>
+            </div>
+            <!-- BUTOANE COMUTARE U15 / U16 -->
+            <div class="flex bg-slate-200 p-1 rounded-xl">
+                <button id="btn-u15" onclick="switchCategory('U15')" class="px-6 py-2 rounded-lg text-sm font-bold transition shadow bg-blue-600 text-white">U15</button>
+                <button id="btn-u16" onclick="switchCategory('U16')" class="px-6 py-2 rounded-lg text-sm font-bold transition text-slate-700 hover:text-slate-900">U16</button>
+            </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            
+            <!-- COLOANA STÂNGA: CALENDAR + FILTRE + EXPORT -->
+            <div class="md:col-span-1 space-y-4">
+                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm sticky top-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="changeMonth(-1)" class="w-8 h-8 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold transition">&lt;</button>
+                        <h2 id="month-year-display" class="font-bold text-slate-700 uppercase tracking-wide"></h2>
+                        <button onclick="changeMonth(1)" class="w-8 h-8 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold transition">&gt;</button>
+                    </div>
+                    <div class="calendar-grid text-xs text-slate-400 font-bold mb-2 text-center">
+                        <div>Lu</div><div>Ma</div><div>Mi</div><div>Jo</div><div>Vi</div><div>Sâ</div><div>Du</div>
+                    </div>
+                    <div id="calendar-days" class="calendar-grid"></div>
+                    
+                    <div id="filter-status" class="mt-4 hidden p-3 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-800 flex justify-between items-center">
+                        <span id="filter-date-text"></span>
+                        <button onclick="clearDateFilter()" class="text-xs font-bold text-blue-600 hover:text-blue-800 underline">Resetează data</button>
+                    </div>
+
+                    <!-- FILTRE COMPETIȚII SUB CALENDAR -->
+                    <div class="mt-6 pt-4 border-t border-slate-100">
+                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Filtrează competiția:</p>
+                        <div class="flex flex-col gap-1.5 text-xs">
+                            <button onclick="setCompetitionFilter('all')" id="filter-btn-all" class="px-3 py-2 rounded-lg font-semibold bg-blue-600 text-white transition text-left flex justify-between items-center">
+                                <span>Toate competițiile</span>
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button onclick="setCompetitionFilter('Campionatul Național')" id="filter-btn-camp" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left">
+                                Campionat Național
+                            </button>
+                            <button onclick="setCompetitionFilter('Cupa Național')" id="filter-btn-cupan" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left">
+                                Cupa Națională
+                            </button>
+                            <button onclick="setCompetitionFilter('Cupa Elitelor')" id="filter-btn-elite" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left">
+                                Cupa Elitelor
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- BUTON EXPORT .ICS -->
+                    <div class="mt-4 pt-4 border-t border-slate-100">
+                        <button onclick="exportToICS()" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-file-arrow-down"></i> Exportă calendarul (.ics)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLOANA DREAPTA: LISTA MECIURI -->
+            <div class="md:col-span-2 space-y-4" id="events-list"></div>
+            
+        </div>
+    </div>
+
+    <!-- ====================================================================== -->
+    <!-- ZONA DE EDITARE: DATE SEPARATE PENTRU U15 ȘI U16                       -->
+    <!-- ====================================================================== -->
+    <script>
+        // DATE U15
+        const u15EventsData = [
+            // Cupa Elitelor U15
+            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U15", time: "11:00", opponent: "khd", location: "Stadion Principal", lat: "44.4268", lng: "26.1025", home: "New Stars", away: "khd", score: "3:0", scorers: "Popescu 12' | Ionescu 45' | Georgescu 80'" },
+            { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-02-27", title: "Etapa 5", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-09", title: "Semifinale Grupe", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+
+            // Cupa Național U15
+            { date: "2026-09-02", title: "Etapa Eliminatorie 1", comp: "Cupa Național U15", time: "10:00", opponent: "Junior Team", location: "Baza Sportivă Nord", lat: "44.4500", lng: "26.0800", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-28", title: "Etapa Eliminatorie 2", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-12-06", title: "Șaisprezecimi", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-06", title: "Optimi", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-31", title: "Sferturi", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-21", title: "Semifinale", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-19", title: "Finala", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+
+            // Campionatul Național U15
+            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U15", time: "12:00", opponent: "LPS U15", location: "Stadionul Municipal", lat: "44.4300", lng: "26.1100", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-09-26", title: "Etapa 6", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-03", title: "Etapa 7", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-10", title: "Etapa 8", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-17", title: "Etapa 9", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-24", title: "Etapa 10", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-31", title: "Etapa 11", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-11-07", title: "Etapa 12", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-11-14", title: "Etapa 13", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-11-21", title: "Etapa 14", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-11-28", title: "Etapa 15", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-13", title: "Etapa 16", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-20", title: "Etapa 17", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-27", title: "Etapa 18", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-03", title: "Etapa 19", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-10", title: "Etapa 20", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-17", title: "Etapa 21", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-24", title: "Etapa 22", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-08", title: "Etapa 23", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-15", title: "Etapa 24", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-22", title: "Etapa 25", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-29", title: "Etapa 26", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-06-05", title: "Etapa 27", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" }
+        ];
+
+        // DATE U16
+        const u16EventsData = [
+            // Cupa Elitelor U16
+            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U16", time: "14:00", opponent: "Academia U16", location: "Complex Sportiv Est", lat: "44.4400", lng: "26.1500", home: "Academia U16", away: "New Stars", score: "0:3", scorers: "⚽⚽Cezar|⚽Huang" },
+            { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-02-27", title: "Etapa 5", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-09", title: "Semifinale Grupe", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+
+            // Cupa Național U16
+            { date: "2026-09-02", title: "Etapa Eliminatorie 1", comp: "Cupa Național U16", time: "13:00", opponent: "CS Rapid U16", location: "Stadion Giulești", lat: "44.4510", lng: "26.0480", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-28", title: "Etapa Eliminatorie 2", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-12-06", title: "Șaisprezecimi", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-06", title: "Optimi", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-31", title: "Sferturi", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-21", title: "Semifinale", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-19", title: "Finala", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+
+            // Campionatul Național U16
+            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U16", time: "10:00", opponent: "Dinamo U16", location: "Stadion Săftica", lat: "44.6000", lng: "26.0800", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-09-26", title: "Etapa 6", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-03", title: "Etapa 7", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-10", title: "Etapa 8", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-17", title: "Etapa 9", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-24", title: "Etapa 10", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-10-31", title: "Etapa 11", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-11-07", title: "Etapa 12", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-11-14", title: "Etapa 13", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-11-21", title: "Etapa 14", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-11-28", title: "Etapa 15", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-13", title: "Etapa 16", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-20", title: "Etapa 17", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-03-27", title: "Etapa 18", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-03", title: "Etapa 19", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-10", title: "Etapa 20", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-17", title: "Etapa 21", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-04-24", title: "Etapa 22", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-08", title: "Etapa 23", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-15", title: "Etapa 24", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-22", title: "Etapa 25", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-05-29", title: "Etapa 26", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2027-06-05", title: "Etapa 27", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" }
+        ];
+        // ======================================================================
+
+        let currentCategory = 'U15';
+        let currentCompetitionFilter = 'all';
+        let currentMonth = 7; // August
+        let currentYear = 2026;
+        let selectedDate = null;
+        const monthNames = ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"];
+
+        function getActiveData() {
+            return currentCategory === 'U15' ? u15EventsData : u16EventsData;
+        }
+
+        function switchCategory(category) {
+            currentCategory = category;
+            selectedDate = null;
+            document.getElementById('filter-status').classList.add('hidden');
+
+            const btnU15 = document.getElementById('btn-u15');
+            const btnU16 = document.getElementById('btn-u16');
+            const mainTitle = document.getElementById('main-title');
+
+            if (category === 'U15') {
+                btnU15.className = "px-6 py-2 rounded-lg text-sm font-bold transition shadow bg-blue-600 text-white";
+                btnU16.className = "px-6 py-2 rounded-lg text-sm font-bold transition text-slate-700 hover:text-slate-900";
+                mainTitle.innerText = "⚽ Calendar U15";
+            } else {
+                btnU16.className = "px-6 py-2 rounded-lg text-sm font-bold transition shadow bg-blue-600 text-white";
+                btnU15.className = "px-6 py-2 rounded-lg text-sm font-bold transition text-slate-700 hover:text-slate-900";
+                mainTitle.innerText = "⚽ Calendar U16";
+            }
+
+            init();
+        }
+
+        function setCompetitionFilter(filterValue) {
+            currentCompetitionFilter = filterValue;
+            
+            const filters = [
+                { val: 'all', id: 'filter-btn-all' },
+                { val: 'Campionatul Național', id: 'filter-btn-camp' },
+                { val: 'Cupa Național', id: 'filter-btn-cupan' },
+                { val: 'Cupa Elitelor', id: 'filter-btn-elite' }
+            ];
+
+            filters.forEach(f => {
+                const btn = document.getElementById(f.id);
+                if (f.val === filterValue) {
+                    btn.className = "px-3 py-2 rounded-lg font-semibold bg-blue-600 text-white transition text-left flex justify-between items-center";
+                    if(!btn.innerHTML.includes('fa-check')) btn.innerHTML += ` <i class="fa-solid fa-check"></i>`;
+                } else {
+                    btn.className = "px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left";
+                    btn.innerHTML = btn.innerHTML.replace(` <i class="fa-solid fa-check"></i>`, '');
+                }
+            });
+
+            renderCalendar();
+            renderEvents();
+        }
+
+        function formatDateRO(dateStr) {
+            const d = new Date(dateStr);
+            return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+        }
+
+        function getCompColor(compName) {
+            if (compName.includes("Elitelor")) return "bg-rose-100 text-rose-700 border-rose-200";
+            if (compName.includes("Cupa")) return "bg-sky-100 text-sky-700 border-sky-200";
+            return "bg-emerald-100 text-emerald-700 border-emerald-200";
+        }
+
+        function init() {
+            const data = getActiveData();
+            data.sort((a, b) => new Date(a.date) - new Date(b.date));
+            renderCalendar();
+            renderEvents();
+        }
+
+        function renderCalendar() {
+            const data = getActiveData();
+            const container = document.getElementById('calendar-days');
+            container.innerHTML = '';
+            document.getElementById('month-year-display').innerText = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+            const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            for (let i = 0; i < startDay; i++) {
+                container.innerHTML += `<div class="day-cell empty"></div>`;
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                
+                let matchData = data.filter(e => e.date === dateStr);
+                if (currentCompetitionFilter !== 'all') {
+                    matchData = matchData.filter(e => e.comp.includes(currentCompetitionFilter));
+                }
+                const hasEvent = matchData.length > 0;
+                const isActive = selectedDate === dateStr;
+                
+                let classes = "day-cell";
+                if (hasEvent) classes += " has-event";
+                if (isActive) classes += " active";
+
+                let innerHtml = `<span>${i}</span>`;
+                if (hasEvent) innerHtml += `<div class="event-dot"></div>`;
+
+                container.innerHTML += `<div class="${classes}" onclick="toggleDate('${dateStr}')">${innerHtml}</div>`;
+            }
+        }
+
+        function toggleDate(dateStr) {
+            if (selectedDate === dateStr) {
+                clearDateFilter();
+            } else {
+                selectedDate = dateStr;
+                const d = new Date(dateStr);
+                currentMonth = d.getMonth();
+                currentYear = d.getFullYear();
+                document.getElementById('filter-status').classList.remove('hidden');
+                document.getElementById('filter-date-text').innerHTML = `Dată: <strong>${formatDateRO(dateStr)}</strong>`;
+                renderCalendar();
+                renderEvents();
+            }
+        }
+
+        function clearDateFilter() {
+            selectedDate = null;
+            document.getElementById('filter-status').classList.add('hidden');
+            renderCalendar();
+            renderEvents();
+        }
+
+        function changeMonth(dir) {
+            currentMonth += dir;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        }
+
+        function renderEvents() {
+            const data = getActiveData();
+            const list = document.getElementById('events-list');
+            list.innerHTML = '';
+
+            let filteredEvents = data;
+
+            if (selectedDate) {
+                filteredEvents = filteredEvents.filter(e => e.date === selectedDate);
+            }
+
+            if (currentCompetitionFilter !== 'all') {
+                filteredEvents = filteredEvents.filter(e => e.comp.includes(currentCompetitionFilter));
+            }
+
+            if (filteredEvents.length === 0) {
+                list.innerHTML = `<div class="bg-white p-8 text-center rounded-xl border border-slate-200 text-slate-500">Nu sunt meciuri programate pentru filtrele selectate.</div>`;
+                return;
+            }
+
+            filteredEvents.forEach(ev => {
+                const colorBadge = getCompColor(ev.comp);
+                let detailsHTML = "";
+                
+                if (ev.time) {
+                    detailsHTML += `<p class="flex items-center gap-2"><span class="text-slate-400">⌚ Oră:</span> <strong class="text-slate-700">${ev.time}</strong></p>`;
+                }
+                
+                if (ev.opponent) {
+                    detailsHTML += `<p class="flex items-center gap-2 mt-1"><span class="text-slate-400">🛡️ Adversar:</span> <strong class="text-slate-700">${ev.opponent}</strong></p>`;
+                } else {
+                    detailsHTML += `<p class="flex items-center gap-2 mt-1"><span class="text-slate-400">🛡️ Adversar:</span> <span class="text-slate-400 italic">Urmează să fie stabilit</span></p>`;
+                }
+
+                if (ev.location) {
+                    detailsHTML += `<p class="flex items-center gap-2 mt-1"><span class="text-slate-400">📍 Locație:</span> <strong class="text-slate-700">${ev.location}</strong></p>`;
+                }
+
+                let mapButtonsHTML = "";
+                if (ev.lat && ev.lng) {
+                    mapButtonsHTML = `
+                        <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap gap-2 text-xs">
+                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-1.5 rounded-md font-semibold hover:bg-sky-100 transition flex items-center gap-1">
+                                <i class="fa-brands fa-waze"></i> Waze
+                            </a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1.5 rounded-md font-semibold hover:bg-emerald-100 transition flex items-center gap-1">
+                                <i class="fa-solid fa-map-location-dot"></i> Google Maps
+                            </a>
+                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-1.5 rounded-md font-semibold hover:bg-slate-200 transition flex items-center gap-1">
+                                <i class="fa-solid fa-location-arrow"></i> Apple Maps
+                            </a>
+                        </div>
+                    `;
+                }
+
+                // SECȚIUNE SCOR ȘI MARCATORI (Apare DOAR dacă meciul s-a terminat și are scor final completat)
+                let scoreHTML = "";
+                if (ev.score && ev.score.trim() !== "") {
+                    let scorersHTML = "";
+                    if (ev.scorers && ev.scorers.trim() !== "") {
+                        const formattedScorers = ev.scorers.split('|').map(s => s.trim()).join(' • ');
+                        scorersHTML = `
+                            <div class="mt-2 text-xs text-slate-600 flex items-center justify-center gap-1.5">
+                                <i class="fa-solid fa-futbol text-blue-600"></i>
+                                <span class="font-semibold">Marcatori:</span> ${formattedScorers}
+                            </div>
+                        `;
+                    }
+
+                    scoreHTML = `
+                        <div class="mt-4 pt-3 border-t border-slate-100 text-center">
+                            <div class="text-sm font-semibold text-slate-500 mb-1">Scor final:</div>
+                            <div class="inline-block text-base font-bold text-blue-700 bg-blue-50 px-4 py-1.5 rounded-md border border-blue-100">
+                                ${ev.home || 'Gazde'} ${ev.score} ${ev.away || 'Adversari'}
+                            </div>
+                            ${scorersHTML}
+                        </div>
+                    `;
+                }
+
+                list.innerHTML += `
+                    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition">
+                        <div class="flex flex-wrap justify-between items-start mb-4 gap-2">
+                            <div>
+                                <h3 class="text-lg font-bold text-slate-800">${ev.title}</h3>
+                                <div class="text-sm text-slate-500 mt-1">${formatDateRO(ev.date)}</div>
+                            </div>
+                            <span class="text-xs font-bold px-3 py-1 rounded-full border ${colorBadge}">${ev.comp}</span>
+                        </div>
+                        <div class="text-sm">${detailsHTML}</div>
+                        ${mapButtonsHTML}
+                        ${scoreHTML}
+                    </div>
+                `;
+            });
+        }
+
+        function exportToICS() {
+            const data = getActiveData();
+            let eventsToExport = data;
+
+            if (selectedDate) {
+                eventsToExport = eventsToExport.filter(e => e.date === selectedDate);
+            }
+            if (currentCompetitionFilter !== 'all') {
+                eventsToExport = eventsToExport.filter(e => e.comp.includes(currentCompetitionFilter));
+            }
+
+            if (eventsToExport.length === 0) {
+                alert("Nu există evenimente de exportat pentru selecția curentă!");
+                return;
+            }
+
+            let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Calendar Juniori RO//EN\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n";
+
+            eventsToExport.forEach(ev => {
+                let dateStr = ev.date.replace(/-/g, '');
+                let timeStr = ev.time ? ev.time.replace(':', '') + '00' : '100000';
+                let dtStart = `${dateStr}T${timeStr}`;
+                
+                let dtEnd = `${dateStr}T120000`;
+                if(ev.time) {
+                    let [hours, minutes] = ev.time.split(':').map(Number);
+                    let endHours = (hours + 2) % 24;
+                    dtEnd = `${dateStr}T${String(endHours).padStart(2, '0')}${String(minutes).padStart(2, '0')}00`;
+                }
+
+                let summary = `${ev.title} - ${ev.comp}`;
+                let description = `Competitie: ${ev.comp}\\nAdversar: ${ev.opponent || 'N/ST'}\\nLocatie: ${ev.location || 'N/ST'}`;
+                let location = ev.location || '';
+
+                icsContent += "BEGIN:VEVENT\n";
+                icsContent += `UID:${dateStr}-${Math.random().toString(36).substring(2)}@junioricalendar\n`;
+                icsContent += `DTSTAMP:${dateStr}T000000Z\n`;
+                icsContent += `DTSTART:${dtStart}\n`;
+                icsContent += `DTEND:${dtEnd}\n`;
+                icsContent += `SUMMARY:${summary}\n`;
+                icsContent += `DESCRIPTION:${description}\n`;
+                if(location) icsContent += `LOCATION:${location}\n`;
+                icsContent += "END:VEVENT\n";
+            });
+
+            icsContent += "END:VCALENDAR";
+
+            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
+            const link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.setAttribute('download', `Calendar_${currentCategory}_${currentCompetitionFilter.replace(/\s+/g, '_')}.ics`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
