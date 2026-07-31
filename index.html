@@ -150,7 +150,7 @@
         // DATE U16
         const u16EventsData = [
             // Cupa Elitelor U16
-            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U16", time: "14:00", opponent: "Academia U16", location: "Complex Sportiv Est", lat: "44.4400", lng: "26.1500", home: "Academia U16", away: "New Stars", score: "0:3", scorers: "⚽⚽Cezar|⚽Huang" },
+            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U16", time: "14:00", opponent: "Academia U16", location: "Complex Sportiv Est", lat: "44.4400", lng: "26.1500", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -169,7 +169,7 @@
             { date: "2027-05-19", title: "Finala", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
 
             // Campionatul Național U16
-            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U16", time: "10:00", opponent: "Dinamo U16", location: "Stadion Săftica", lat: "44.6000", lng: "26.0800", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U16", time: "10:00", opponent: "Dinamo U16", location: "Stadion Săftica", lat: "44.6000", lng: "26.0800", home: "Dinamo U16", away: "NS", score: "0:6", scorers: "⚽⚽⚽⚽⚽Cezar|⚽Huang" },
             { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -394,7 +394,7 @@
                     `;
                 }
 
-                // SECȚIUNE SCOR ȘI MARCATORI (Apare DOAR dacă meciul s-a terminat și are scor final completat)
+                // SECȚIUNE SCOR ȘI GOLURI (Apare DOAR dacă meciul s-a terminat și are scor final completat)
                 let scoreHTML = "";
                 if (ev.score && ev.score.trim() !== "") {
                     let scorersHTML = "";
@@ -403,7 +403,7 @@
                         scorersHTML = `
                             <div class="mt-2 text-xs text-slate-600 flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-futbol text-blue-600"></i>
-                                <span class="font-semibold">Marcatori:</span> ${formattedScorers}
+                                <span class="font-semibold">Goluri:</span> ${formattedScorers}
                             </div>
                         `;
                     }
