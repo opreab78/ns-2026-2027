@@ -13,11 +13,11 @@
         .day-cell.empty { background: transparent; cursor: default; }
         .day-cell:not(.empty) { background-color: #ffffff; border: 1px solid #e2e8f0; cursor: pointer; }
         .day-cell:not(.empty):hover { background-color: #f1f5f9; border-color: #cbd5e1; }
-        .day-cell.has-event { font-weight: bold; background-color: #e0f2fe; color: #0284c7; border-color: #bae6fd; }
-        .day-cell.has-event:hover { background-color: #bae6fd; }
+        .day-cell.has-event { font-weight: bold; background-color: #f8fafc; }
         .day-cell.active { background-color: #2563eb !important; color: white !important; border-color: #1d4ed8 !important; }
-        .event-dot { width: 6px; height: 6px; background-color: #0284c7; border-radius: 50%; margin-top: 2px; }
-        .day-cell.active .event-dot { background-color: white; }
+        .dots-container { display: flex; gap: 4px; margin-top: 4px; height: 6px; }
+        .comp-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .day-cell.active .comp-dot { border: 1px solid rgba(255,255,255,0.5); }
     </style>
 </head>
 <body class="p-4 md:p-8 text-slate-800">
@@ -65,14 +65,14 @@
                                 <span>Toate competițiile</span>
                                 <i class="fa-solid fa-check"></i>
                             </button>
-                            <button onclick="setCompetitionFilter('Campionatul Național')" id="filter-btn-camp" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left">
-                                Campionat Național
+                            <button onclick="setCompetitionFilter('Campionatul Național')" id="filter-btn-camp" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left flex items-center gap-2">
+                                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div> Campionat Național
                             </button>
-                            <button onclick="setCompetitionFilter('Cupa Național')" id="filter-btn-cupan" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left">
-                                Cupa Național
+                            <button onclick="setCompetitionFilter('Cupa Național')" id="filter-btn-cupan" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left flex items-center gap-2">
+                                <div class="w-2.5 h-2.5 rounded-full bg-sky-500"></div> Cupa Națională
                             </button>
-                            <button onclick="setCompetitionFilter('Cupa Elitelor')" id="filter-btn-elite" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left">
-                                Cupa Elitelor
+                            <button onclick="setCompetitionFilter('Cupa Elitelor')" id="filter-btn-elite" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left flex items-center gap-2">
+                                <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div> Cupa Elitelor
                             </button>
                         </div>
                     </div>
@@ -160,7 +160,7 @@
             { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
 
             // Cupa Național U16
-            { date: "2026-09-02", title: "Etapa Eliminatorie 1", comp: "Cupa Național U16", time: "14:00", opponent: "CS Rapid U16", location: "Stadion Giulești", lat: "44.4510", lng: "26.0480", home: "Gazde", away: "Adversari", score: "", scorers: "" },
+            { date: "2026-09-02", title: "Etapa Eliminatorie 1", comp: "Cupa Național U16", time: "13:00", opponent: "CS Rapid U16", location: "Stadion Giulești", lat: "44.4510", lng: "26.0480", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-10-28", title: "Etapa Eliminatorie 2", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-12-06", title: "Șaisprezecimi", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2027-03-06", title: "Optimi", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -169,7 +169,7 @@
             { date: "2027-05-19", title: "Finala", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
 
             // Campionatul Național U16
-            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U16", time: "13:00", opponent: "Dinamo U164", location: "Stadion Săftica1	", lat: "44.6000", lng: "26.0800", home: "Dinamo U16", away: "NS", score: "0:6", scorers: "⚽⚽⚽⚽Cezar|⚽⚽Huang" },
+            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U16", time: "10:00", opponent: "Dinamo U16", location: "Stadion Săftica", lat: "44.6000", lng: "26.0800", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -205,6 +205,20 @@
         let currentYear = 2026;
         let selectedDate = null;
         const monthNames = ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"];
+
+        // Configurare culori pentru fiecare competiție (badge și punct din calendar)
+        const compStyles = {
+            "Campionatul Național": { badge: "bg-emerald-100 text-emerald-700 border-emerald-200", dot: "bg-emerald-500" },
+            "Cupa Național": { badge: "bg-sky-100 text-sky-700 border-sky-200", dot: "bg-sky-500" },
+            "Cupa Elitelor": { badge: "bg-rose-100 text-rose-700 border-rose-200", dot: "bg-rose-500" }
+        };
+
+        function getCompStyle(compName) {
+            if (compName.includes("Campionatul Național")) return compStyles["Campionatul Național"];
+            if (compName.includes("Cupa Național")) return compStyles["Cupa Național"];
+            if (compName.includes("Cupa Elitelor")) return compStyles["Cupa Elitelor"];
+            return { badge: "bg-slate-100 text-slate-700 border-slate-200", dot: "bg-slate-500" };
+        }
 
         function getActiveData() {
             return currentCategory === 'U15' ? u15EventsData : u16EventsData;
@@ -245,11 +259,13 @@
             filters.forEach(f => {
                 const btn = document.getElementById(f.id);
                 if (f.val === filterValue) {
-                    btn.className = "px-3 py-2 rounded-lg font-semibold bg-blue-600 text-white transition text-left flex justify-between items-center";
-                    if(!btn.innerHTML.includes('fa-check')) btn.innerHTML += ` <i class="fa-solid fa-check"></i>`;
+                    btn.classList.add("bg-blue-600", "text-white");
+                    btn.classList.remove("bg-slate-100", "text-slate-600", "hover:bg-slate-200");
+                    if(!btn.innerHTML.includes('fa-check')) btn.innerHTML += ` <i class="fa-solid fa-check ml-auto"></i>`;
                 } else {
-                    btn.className = "px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left";
-                    btn.innerHTML = btn.innerHTML.replace(` <i class="fa-solid fa-check"></i>`, '');
+                    btn.classList.add("bg-slate-100", "text-slate-600", "hover:bg-slate-200");
+                    btn.classList.remove("bg-blue-600", "text-white");
+                    btn.innerHTML = btn.innerHTML.replace(/ <i class="fa-solid fa-check.*<\/i>/, '');
                 }
             });
 
@@ -260,12 +276,6 @@
         function formatDateRO(dateStr) {
             const d = new Date(dateStr);
             return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
-        }
-
-        function getCompColor(compName) {
-            if (compName.includes("Elitelor")) return "bg-rose-100 text-rose-700 border-rose-200";
-            if (compName.includes("Cupa")) return "bg-sky-100 text-sky-700 border-sky-200";
-            return "bg-emerald-100 text-emerald-700 border-emerald-200";
         }
 
         function init() {
@@ -296,6 +306,7 @@
                 if (currentCompetitionFilter !== 'all') {
                     matchData = matchData.filter(e => e.comp.includes(currentCompetitionFilter));
                 }
+                
                 const hasEvent = matchData.length > 0;
                 const isActive = selectedDate === dateStr;
                 
@@ -304,7 +315,24 @@
                 if (isActive) classes += " active";
 
                 let innerHtml = `<span>${i}</span>`;
-                if (hasEvent) innerHtml += `<div class="event-dot"></div>`;
+                
+                if (hasEvent) {
+                    // Găsim toate competițiile unice din ziua respectivă pentru a afișa punctele colorate corespunzător
+                    let uniqueComps = [...new Set(matchData.map(e => {
+                        if (e.comp.includes("Campionatul Național")) return "Campionatul Național";
+                        if (e.comp.includes("Cupa Național")) return "Cupa Național";
+                        if (e.comp.includes("Cupa Elitelor")) return "Cupa Elitelor";
+                        return "Altul";
+                    }))];
+
+                    let dotsHtml = `<div class="dots-container">`;
+                    uniqueComps.forEach(comp => {
+                        const style = getCompStyle(comp);
+                        dotsHtml += `<div class="comp-dot ${style.dot}"></div>`;
+                    });
+                    dotsHtml += `</div>`;
+                    innerHtml += dotsHtml;
+                }
 
                 container.innerHTML += `<div class="${classes}" onclick="toggleDate('${dateStr}')">${innerHtml}</div>`;
             }
@@ -360,7 +388,7 @@
             }
 
             filteredEvents.forEach(ev => {
-                const colorBadge = getCompColor(ev.comp);
+                const style = getCompStyle(ev.comp);
                 let detailsHTML = "";
                 
                 if (ev.time) {
@@ -426,7 +454,7 @@
                                 <h3 class="text-lg font-bold text-slate-800">${ev.title}</h3>
                                 <div class="text-sm text-slate-500 mt-1">${formatDateRO(ev.date)}</div>
                             </div>
-                            <span class="text-xs font-bold px-3 py-1 rounded-full border ${colorBadge}">${ev.comp}</span>
+                            <span class="text-xs font-bold px-3 py-1 rounded-full border ${style.badge}">${ev.comp}</span>
                         </div>
                         <div class="text-sm">${detailsHTML}</div>
                         ${mapButtonsHTML}
