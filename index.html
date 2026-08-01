@@ -317,7 +317,6 @@
                 let innerHtml = `<span>${i}</span>`;
                 
                 if (hasEvent) {
-                    // Găsim toate competițiile unice din ziua respectivă pentru a afișa punctele colorate corespunzător
                     let uniqueComps = [...new Set(matchData.map(e => {
                         if (e.comp.includes("Campionatul Național")) return "Campionatul Național";
                         if (e.comp.includes("Cupa Național")) return "Cupa Național";
@@ -383,7 +382,7 @@
             }
 
             if (filteredEvents.length === 0) {
-                list.innerHTML = `<div class="bg-white p-8 text-center rounded-xl border border-slate-200 text-slate-500">Nu sunt meciuri programate pentru filtrele selectate.</div>`;
+                list.innerHTML = `<div class="bg-white p-8 text-center rounded-xl border border-slate-200 text-slate-500 text-base">Nu sunt meciuri programate pentru filtrele selectate.</div>`;
                 return;
             }
 
@@ -392,44 +391,43 @@
                 let detailsHTML = "";
                 
                 if (ev.time) {
-                    detailsHTML += `<p class="flex items-center gap-2"><span class="text-slate-400">⌚ Oră:</span> <strong class="text-slate-700">${ev.time}</strong></p>`;
+                    detailsHTML += `<p class="flex items-center gap-2"><span class="text-slate-500 font-medium">⌚ Oră:</span> <strong class="text-slate-900">${ev.time}</strong></p>`;
                 }
                 
                 if (ev.opponent) {
-                    detailsHTML += `<p class="flex items-center gap-2 mt-1"><span class="text-slate-400">🛡️ Adversar:</span> <strong class="text-slate-700">${ev.opponent}</strong></p>`;
+                    detailsHTML += `<p class="flex items-center gap-2 mt-2"><span class="text-slate-500 font-medium">🛡️ Adversar:</span> <strong class="text-slate-900">${ev.opponent}</strong></p>`;
                 } else {
-                    detailsHTML += `<p class="flex items-center gap-2 mt-1"><span class="text-slate-400">🛡️ Adversar:</span> <span class="text-slate-400 italic">Urmează să fie stabilit</span></p>`;
+                    detailsHTML += `<p class="flex items-center gap-2 mt-2"><span class="text-slate-500 font-medium">🛡️ Adversar:</span> <span class="text-slate-500 italic">Urmează să fie stabilit</span></p>`;
                 }
 
                 if (ev.location) {
-                    detailsHTML += `<p class="flex items-center gap-2 mt-1"><span class="text-slate-400">📍 Locație:</span> <strong class="text-slate-700">${ev.location}</strong></p>`;
+                    detailsHTML += `<p class="flex items-center gap-2 mt-2"><span class="text-slate-500 font-medium">📍 Locație:</span> <strong class="text-slate-900">${ev.location}</strong></p>`;
                 }
 
                 let mapButtonsHTML = "";
                 if (ev.lat && ev.lng) {
                     mapButtonsHTML = `
-                        <div class="mt-3 pt-3 border-t border-slate-100 flex flex-wrap gap-2 text-xs">
-                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-700 border border-sky-200 px-2.5 py-1.5 rounded-md font-semibold hover:bg-sky-100 transition flex items-center gap-1">
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2 text-xs">
+                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-700 border border-sky-200 px-3 py-2 rounded-md font-semibold hover:bg-sky-100 transition flex items-center gap-1.5 text-sm">
                                 <i class="fa-brands fa-waze"></i> Waze
                             </a>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-1.5 rounded-md font-semibold hover:bg-emerald-100 transition flex items-center gap-1">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-2 rounded-md font-semibold hover:bg-emerald-100 transition flex items-center gap-1.5 text-sm">
                                 <i class="fa-solid fa-map-location-dot"></i> Google Maps
                             </a>
-                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-700 border border-slate-200 px-2.5 py-1.5 rounded-md font-semibold hover:bg-slate-200 transition flex items-center gap-1">
+                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-2 rounded-md font-semibold hover:bg-slate-200 transition flex items-center gap-1.5 text-sm">
                                 <i class="fa-solid fa-location-arrow"></i> Apple Maps
                             </a>
                         </div>
                     `;
                 }
 
-                // SECȚIUNE SCOR ȘI GOLURI (Apare DOAR dacă meciul s-a terminat și are scor final completat)
                 let scoreHTML = "";
                 if (ev.score && ev.score.trim() !== "") {
                     let scorersHTML = "";
                     if (ev.scorers && ev.scorers.trim() !== "") {
                         const formattedScorers = ev.scorers.split('|').map(s => s.trim()).join(' • ');
                         scorersHTML = `
-                            <div class="mt-2 text-xs text-slate-600 flex items-center justify-center gap-1.5">
+                            <div class="mt-2 text-sm text-slate-700 flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-futbol text-blue-600"></i>
                                 <span class="font-semibold">Goluri:</span> ${formattedScorers}
                             </div>
@@ -449,14 +447,14 @@
 
                 list.innerHTML += `
                     <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition">
-                        <div class="flex flex-wrap justify-between items-start mb-4 gap-2">
+                        <div class="flex flex-wrap justify-between items-start mb-3 gap-2">
                             <div>
-                                <h3 class="text-lg font-bold text-slate-800">${ev.title}</h3>
-                                <div class="text-sm text-slate-500 mt-1">${formatDateRO(ev.date)}</div>
+                                <h3 class="text-lg font-bold text-slate-900">${ev.title}</h3>
+                                <div class="text-sm font-medium text-slate-500 mt-0.5">${formatDateRO(ev.date)}</div>
                             </div>
                             <span class="text-xs font-bold px-3 py-1 rounded-full border ${style.badge}">${ev.comp}</span>
                         </div>
-                        <div class="text-sm">${detailsHTML}</div>
+                        <div class="text-base my-2">${detailsHTML}</div>
                         ${mapButtonsHTML}
                         ${scoreHTML}
                     </div>
@@ -524,3 +522,4 @@
     </script>
 </body>
 </html>
+```[cite: 3]
