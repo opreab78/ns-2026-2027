@@ -111,7 +111,7 @@
             { date: "2027-04-21", title: "Semifinale", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2027-05-19", title: "Finala", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
 
-            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U15", time: "12:00", opponent: "LPS U15", location: "Stadionul SFR", lat: "44.48427664761882", lng: "26.06501052359739", home: "New Stars", away: "Adversari", score: "1:0", scorers: "⚽Cezar" },
+            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U15", time: "12:00", opponent: "LPS U15", location: "Stadionul SFR", lat: "44.48427664761882", lng: "26.06501052359739", home: "New Stars", away: "Adversari", score: "", scorers: "" },
             { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -395,13 +395,13 @@
                 if (ev.lat && ev.lng) {
                     mapButtonsHTML = `
                         <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2">
-                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-800 border border-sky-200 px-3 py-2.5 rounded-xl font-bold hover:bg-sky-100 transition flex items-center gap-1.5 text-sm shadow-sm flex-1 justify-center min-w-[85px]">
+                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-800 border border-sky-200 px-3 py-2.5 rounded-xl font-bold hover:bg-sky-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
                                 <i class="fa-brands fa-waze text-base"></i> Waze
                             </a>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-2.5 rounded-xl font-bold hover:bg-emerald-100 transition flex items-center gap-1.5 text-sm shadow-sm flex-1 justify-center min-w-[85px]">
+                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-2.5 rounded-xl font-bold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
                                 <i class="fa-solid fa-map-location-dot text-base"></i> Google
                             </a>
-                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-800 border border-slate-200 px-3 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition flex items-center gap-1.5 text-sm shadow-sm flex-1 justify-center min-w-[85px]">
+                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-800 border border-slate-200 px-3 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
                                 <i class="fa-solid fa-location-arrow text-base"></i> Apple
                             </a>
                         </div>
