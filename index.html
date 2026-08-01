@@ -491,6 +491,23 @@
                 icsContent += `SUMMARY:${summary}\n`;
                 icsContent += `DESCRIPTION:${description}\n`;
                 if(location) icsContent += `LOCATION:${location}\n`;
+                
+                // Memento exact cu o zi înainte de ora meciului
+                let matchDateObj = new Date(ev.date + 'T' + (ev.time ? ev.time : '10:00:00'));
+                matchDateObj.setDate(matchDateObj.getDate() - 1);
+                let reminderY = matchDateObj.getFullYear();
+                let reminderM = String(matchDateObj.getMonth() + 1).padStart(2, '0');
+                let reminderD = String(matchDateObj.getDate()).padStart(2, '0');
+                let reminderH = String(matchDateObj.getHours()).padStart(2, '0');
+                let reminderMin = String(matchDateObj.getMinutes()).padStart(2, '0');
+                let reminderStr = `${reminderY}${reminderM}${reminderD}T${reminderH}${reminderMin}00`;
+
+                icsContent += "BEGIN:VALARM\n";
+                icsContent += "TRIGGER:" + reminderStr + "\n";
+                icsContent += "ACTION:DISPLAY\n";
+                icsContent += `DESCRIPTION:Memento: ${summary} maine la ora ${ev.time || '10:00'}\n`;
+                icsContent += "END:VALARM\n";
+
                 icsContent += "END:VEVENT\n";
             });
 
