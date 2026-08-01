@@ -9,10 +9,10 @@
     <style>
         body { background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-        .day-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-radius: 0.5rem; transition: all 0.2s; font-size: 0.875rem; color: #475569; }
+        .day-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-radius: 0.5rem; transition: all 0.2s; font-size: 0.95rem; font-weight: 600; color: #334155; }
         .day-cell.empty { background: transparent; cursor: default; }
-        .day-cell:not(.empty) { background-color: #ffffff; border: 1px solid #e2e8f0; cursor: pointer; }
-        .day-cell:not(.empty):hover { background-color: #f1f5f9; border-color: #cbd5e1; }
+        .day-cell:not(.empty) { background-color: #ffffff; border: 1px solid #cbd5e1; cursor: pointer; }
+        .day-cell:not(.empty):hover { background-color: #f1f5f9; border-color: #94a3b8; }
         .day-cell.has-event { font-weight: bold; background-color: #f8fafc; }
         .day-cell.active { background-color: #2563eb !important; color: white !important; border-color: #1d4ed8 !important; }
         .dots-container { display: flex; gap: 4px; margin-top: 4px; height: 6px; }
@@ -20,67 +20,67 @@
         .day-cell.active .comp-dot { border: 1px solid rgba(255,255,255,0.5); }
     </style>
 </head>
-<body class="p-4 md:p-8 text-slate-800">
+<body class="p-3 md:p-8 text-slate-900">
 
     <div class="max-w-4xl mx-auto">
         
         <!-- HEADER & SELECTOR CATEGORIE -->
-        <header class="mb-8 border-b border-slate-200 pb-4 flex flex-col md:flex-row justify-between items-center gap-4">
+        <header class="mb-6 border-b border-slate-200 pb-4 flex flex-col md:flex-row justify-between items-center gap-4">
             <div>
                 <h1 id="main-title" class="text-3xl font-extrabold text-blue-900">⚽ Calendar U15</h1>
-                <p class="text-slate-500 mt-1">Sezonul 2026 – 2027</p>
+                <p class="text-slate-600 font-medium mt-1">Sezonul 2026 – 2027</p>
             </div>
             <!-- BUTOANE COMUTARE U15 / U16 -->
-            <div class="flex bg-slate-200 p-1 rounded-xl">
-                <button id="btn-u15" onclick="switchCategory('U15')" class="px-6 py-2 rounded-lg text-sm font-bold transition shadow bg-blue-600 text-white">U15</button>
-                <button id="btn-u16" onclick="switchCategory('U16')" class="px-6 py-2 rounded-lg text-sm font-bold transition text-slate-700 hover:text-slate-900">U16</button>
+            <div class="flex bg-slate-200 p-1.5 rounded-xl w-full md:w-auto justify-center">
+                <button id="btn-u15" onclick="switchCategory('U15')" class="flex-1 md:flex-none px-8 py-2.5 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white">U15</button>
+                <button id="btn-u16" onclick="switchCategory('U16')" class="flex-1 md:flex-none px-8 py-2.5 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900">U16</button>
             </div>
         </header>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             <!-- COLOANA STÂNGA: CALENDAR + FILTRE + EXPORT -->
             <div class="md:col-span-1 space-y-4">
-                <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm sticky top-4">
+                <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-4">
                     <div class="flex justify-between items-center mb-4">
-                        <button onclick="changeMonth(-1)" class="w-8 h-8 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold transition">&lt;</button>
-                        <h2 id="month-year-display" class="font-bold text-slate-700 uppercase tracking-wide"></h2>
-                        <button onclick="changeMonth(1)" class="w-8 h-8 rounded bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold transition">&gt;</button>
+                        <button onclick="changeMonth(-1)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition flex items-center justify-center text-lg">&lt;</button>
+                        <h2 id="month-year-display" class="font-bold text-slate-800 text-base uppercase tracking-wide"></h2>
+                        <button onclick="changeMonth(1)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition flex items-center justify-center text-lg">&gt;</button>
                     </div>
-                    <div class="calendar-grid text-xs text-slate-400 font-bold mb-2 text-center">
+                    <div class="calendar-grid text-xs text-slate-500 font-bold mb-2 text-center">
                         <div>Lu</div><div>Ma</div><div>Mi</div><div>Jo</div><div>Vi</div><div>Sâ</div><div>Du</div>
                     </div>
                     <div id="calendar-days" class="calendar-grid"></div>
                     
-                    <div id="filter-status" class="mt-4 hidden p-3 bg-blue-50 border border-blue-100 rounded-lg text-sm text-blue-800 flex justify-between items-center">
+                    <div id="filter-status" class="mt-4 hidden p-3 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-900 font-medium flex justify-between items-center">
                         <span id="filter-date-text"></span>
-                        <button onclick="clearDateFilter()" class="text-xs font-bold text-blue-600 hover:text-blue-800 underline">Resetează data</button>
+                        <button onclick="clearDateFilter()" class="text-xs font-bold text-blue-700 hover:text-blue-900 underline">Resetează</button>
                     </div>
 
                     <!-- FILTRE COMPETIȚII SUB CALENDAR -->
-                    <div class="mt-6 pt-4 border-t border-slate-100">
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2">Filtrează competiția:</p>
-                        <div class="flex flex-col gap-1.5 text-xs">
-                            <button onclick="setCompetitionFilter('all')" id="filter-btn-all" class="px-3 py-2 rounded-lg font-semibold bg-blue-600 text-white transition text-left flex justify-between items-center">
+                    <div class="mt-5 pt-4 border-t border-slate-100">
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5">Filtrează competiția:</p>
+                        <div class="flex flex-col gap-2 text-sm">
+                            <button onclick="setCompetitionFilter('all')" id="filter-btn-all" class="px-3.5 py-2.5 rounded-xl font-bold bg-blue-600 text-white transition text-left flex justify-between items-center shadow-sm">
                                 <span>Toate competițiile</span>
                                 <i class="fa-solid fa-check"></i>
                             </button>
-                            <button onclick="setCompetitionFilter('Campionatul Național')" id="filter-btn-camp" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left flex items-center gap-2">
-                                <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div> Campionat Național
+                            <button onclick="setCompetitionFilter('Campionatul Național')" id="filter-btn-camp" class="px-3.5 py-2.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition text-left flex items-center gap-2.5">
+                                <div class="w-3 h-3 rounded-full bg-emerald-500"></div> Campionat Național
                             </button>
-                            <button onclick="setCompetitionFilter('Cupa Național')" id="filter-btn-cupan" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left flex items-center gap-2">
-                                <div class="w-2.5 h-2.5 rounded-full bg-sky-500"></div> Cupa Națională
+                            <button onclick="setCompetitionFilter('Cupa Național')" id="filter-btn-cupan" class="px-3.5 py-2.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition text-left flex items-center gap-2.5">
+                                <div class="w-3 h-3 rounded-full bg-sky-500"></div> Cupa Națională
                             </button>
-                            <button onclick="setCompetitionFilter('Cupa Elitelor')" id="filter-btn-elite" class="px-3 py-2 rounded-lg font-semibold bg-slate-100 text-slate-600 hover:bg-slate-200 transition text-left flex items-center gap-2">
-                                <div class="w-2.5 h-2.5 rounded-full bg-rose-500"></div> Cupa Elitelor
+                            <button onclick="setCompetitionFilter('Cupa Elitelor')" id="filter-btn-elite" class="px-3.5 py-2.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition text-left flex items-center gap-2.5">
+                                <div class="w-3 h-3 rounded-full bg-rose-500"></div> Cupa Elitelor
                             </button>
                         </div>
                     </div>
 
                     <!-- BUTON EXPORT .ICS -->
                     <div class="mt-4 pt-4 border-t border-slate-100">
-                        <button onclick="exportToICS()" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-xs font-bold py-2.5 px-4 rounded-lg transition flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-file-arrow-down"></i> Exportă calendarul (.ics)
+                        <button onclick="exportToICS()" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
+                            <i class="fa-solid fa-file-arrow-down text-base"></i> Exportă calendarul (.ics)
                         </button>
                     </div>
                 </div>
@@ -92,13 +92,8 @@
         </div>
     </div>
 
-    <!-- ====================================================================== -->
-    <!-- ZONA DE EDITARE: DATE SEPARATE PENTRU U15 ȘI U16                       -->
-    <!-- ====================================================================== -->
     <script>
-        // DATE U15
         const u15EventsData = [
-            // Cupa Elitelor U15
             { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U15", time: "11:00", opponent: "khd", location: "Stadion Principal", lat: "44.4268", lng: "26.1025", home: "New Stars", away: "khd", score: "", scorers: "" },
             { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -108,7 +103,6 @@
             { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
 
-            // Cupa Național U15
             { date: "2026-09-02", title: "Etapa Eliminatorie 1", comp: "Cupa Național U15", time: "10:00", opponent: "Junior Team", location: "Baza Sportivă Nord", lat: "44.4500", lng: "26.0800", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-10-28", title: "Etapa Eliminatorie 2", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-12-06", title: "Șaisprezecimi", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -117,7 +111,6 @@
             { date: "2027-04-21", title: "Semifinale", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2027-05-19", title: "Finala", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
 
-            // Campionatul Național U15
             { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U15", time: "12:00", opponent: "LPS U15", location: "Stadionul SFR", lat: "44.48427664761882", lng: "26.06501052359739", home: "New Stars", away: "Adversari", score: "", scorers: "" },
             { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -147,9 +140,7 @@
             { date: "2027-06-05", title: "Etapa 27", comp: "Campionatul Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" }
         ];
 
-        // DATE U16
         const u16EventsData = [
-            // Cupa Elitelor U16
             { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U16", time: "14:00", opponent: "Academia U16", location: "Complex Sportiv Est", lat: "44.4400", lng: "26.1500", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -159,7 +150,6 @@
             { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
 
-            // Cupa Național U16
             { date: "2026-09-02", title: "Etapa Eliminatorie 1", comp: "Cupa Național U16", time: "13:00", opponent: "CS Rapid U16", location: "Stadion Giulești", lat: "44.4510", lng: "26.0480", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-10-28", title: "Etapa Eliminatorie 2", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-12-06", title: "Șaisprezecimi", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -168,7 +158,6 @@
             { date: "2027-04-21", title: "Semifinale", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2027-05-19", title: "Finala", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
 
-            // Campionatul Național U16
             { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U16", time: "10:00", opponent: "Dinamo U16", location: "Stadion Săftica", lat: "44.6000", lng: "26.0800", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
@@ -197,27 +186,25 @@
             { date: "2027-05-29", title: "Etapa 26", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" },
             { date: "2027-06-05", title: "Etapa 27", comp: "Campionatul Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "" }
         ];
-        // ======================================================================
 
         let currentCategory = 'U15';
         let currentCompetitionFilter = 'all';
-        let currentMonth = 7; // August
+        let currentMonth = 7;
         let currentYear = 2026;
         let selectedDate = null;
         const monthNames = ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"];
 
-        // Configurare culori pentru fiecare competiție (badge și punct din calendar)
         const compStyles = {
-            "Campionatul Național": { badge: "bg-emerald-100 text-emerald-700 border-emerald-200", dot: "bg-emerald-500" },
-            "Cupa Național": { badge: "bg-sky-100 text-sky-700 border-sky-200", dot: "bg-sky-500" },
-            "Cupa Elitelor": { badge: "bg-rose-100 text-rose-700 border-rose-200", dot: "bg-rose-500" }
+            "Campionatul Național": { badge: "bg-emerald-100 text-emerald-800 border-emerald-300", dot: "bg-emerald-500" },
+            "Cupa Național": { badge: "bg-sky-100 text-sky-800 border-sky-300", dot: "bg-sky-500" },
+            "Cupa Elitelor": { badge: "bg-rose-100 text-rose-800 border-rose-300", dot: "bg-rose-500" }
         };
 
         function getCompStyle(compName) {
             if (compName.includes("Campionatul Național")) return compStyles["Campionatul Național"];
             if (compName.includes("Cupa Național")) return compStyles["Cupa Național"];
             if (compName.includes("Cupa Elitelor")) return compStyles["Cupa Elitelor"];
-            return { badge: "bg-slate-100 text-slate-700 border-slate-200", dot: "bg-slate-500" };
+            return { badge: "bg-slate-100 text-slate-800 border-slate-300", dot: "bg-slate-500" };
         }
 
         function getActiveData() {
@@ -234,12 +221,12 @@
             const mainTitle = document.getElementById('main-title');
 
             if (category === 'U15') {
-                btnU15.className = "px-6 py-2 rounded-lg text-sm font-bold transition shadow bg-blue-600 text-white";
-                btnU16.className = "px-6 py-2 rounded-lg text-sm font-bold transition text-slate-700 hover:text-slate-900";
+                btnU15.className = "flex-1 md:flex-none px-8 py-2.5 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
+                btnU16.className = "flex-1 md:flex-none px-8 py-2.5 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
                 mainTitle.innerText = "⚽ Calendar U15";
             } else {
-                btnU16.className = "px-6 py-2 rounded-lg text-sm font-bold transition shadow bg-blue-600 text-white";
-                btnU15.className = "px-6 py-2 rounded-lg text-sm font-bold transition text-slate-700 hover:text-slate-900";
+                btnU16.className = "flex-1 md:flex-none px-8 py-2.5 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
+                btnU15.className = "flex-1 md:flex-none px-8 py-2.5 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
                 mainTitle.innerText = "⚽ Calendar U16";
             }
 
@@ -259,12 +246,12 @@
             filters.forEach(f => {
                 const btn = document.getElementById(f.id);
                 if (f.val === filterValue) {
-                    btn.classList.add("bg-blue-600", "text-white");
-                    btn.classList.remove("bg-slate-100", "text-slate-600", "hover:bg-slate-200");
+                    btn.classList.add("bg-blue-600", "text-white", "shadow-sm");
+                    btn.classList.remove("bg-slate-100", "text-slate-700", "hover:bg-slate-200");
                     if(!btn.innerHTML.includes('fa-check')) btn.innerHTML += ` <i class="fa-solid fa-check ml-auto"></i>`;
                 } else {
-                    btn.classList.add("bg-slate-100", "text-slate-600", "hover:bg-slate-200");
-                    btn.classList.remove("bg-blue-600", "text-white");
+                    btn.classList.add("bg-slate-100", "text-slate-700", "hover:bg-slate-200");
+                    btn.classList.remove("bg-blue-600", "text-white", "shadow-sm");
                     btn.innerHTML = btn.innerHTML.replace(/ <i class="fa-solid fa-check.*<\/i>/, '');
                 }
             });
@@ -346,7 +333,7 @@
                 currentMonth = d.getMonth();
                 currentYear = d.getFullYear();
                 document.getElementById('filter-status').classList.remove('hidden');
-                document.getElementById('filter-date-text').innerHTML = `Dată: <strong>${formatDateRO(dateStr)}</strong>`;
+                document.getElementById('filter-date-text').innerHTML = `Dată selectată: <strong>${formatDateRO(dateStr)}</strong>`;
                 renderCalendar();
                 renderEvents();
             }
@@ -382,7 +369,7 @@
             }
 
             if (filteredEvents.length === 0) {
-                list.innerHTML = `<div class="bg-white p-8 text-center rounded-xl border border-slate-200 text-slate-500 text-base">Nu sunt meciuri programate pentru filtrele selectate.</div>`;
+                list.innerHTML = `<div class="bg-white p-8 text-center rounded-2xl border border-slate-200 text-slate-600 font-medium text-base">Nu sunt meciuri programate pentru filtrele selectate.</div>`;
                 return;
             }
 
@@ -391,31 +378,31 @@
                 let detailsHTML = "";
                 
                 if (ev.time) {
-                    detailsHTML += `<p class="flex items-center gap-2"><span class="text-slate-500 font-medium">⌚ Oră:</span> <strong class="text-slate-900">${ev.time}</strong></p>`;
+                    detailsHTML += `<p class="flex items-center gap-2 text-base"><span class="text-slate-600 font-semibold min-w-[85px]">⌚ Oră:</span> <strong class="text-slate-900 font-bold">${ev.time}</strong></p>`;
                 }
                 
                 if (ev.opponent) {
-                    detailsHTML += `<p class="flex items-center gap-2 mt-2"><span class="text-slate-500 font-medium">🛡️ Adversar:</span> <strong class="text-slate-900">${ev.opponent}</strong></p>`;
+                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <strong class="text-slate-900 font-bold">${ev.opponent}</strong></p>`;
                 } else {
-                    detailsHTML += `<p class="flex items-center gap-2 mt-2"><span class="text-slate-500 font-medium">🛡️ Adversar:</span> <span class="text-slate-500 italic">Urmează să fie stabilit</span></p>`;
+                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <span class="text-slate-500 italic font-medium">Urmează să fie stabilit</span></p>`;
                 }
 
                 if (ev.location) {
-                    detailsHTML += `<p class="flex items-center gap-2 mt-2"><span class="text-slate-500 font-medium">📍 Locație:</span> <strong class="text-slate-900">${ev.location}</strong></p>`;
+                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">📍 Locație:</span> <strong class="text-slate-900 font-bold">${ev.location}</strong></p>`;
                 }
 
                 let mapButtonsHTML = "";
                 if (ev.lat && ev.lng) {
                     mapButtonsHTML = `
-                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2 text-xs">
-                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-700 border border-sky-200 px-3 py-2 rounded-md font-semibold hover:bg-sky-100 transition flex items-center gap-1.5 text-sm">
-                                <i class="fa-brands fa-waze"></i> Waze
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2">
+                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-800 border border-sky-200 px-4 py-2.5 rounded-xl font-bold hover:bg-sky-100 transition flex items-center gap-2 text-sm shadow-sm">
+                                <i class="fa-brands fa-waze text-base"></i> Waze
                             </a>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-2 rounded-md font-semibold hover:bg-emerald-100 transition flex items-center gap-1.5 text-sm">
-                                <i class="fa-solid fa-map-location-dot"></i> Google Maps
+                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-4 py-2.5 rounded-xl font-bold hover:bg-emerald-100 transition flex items-center gap-2 text-sm shadow-sm">
+                                <i class="fa-solid fa-map-location-dot text-base"></i> Google Maps
                             </a>
-                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-700 border border-slate-200 px-3 py-2 rounded-md font-semibold hover:bg-slate-200 transition flex items-center gap-1.5 text-sm">
-                                <i class="fa-solid fa-location-arrow"></i> Apple Maps
+                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-800 border border-slate-200 px-4 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition flex items-center gap-2 text-sm shadow-sm">
+                                <i class="fa-solid fa-location-arrow text-base"></i> Apple Maps
                             </a>
                         </div>
                     `;
@@ -427,17 +414,17 @@
                     if (ev.scorers && ev.scorers.trim() !== "") {
                         const formattedScorers = ev.scorers.split('|').map(s => s.trim()).join(' • ');
                         scorersHTML = `
-                            <div class="mt-2 text-sm text-slate-700 flex items-center justify-center gap-1.5">
+                            <div class="mt-2 text-sm font-medium text-slate-700 flex items-center justify-center gap-1.5">
                                 <i class="fa-solid fa-futbol text-blue-600"></i>
-                                <span class="font-semibold">Goluri:</span> ${formattedScorers}
+                                <span class="font-bold">Goluri:</span> ${formattedScorers}
                             </div>
                         `;
                     }
 
                     scoreHTML = `
                         <div class="mt-4 pt-3 border-t border-slate-100 text-center">
-                            <div class="text-sm font-semibold text-slate-500 mb-1">Scor final:</div>
-                            <div class="inline-block text-base font-bold text-blue-700 bg-blue-50 px-4 py-1.5 rounded-md border border-blue-100">
+                            <div class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-1">Scor final</div>
+                            <div class="inline-block text-lg font-extrabold text-blue-900 bg-blue-50 px-5 py-2 rounded-xl border border-blue-200 shadow-sm">
                                 ${ev.home || 'Gazde'} ${ev.score} ${ev.away || 'Adversari'}
                             </div>
                             ${scorersHTML}
@@ -446,15 +433,15 @@
                 }
 
                 list.innerHTML += `
-                    <div class="bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition">
+                    <div class="bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition">
                         <div class="flex flex-wrap justify-between items-start mb-3 gap-2">
                             <div>
-                                <h3 class="text-lg font-bold text-slate-900">${ev.title}</h3>
-                                <div class="text-sm font-medium text-slate-500 mt-0.5">${formatDateRO(ev.date)}</div>
+                                <h3 class="text-xl font-extrabold text-slate-900">${ev.title}</h3>
+                                <div class="text-sm font-semibold text-slate-600 mt-0.5">${formatDateRO(ev.date)}</div>
                             </div>
-                            <span class="text-xs font-bold px-3 py-1 rounded-full border ${style.badge}">${ev.comp}</span>
+                            <span class="text-xs font-extrabold px-3 py-1.5 rounded-xl border ${style.badge}">${ev.comp}</span>
                         </div>
-                        <div class="text-base my-2">${detailsHTML}</div>
+                        <div class="my-3">${detailsHTML}</div>
                         ${mapButtonsHTML}
                         ${scoreHTML}
                     </div>
