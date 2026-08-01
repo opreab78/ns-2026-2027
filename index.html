@@ -481,7 +481,9 @@
 
                 let summary = `${ev.title} - ${ev.comp}`;
                 let description = `Competitie: ${ev.comp}\\nAdversar: ${ev.opponent || 'N/ST'}\\nLocatie: ${ev.location || 'N/ST'}`;
-                let location = ev.location || '';
+                
+                // Folosim coordonatele exacte lat,lng pentru câmpul LOCATION din .ICS dacă sunt disponibile, altfel textul locației
+                let location = (ev.lat && ev.lng) ? `${ev.lat},${ev.lng}` : (ev.location || '');
 
                 icsContent += "BEGIN:VEVENT\n";
                 icsContent += `UID:${dateStr}-${Math.random().toString(36).substring(2)}@junioricalendar\n`;
