@@ -271,8 +271,8 @@
                     <i class="fa-solid fa-download"></i> Instalează Aplicația
                 </button>
                 <div class="flex bg-slate-200 p-1.5 rounded-xl w-full md:w-auto justify-center">
-                    <button id="btn-u16" onclick="switchCategory('U16')" class="flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900">U16</button>
-                <button id="btn-u15" onclick="switchCategory('U15')" class="flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white">U15</button>
+                    <button id="btn-u16" onclick="switchCategory('U16')" class="flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white">U16</button>
+                <button id="btn-u15" onclick="switchCategory('U15')" class="flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900">U15</button>
                 </div>
             </div>
         </div></div></header>
@@ -460,7 +460,7 @@
         ];
 
         let currentCategory = "U16";
-        let currentMonth = 7;
+        let currentMonth = 9;
         let currentYear = 2026;
         let selectedDate = null;
         const monthNames = ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"];
@@ -480,6 +480,7 @@
 
 
         const teamLogos = {
+            "New Stars": "sigla-New-Stars-Football-Club-sfinx-football.ro_.png",
             "Flacăra Moreni": "Flacara_Moreni.png",
             "CSM Ploieşti": "csm_ploiesti.jpg",
             "CSM Ploiești": "csm_ploiesti.jpg",
@@ -510,6 +511,12 @@
         function switchCategory(category) {
             currentCategory = category;
             selectedDate = null;
+            const firstMatch = getActiveData().slice().sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+            if (firstMatch) {
+                const d = new Date(firstMatch.date + "T12:00:00");
+                currentMonth = d.getMonth();
+                currentYear = d.getFullYear();
+            }
 
             const btnU15 = document.getElementById('btn-u15');
             const btnU16 = document.getElementById('btn-u16');
@@ -545,7 +552,7 @@
             const today = new Date();
             today.setHours(0,0,0,0);
             return getActiveData()
-                .filter(e => e.opponent && new Date(e.date + "T23:59:59") >= today)
+                .filter(e => e.date && new Date(e.date + "T23:59:59") >= today)
                 .sort((a,b) => new Date(a.date) - new Date(b.date))[0] || null;
         }
 
@@ -563,10 +570,8 @@
                 return;
             }
 
-            const home = ev.home || "New Stars";
-            const away = ev.away || ev.opponent || "Adversar";
-            const opponent = ev.home === "New Stars" ? ev.away : ev.home;
-            const opponentName = opponent || ev.opponent || "Adversar";
+            const home = (ev.home && ev.home !== "Gazde") ? ev.home : "New Stars";
+            const opponentName = ev.opponent || ((ev.away && ev.away !== "Adversari") ? ev.away : "Adversar neconfirmat");
             box.dataset.matchDate = ev.date + (ev.time ? "T" + ev.time + ":00" : "T14:00:00");
 
             box.innerHTML = `
@@ -881,13 +886,13 @@
                         </div>
                         <div class="event-matchup">
                             <div class="flex items-center gap-2 min-w-0 flex-1">
-                                ${(ev.home || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" alt="New Stars" class="event-team-logo" loading="lazy">` : (getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" alt="${ev.home}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.home)}</span>`)}
-                                <span class="event-team-name truncate">${ev.home || 'Gazde'}</span>
+                                <img src="sigla-New-Stars-Football-Club-sfinx-football.ro_.png" alt="New Stars" class="event-team-logo" loading="lazy">
+                                <span class="event-team-name truncate">New Stars</span>
                             </div>
                             <span class="event-vs">VS</span>
                             <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
-                                <span class="event-team-name truncate text-right">${ev.away || 'Adversari'}</span>
-                                ${(ev.away || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" alt="New Stars" class="event-team-logo" loading="lazy">` : (getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" alt="${ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.away)}</span>`)}
+                                <span class="event-team-name truncate text-right">${ev.opponent || ((ev.away && ev.away !== "Adversari") ? ev.away : "Adversar neconfirmat")}</span>
+                                ${getTeamLogo(ev.opponent || ev.away) ? `<img src="${getTeamLogo(ev.opponent || ev.away)}" alt="${ev.opponent || ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.opponent || ev.away || "Adversar")}</span>`}
                             </div>
                         </div>
                         <div class="my-3">${detailsHTML}</div>
