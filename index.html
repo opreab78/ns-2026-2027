@@ -207,7 +207,7 @@
         .team-crest-img{display:block;object-fit:contain;border-radius:16px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
         .team-crest-fallback{width:74px;height:74px;border-radius:22px;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);font-family:'Manrope',sans-serif;font-size:1.15rem;font-weight:900;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.18)}
         .event-matchup{display:flex;align-items:center;gap:10px;margin-top:12px;padding:11px 12px;border-radius:16px;background:#f8fafc;border:1px solid #e8eef5}
-        .event-team-logo{width:40px;height:40px;object-fit:contain;border-radius:10px}
+        .event-team-logo{width:40px;height:40px;object-fit:contain;border-radius:10px;display:block!important}
         .event-team-logo-fallback{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#334155;font-size:.65rem;font-weight:900}
         .event-team-name{font-size:.78rem;font-weight:900;line-height:1.15}
         .event-vs{font-size:.65rem;font-weight:900;color:#94a3b8}
@@ -654,9 +654,9 @@
                 <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5">
                     <div class="min-w-0">
                         <div class="flex items-center gap-2 min-w-0">
-                            ${getTeamLogo(e.home) ? `<img src="${getTeamLogo(e.home)}" class="w-7 h-7 object-contain rounded-md" alt="">` : ''}
+                            ${(e.home || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" class="w-7 h-7 object-contain rounded-md" alt="New Stars">` : (getTeamLogo(e.home) ? `<img src="${getTeamLogo(e.home)}" class="w-7 h-7 object-contain rounded-md" alt="">` : '')}
                             <span class="text-xs font-black text-slate-800 truncate">${e.home || 'Gazde'} — ${e.away || 'Adversari'}</span>
-                            ${getTeamLogo(e.away) ? `<img src="${getTeamLogo(e.away)}" class="w-7 h-7 object-contain rounded-md" alt="">` : ''}
+                            ${(e.away || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" class="w-7 h-7 object-contain rounded-md" alt="New Stars">` : (getTeamLogo(e.away) ? `<img src="${getTeamLogo(e.away)}" class="w-7 h-7 object-contain rounded-md" alt="">` : '')}
                         </div>
                         <div class="text-[11px] text-slate-500 font-semibold">${formatDateRO(e.date)}</div>
                     </div>
@@ -881,13 +881,13 @@
                         </div>
                         <div class="event-matchup">
                             <div class="flex items-center gap-2 min-w-0 flex-1">
-                                ${getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" alt="${ev.home}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.home)}</span>`}
+                                ${(ev.home || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" alt="New Stars" class="event-team-logo" loading="lazy">` : (getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" alt="${ev.home}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.home)}</span>`)}
                                 <span class="event-team-name truncate">${ev.home || 'Gazde'}</span>
                             </div>
                             <span class="event-vs">VS</span>
                             <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
                                 <span class="event-team-name truncate text-right">${ev.away || 'Adversari'}</span>
-                                ${getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" alt="${ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.away)}</span>`}
+                                ${(ev.away || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" alt="New Stars" class="event-team-logo" loading="lazy">` : (getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" alt="${ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.away)}</span>`)}
                             </div>
                         </div>
                         <div class="my-3">${detailsHTML}</div>
