@@ -886,13 +886,13 @@
                         </div>
                         <div class="event-matchup">
                             <div class="flex items-center gap-2 min-w-0 flex-1">
-                                <img src="sigla-New-Stars-Football-Club-sfinx-football.ro_.png" alt="New Stars" class="event-team-logo" loading="lazy">
-                                <span class="event-team-name truncate">New Stars</span>
+                                ${getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" alt="${ev.home}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.home || "Gazde")}</span>`}
+                                <span class="event-team-name truncate">${ev.home || "Gazde"}</span>
                             </div>
                             <span class="event-vs">VS</span>
                             <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
-                                <span class="event-team-name truncate text-right">${ev.opponent || ((ev.away && ev.away !== "Adversari") ? ev.away : "Adversar neconfirmat")}</span>
-                                ${getTeamLogo(ev.opponent || ev.away) ? `<img src="${getTeamLogo(ev.opponent || ev.away)}" alt="${ev.opponent || ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.opponent || ev.away || "Adversar")}</span>`}
+                                <span class="event-team-name truncate text-right">${ev.away || "Adversari"}</span>
+                                ${getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" alt="${ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.away || "Adversari")}</span>`}
                             </div>
                         </div>
                         <div class="my-3">${detailsHTML}</div>
