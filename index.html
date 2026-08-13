@@ -90,6 +90,8 @@
             .next-match:before{right:14px;top:13px;font-size:.52rem}
             .next-match-grid{gap:8px}
             .team-crest{width:58px;height:58px;border-radius:17px;font-size:.9rem}
+            .team-crest-img{width:58px!important;height:58px!important;border-radius:17px}
+            .team-crest-fallback{width:58px;height:58px;border-radius:17px;font-size:.9rem}
             .team-name{font-size:.82rem}
             .match-vs{font-size:.95rem}
             .countdown{gap:4px}
@@ -201,6 +203,15 @@
         .event-card:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(15,23,42,.11)!important;border-color:rgba(37,99,235,.22)!important}
         .event-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(#2563eb,#38bdf8)}
         .event-title{font-family:'Manrope',sans-serif}
+
+        .team-crest-img{display:block;object-fit:contain;border-radius:16px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
+        .team-crest-fallback{width:74px;height:74px;border-radius:22px;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);font-family:'Manrope',sans-serif;font-size:1.15rem;font-weight:900;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+        .event-matchup{display:flex;align-items:center;gap:10px;margin-top:12px;padding:11px 12px;border-radius:16px;background:#f8fafc;border:1px solid #e8eef5}
+        .event-team-logo{width:40px;height:40px;object-fit:contain;border-radius:10px}
+        .event-team-logo-fallback{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#334155;font-size:.65rem;font-weight:900}
+        .event-team-name{font-size:.78rem;font-weight:900;line-height:1.15}
+        .event-vs{font-size:.65rem;font-weight:900;color:#94a3b8}
+
         .month-nav{font-family:'Manrope',sans-serif}
         .mobile-only{display:none}
         @media(max-width:767px){
@@ -467,6 +478,31 @@
             return { badge: "bg-slate-100 text-slate-800 border-slate-300", dot: "bg-slate-500" };
         }
 
+
+        const teamLogos = {
+            "Flacăra Moreni": "Flacara_Moreni.png",
+            "CSM Ploieşti": "csm_ploiesti.jpg",
+            "CSM Ploiești": "csm_ploiesti.jpg",
+            "Star Mioveni": "Star_Mioveni.jpg",
+            "CN Dinicu Golescu": "cn_dinicu_golescu.jpg",
+            "MX PRO Academy": "mx_pro_academy.png",
+            "MX Pro Academy": "mx_pro_academy.png",
+            "Unirea Bascov": "unirea_bascov.jpg",
+            "LPS Viitorul Piteşti": "L.P.S.-VIITORUL-PITESTI.webp",
+            "LPS Viitorul Pitești": "L.P.S.-VIITORUL-PITESTI.webp",
+            "Kinder Brașov": "kinder_brasov.jpg"
+        };
+
+        function getTeamLogo(teamName) {
+            return teamLogos[(teamName || "").trim()] || "";
+        }
+
+        function logoHTML(teamName, size = 54) {
+            const logo = getTeamLogo(teamName);
+            if (!logo) return `<div class="team-crest-fallback">${initials(teamName)}</div>`;
+            return `<img src="${logo}" alt="${teamName}" class="team-crest-img" style="width:${size}px;height:${size}px" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="team-crest-fallback" style="display:none">${initials(teamName)}</span>`;
+        }
+
         function getActiveData() {
             return currentCategory === 'U15' ? u15EventsData : u16EventsData;
         }
@@ -544,7 +580,7 @@
                         <div class="text-xs font-bold text-slate-300 mt-1">${ev.title}</div>
                     </div>
                     <div class="team-box">
-                        <div class="team-crest">${initials(opponentName)}</div>
+                        <div class="team-crest">${logoHTML(opponentName, 54)}</div>
                         <div class="team-name">${opponentName}</div>
                     </div>
                 </div>
@@ -617,7 +653,11 @@
             el.innerHTML = events.map(e => `
                 <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5">
                     <div class="min-w-0">
-                        <div class="text-xs font-black text-slate-800 truncate">${e.home || 'Gazde'} — ${e.away || 'Adversari'}</div>
+                        <div class="flex items-center gap-2 min-w-0">
+                            ${getTeamLogo(e.home) ? `<img src="${getTeamLogo(e.home)}" class="w-7 h-7 object-contain rounded-md" alt="">` : ''}
+                            <span class="text-xs font-black text-slate-800 truncate">${e.home || 'Gazde'} — ${e.away || 'Adversari'}</span>
+                            ${getTeamLogo(e.away) ? `<img src="${getTeamLogo(e.away)}" class="w-7 h-7 object-contain rounded-md" alt="">` : ''}
+                        </div>
                         <div class="text-[11px] text-slate-500 font-semibold">${formatDateRO(e.date)}</div>
                     </div>
                     <div class="shrink-0 rounded-lg bg-white border border-slate-200 px-3 py-1.5 font-black text-slate-900">${e.score}</div>
@@ -838,6 +878,17 @@
                                 <div class="text-sm font-semibold text-slate-600 mt-0.5">${formatDateRO(ev.date)}</div>
                             </div>
                             <span class="text-xs font-extrabold px-3 py-1.5 rounded-xl border ${style.badge}">${ev.comp}</span>
+                        </div>
+                        <div class="event-matchup">
+                            <div class="flex items-center gap-2 min-w-0 flex-1">
+                                ${getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" alt="${ev.home}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.home)}</span>`}
+                                <span class="event-team-name truncate">${ev.home || 'Gazde'}</span>
+                            </div>
+                            <span class="event-vs">VS</span>
+                            <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
+                                <span class="event-team-name truncate text-right">${ev.away || 'Adversari'}</span>
+                                ${getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" alt="${ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.away)}</span>`}
+                            </div>
                         </div>
                         <div class="my-3">${detailsHTML}</div>
                         ${mapButtonsHTML}
