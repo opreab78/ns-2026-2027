@@ -121,19 +121,15 @@
         .event-card:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(15,23,42,.11)!important;border-color:rgba(37,99,235,.22)!important}
         .event-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(#2563eb,#38bdf8)}
         .event-title{font-family:'Manrope',sans-serif}
-        .quick-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
-        .stat{background:rgba(255,255,255,.76);border:1px solid var(--line);border-radius:18px;padding:13px 14px}
-        .stat-value{font-size:1.15rem;font-weight:900;color:#0b2858}
-        .stat-label{font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:#64748b;font-weight:800;margin-top:2px}
         .month-nav{font-family:'Manrope',sans-serif}
         .mobile-only{display:none}
         @media(max-width:767px){
             body{padding:0!important}
             .app-shell{width:100%;padding:10px 10px 28px!important}
-            .hero{border-radius:22px;padding:17px 15px;margin-bottom:14px}
+            .hero{border-radius:22px;padding:16px 15px;margin-bottom:14px}
             .hero-grid{align-items:flex-start;flex-direction:column;gap:15px}
             .brand{gap:11px}
-            .brand-logo{width:50px;height:50px;flex-basis:50px}
+            .brand-logo{width:52px;height:52px;flex-basis:52px}
             .hero-actions{width:100%;justify-content:stretch;display:grid;grid-template-columns:1fr}
             .category-switch{width:100%!important}
             .category-switch button{flex:1!important;padding:10px 8px!important}
@@ -142,10 +138,6 @@
             .calendar-card{position:static!important;padding:13px!important}
             .day-cell{font-size:.78rem!important;border-radius:10px!important}
             .calendar-grid{gap:3px!important}
-            .quick-stats{gap:7px;margin-bottom:12px}
-            .stat{padding:10px 9px;border-radius:14px}
-            .stat-value{font-size:1rem}
-            .stat-label{font-size:.58rem}
             #events-list{gap:10px!important}
             .event-card{padding:17px!important;border-radius:18px!important}
             .event-card h3{font-size:1.05rem!important;line-height:1.2}
@@ -178,10 +170,8 @@
                 <div class="brand">
                     <img src="sigla-New-Stars-Football-Club-sfinx-football.ro_.png" alt="Logo New Stars" class="brand-logo">
                     <div>
-                        <div class="eyebrow">Football Club • Calendar oficial</div>
-                        <h1 id="main-title">New Stars - Calendar U15</h1>
-                        <p class="hero-sub">Sezonul 2026 – 2027 · Tot programul echipei, într-un singur loc</p>
-                    </div>
+                                                <h1 id="main-title">New Stars - Calendar U15</h1>
+                                            </div>
                 </div>
             <div class="hero-actions">
                 <!-- BUTOANE COMUTARE U15 / U16 + INSTALARE -->
@@ -195,12 +185,6 @@
                 </div>
             </div>
         </div></div></header>
-
-        <div class="quick-stats">
-            <div class="stat"><div id="stat-total" class="stat-value">—</div><div class="stat-label">Meciuri programate</div></div>
-            <div class="stat"><div id="stat-home" class="stat-value">—</div><div class="stat-label">Acasă</div></div>
-            <div class="stat"><div id="stat-away" class="stat-value">—</div><div class="stat-label">Deplasare</div></div>
-        </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
@@ -397,23 +381,11 @@
             return `${day} ${monthNames[month - 1]} ${year}`;
         }
 
-
-        function updateStats() {
-            const data = getActiveData();
-            const total = data.filter(e => e.opponent).length;
-            const home = data.filter(e => e.opponent && e.home === "New Stars").length;
-            const away = data.filter(e => e.opponent && e.away === "New Stars").length;
-            document.getElementById('stat-total').textContent = total;
-            document.getElementById('stat-home').textContent = home;
-            document.getElementById('stat-away').textContent = away;
-        }
-
         function init() {
             const data = getActiveData();
             data.sort((a, b) => new Date(a.date) - new Date(b.date));
             renderCalendar();
             renderEvents();
-            updateStats();
         }
 
         function renderCalendar() {
