@@ -56,7 +56,7 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <!-- COLOANA STÂNGA: CALENDAR + FILTRE + EXPORT -->
+            <!-- COLOANA STÂNGA: CALENDAR -->
             <div class="md:col-span-1 space-y-4">
                 <div class="bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-4">
                     <div class="flex justify-between items-center mb-4">
@@ -68,38 +68,6 @@
                         <div>Lu</div><div>Ma</div><div>Mi</div><div>Jo</div><div>Vi</div><div>Sâ</div><div>Du</div>
                     </div>
                     <div id="calendar-days" class="calendar-grid"></div>
-                    
-                    <div id="filter-status" class="mt-4 hidden p-3 bg-blue-50 border border-blue-200 rounded-xl text-sm text-blue-900 font-medium flex justify-between items-center">
-                        <span id="filter-date-text"></span>
-                        <button onclick="clearDateFilter()" class="text-xs font-bold text-blue-700 hover:text-blue-900 underline">Resetează</button>
-                    </div>
-
-                    <!-- FILTRE COMPETIȚII SUB CALENDAR -->
-                    <div class="mt-5 pt-4 border-t border-slate-100">
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2.5">Filtrează competiția:</p>
-                        <div class="flex flex-col gap-2 text-sm">
-                            <button onclick="setCompetitionFilter('all')" id="filter-btn-all" class="w-full px-3.5 py-2.5 rounded-xl font-bold bg-blue-600 text-white transition text-left flex justify-between items-center shadow-sm">
-                                <span>Toate competițiile</span>
-                                <i class="fa-solid fa-check"></i>
-                            </button>
-                            <button onclick="setCompetitionFilter('Campionatul Național')" id="filter-btn-camp" class="w-full px-3.5 py-2.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition text-left flex items-center gap-2.5">
-                                <span class="flex items-center gap-2.5"><div class="w-3 h-3 rounded-full bg-emerald-500"></div> Campionat Național</span>
-                            </button>
-                            <button onclick="setCompetitionFilter('Cupa Național')" id="filter-btn-cupan" class="w-full px-3.5 py-2.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition text-left flex items-center gap-2.5">
-                                <span class="flex items-center gap-2.5"><div class="w-3 h-3 rounded-full bg-sky-500"></div> Cupa Națională</span>
-                            </button>
-                            <button onclick="setCompetitionFilter('Cupa Elitelor')" id="filter-btn-elite" class="w-full px-3.5 py-2.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition text-left flex items-center gap-2.5">
-                                <span class="flex items-center gap-2.5"><div class="w-3 h-3 rounded-full bg-rose-500"></div> Cupa Elitelor</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- BUTON EXPORT .ICS -->
-                    <div class="mt-4 pt-4 border-t border-slate-100">
-                        <button onclick="exportToICS()" class="w-full bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold py-3 px-4 rounded-xl transition flex items-center justify-center gap-2 shadow-sm">
-                            <i class="fa-solid fa-file-arrow-down text-base"></i> Exportă calendarul (.ics)
-                        </button>
-                    </div>
                 </div>
             </div>
 
@@ -164,7 +132,7 @@
             { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U15", time: "14:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U15", time: "14:00", opponent: "MX PRO Academy", location: "Cocoșești", lat: "44.99562155095854", lng: "25.985000556719196", home: "MX PRO Academy", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U15", time: "14:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U15", time: "14:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "",	 scorers: "", videoLinks: [] },
+            { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U15", time: "14:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-26", title: "Etapa 6", comp: "Campionatul Național U15", time: "14:00", opponent: "Unirea Bascov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Unirea Bascov", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-03", title: "Etapa 7", comp: "Campionatul Național U15", time: "14:00", opponent: "CSM Ploieşti", location: "Baza Sportivă Teleajen", lat: "44.942930783857655", lng: "26.091011020530072", home: "CSM Ploieşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-10", title: "Etapa 8", comp: "Campionatul Național U15", time: "14:00", opponent: "CN Dinicu Golescu", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CN Dinicu Golescu", score: "", scorers: "", videoLinks: [] },
@@ -205,7 +173,7 @@
             { date: "2027-05-19", title: "Finala", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
 
             { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U16", time: "12:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U16", time: "12:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "", scorers: ""		, videoLinks: [] },
+            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U16", time: "12:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U16", time: "12:00", opponent: "MX PRO Academy", location: "Cocoșești", lat: "44.99562155095854", lng: "25.985000556719196", home: "MX PRO Academy", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U16", time: "12:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U16", time: "12:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
@@ -231,7 +199,6 @@
         ];
 
         let currentCategory = 'U15';
-        let currentCompetitionFilter = 'all';
         let currentMonth = 7;
         let currentYear = 2026;
         let selectedDate = null;
@@ -257,7 +224,6 @@
         function switchCategory(category) {
             currentCategory = category;
             selectedDate = null;
-            document.getElementById('filter-status').classList.add('hidden');
 
             const btnU15 = document.getElementById('btn-u15');
             const btnU16 = document.getElementById('btn-u16');
@@ -274,33 +240,6 @@
             }
 
             init();
-        }
-
-        function setCompetitionFilter(filterValue) {
-            currentCompetitionFilter = filterValue;
-
-            const filterMap = [
-                { val: 'all', id: 'filter-btn-all', label: 'Toate competițiile', dot: '' },
-                { val: 'Campionatul Național', id: 'filter-btn-camp', label: 'Campionat Național', dot: '<div class="w-3 h-3 rounded-full bg-emerald-500"></div>' },
-                { val: 'Cupa Național', id: 'filter-btn-cupan', label: 'Cupa Națională', dot: '<div class="w-3 h-3 rounded-full bg-sky-500"></div>' },
-                { val: 'Cupa Elitelor', id: 'filter-btn-elite', label: 'Cupa Elitelor', dot: '<div class="w-3 h-3 rounded-full bg-rose-500"></div>' }
-            ];
-
-            filterMap.forEach(f => {
-                const btn = document.getElementById(f.id);
-                if (!btn) return;
-                const isActive = (f.val === filterValue);
-                if (isActive) {
-                    btn.className = "w-full px-3.5 py-2.5 rounded-xl font-bold bg-blue-600 text-white transition text-left flex justify-between items-center shadow-sm";
-                    btn.innerHTML = `<span class="flex items-center gap-2.5">${f.dot} ${f.label}</span><i class="fa-solid fa-check"></i>`;
-                } else {
-                    btn.className = "w-full px-3.5 py-2.5 rounded-xl font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition text-left flex items-center gap-2.5";
-                    btn.innerHTML = `<span class="flex items-center gap-2.5">${f.dot} ${f.label}</span>`;
-                }
-            });
-
-            renderCalendar();
-            renderEvents();
         }
 
         function formatDateRO(dateStr) {
@@ -333,10 +272,6 @@
                 const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
                 
                 let matchData = data.filter(e => e.date === dateStr);
-                if (currentCompetitionFilter !== 'all') {
-                    matchData = matchData.filter(e => e.comp.includes(currentCompetitionFilter));
-                }
-                
                 const hasEvent = matchData.length > 0;
                 const isActive = selectedDate === dateStr;
                 
@@ -369,22 +304,13 @@
 
         function toggleDate(dateStr) {
             if (selectedDate === dateStr) {
-                clearDateFilter();
+                selectedDate = null;
             } else {
                 selectedDate = dateStr;
                 const [year, month] = dateStr.split('-').map(Number);
                 currentMonth = month - 1;
                 currentYear = year;
-                document.getElementById('filter-status').classList.remove('hidden');
-                document.getElementById('filter-date-text').innerHTML = `Dată selectată: <strong>${formatDateRO(dateStr)}</strong>`;
-                renderCalendar();
-                renderEvents();
             }
-        }
-
-        function clearDateFilter() {
-            selectedDate = null;
-            document.getElementById('filter-status').classList.add('hidden');
             renderCalendar();
             renderEvents();
         }
@@ -407,12 +333,8 @@
                 filteredEvents = filteredEvents.filter(e => e.date === selectedDate);
             }
 
-            if (currentCompetitionFilter !== 'all') {
-                filteredEvents = filteredEvents.filter(e => e.comp.includes(currentCompetitionFilter));
-            }
-
             if (filteredEvents.length === 0) {
-                list.innerHTML = `<div class="bg-white p-8 text-center rounded-2xl border border-slate-200 text-slate-600 font-medium text-base">Nu sunt meciuri programate pentru filtrele selectate.</div>`;
+                list.innerHTML = `<div class="bg-white p-8 text-center rounded-2xl border border-slate-200 text-slate-600 font-medium text-base">Nu sunt meciuri programate pentru data selectată.</div>`;
                 return;
             }
 
@@ -514,71 +436,7 @@
             });
         }
 
-        function exportToICS() {
-            const data = getActiveData();
-            let eventsToExport = data;
-
-            if (selectedDate) {
-                eventsToExport = eventsToExport.filter(e => e.date === selectedDate);
-            }
-            if (currentCompetitionFilter !== 'all') {
-                eventsToExport = eventsToExport.filter(e => e.comp.includes(currentCompetitionFilter));
-            }
-
-            if (eventsToExport.length === 0) {
-                alert("Nu există evenimente de exportat pentru selecția curentă!");
-                return;
-            }
-
-            let icsContent = "BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Calendar Juniori RO//EN\nCALSCALE:GREGORIAN\nMETHOD:PUBLISH\n";
-
-            eventsToExport.forEach(ev => {
-                let dateStr = ev.date.replace(/-/g, '');
-                let timeStr = ev.time ? ev.time.replace(':', '') + '00' : '100000';
-                let dtStart = `${dateStr}T${timeStr}`;
-                
-                let dtEnd = `${dateStr}T120000`;
-                if(ev.time) {
-                    let [hours, minutes] = ev.time.split(':').map(Number);
-                    let endHours = (hours + 2) % 24;
-                    dtEnd = `${dateStr}T${String(endHours).padStart(2, '0')}${String(minutes).padStart(2, '0')}00`;
-                }
-
-                let summary = `${ev.title} - ${ev.comp}`;
-                let description = `Competitie: ${ev.comp}\\nAdversar: ${ev.opponent || 'N/ST'}\\nLocatie: ${ev.location || 'N/ST'}`;
-                
-                let location = (ev.lat && ev.lng) ? `${ev.lat},${ev.lng}` : (ev.location || '');
-
-                icsContent += "BEGIN:VEVENT\n";
-                icsContent += `UID:${dateStr}-${Math.random().toString(36).substring(2)}@junioricalendar\n`;
-                icsContent += `DTSTAMP:${dateStr}T000000Z\n`;
-                icsContent += `DTSTART:${dtStart}\n`;
-                icsContent += `DTEND:${dtEnd}\n`;
-                icsContent += `SUMMARY:${summary}\n`;
-                icsContent += `DESCRIPTION:${description}\n`;
-                if(location) icsContent += `LOCATION:${location}\n`;
-                
-                icsContent += "BEGIN:VALARM\n";
-                icsContent += "TRIGGER:-P1D\n";
-                icsContent += "ACTION:DISPLAY\n";
-                icsContent += `DESCRIPTION:Memento: ${summary} maine\n`;
-                icsContent += "END:VALARM\n";
-
-                icsContent += "END:VEVENT\n";
-            });
-
-            icsContent += "END:VCALENDAR";
-
-            const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' });
-            const link = document.createElement('a');
-            link.href = window.URL.createObjectURL(blob);
-            link.setAttribute('download', `Calendar_${currentCategory}_${currentCompetitionFilter.replace(/\s+/g, '_')}.ics`);
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
         window.onload = init;
     </script>
 </body>
-</html>	
+</html>
