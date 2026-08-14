@@ -151,6 +151,11 @@
             }
         }
 
+
+        .event-completed-score{text-align:center;margin:8px 0 10px}
+        .event-completed-score .score-label{font-size:10px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:#64748b}
+        .event-completed-score .score-value{display:inline-block;margin-top:4px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:12px;padding:5px 16px;font-size:1.3rem;font-weight:950;color:#0b2858}
+
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -909,9 +914,14 @@ renderTimeline();
                             <div class="score-label">Scor final</div>
                             <div class="score-value">${ev.score}</div>
                         </div>` : ""}
-                        <div class="my-3">${detailsHTML}</div>
-                        ${mapButtonsHTML}
-                        ${scoreHTML}
+                        <div class="my-3">${isCompletedMatch ? "" : detailsHTML}</div>
+                        ${isCompletedMatch ? "" : mapButtonsHTML}
+                        ${isCompletedMatch ? "" : scoreHTML}
+                        ${isCompletedMatch ? `
+                        <div class="event-completed-score">
+                            <div class="score-label">Scor final</div>
+                            <div class="score-value">${ev.score}</div>
+                        </div>` : ""}
                         ${videoLinksHTML}
                     </div>
                 `;
