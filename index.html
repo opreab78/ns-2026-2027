@@ -252,7 +252,8 @@
         .event-team-logo{width:40px;height:40px;object-fit:contain;border-radius:10px;display:block!important}
         .event-team-logo-fallback{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#334155;font-size:.65rem;font-weight:900}
         .event-team-name{font-size:.78rem;font-weight:900;line-height:1.15}
-        .event-vs{font-size:.65rem;font-weight:900;color:#94a3b8}.event-score-board{margin-top:10px;text-align:center}.event-score-board .score-label{font-size:.58rem;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:#64748b}.event-score-board .score-value{display:inline-block;margin-top:4px;font-size:1.35rem;font-weight:950;color:#0b2858;background:#eff6ff;border:1px solid #bfdbfe;border-radius:12px;padding:5px 14px}
+        .event-vs{font-size:.65rem;font-weight:900;color:#94a3b8}
+
 
         .month-nav{font-family:'Manrope',sans-serif}
         .mobile-only{display:none}
@@ -808,20 +809,19 @@ renderTimeline();
             }
 
             filteredEvents.forEach(ev => {
-                const isCompletedMatch = typeof ev.score === "string" && ev.score.trim() !== "";
                 const style = getCompStyle(ev.comp);
+                const isCompletedMatch = typeof ev.score === "string" && ev.score.trim() !== "";
+
+                // Upcoming match details.
                 let detailsHTML = "";
-                
                 if (ev.time) {
                     detailsHTML += `<p class="flex items-center gap-2 text-base"><span class="text-slate-600 font-semibold min-w-[85px]">⌚ Oră:</span> <strong class="text-slate-900 font-bold">${ev.time}</strong></p>`;
                 }
-                
                 if (ev.opponent) {
                     detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <strong class="text-slate-900 font-bold">${ev.opponent}</strong></p>`;
                 } else {
                     detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <span class="text-slate-500 italic font-medium">Urmează să fie stabilit</span></p>`;
                 }
-
                 if (ev.location) {
                     detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">📍 Locație:</span> <strong class="text-slate-900 font-bold">${ev.location}</strong></p>`;
                 }
@@ -843,47 +843,55 @@ renderTimeline();
                     `;
                 }
 
-                let scoreHTML = "";
-                if (ev.score && ev.score.trim() !== "") {
-                    let scorersHTML = "";
-                    if (ev.scorers && ev.scorers.trim() !== "") {
-                        const formattedScorers = ev.scorers.split('|').map(s => s.trim()).join(' • ');
-                        scorersHTML = `
-                            <div class="mt-2 text-sm font-medium text-slate-700 flex items-center justify-center gap-1.5">
-                                <i class="fa-solid fa-futbol text-blue-600"></i>
-                                <span class="font-bold">Goluri:</span> ${formattedScorers}
-                            </div>
-                        `;
-                    }
+                // For completed matches: only goals and video are additional content.
+                let scorersHTML = "";
+                if (isCompletedMatch && ev.scorers && ev.scorers.trim() !== "") {
+                    const formattedScorers = ev.scorers
+                        .split('|')
+                        .map(s => s.trim())
+                        .filter(Boolean)
+                        .join(' • ');
 
-                    scoreHTML = `
-                        <div class="mt-2 text-center">
-                            <div class="text-sm font-medium text-slate-700">${ev.home || 'Gazde'} <strong>${ev.score}</strong> ${ev.away || 'Adversari'}</div>
-                            ${scorersHTML}
+                    scorersHTML = `
+                        <div class="completed-goals">
+                            <i class="fa-solid fa-futbol"></i>
+                            <span class="font-bold">Goluri:</span> ${formattedScorers}
                         </div>
                     `;
                 }
 
                 let videoLinksHTML = "";
-                if (ev.videoLinks && ev.videoLinks.length > 0) {
-                    let linksBtns = ev.videoLinks.map(link => {
-                        let isYoutube = link.url.includes('youtube.com') || link.url.includes('youtu.be');
-                        let iconClass = isYoutube ? 'fa-brands fa-youtube text-red-600' : 'fa-solid fa-satellite-dish text-blue-600'; 
-                        
-                        return `<a href="${link.url}" target="_blank" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 px-3 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+                if (isCompletedMatch && ev.videoLinks && ev.videoLinks.length > 0) {
+                    const linksBtns = ev.videoLinks.map(link => {
+                        const isYoutube = link.url.includes('youtube.com') || link.url.includes('youtu.be');
+                        const iconClass = isYoutube
+                            ? 'fa-brands fa-youtube text-red-600'
+                            : 'fa-solid fa-satellite-dish text-blue-600';
+
+                        return `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 px-3 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
                             <i class="${iconClass} text-base"></i> ${link.label}
                         </a>`;
                     }).join('');
 
                     videoLinksHTML = `
-                        <div class="mt-4 pt-3 border-t border-slate-100">
-                            <div class="text-xs font-bold text-slate-500 uppercase tracking-wide mb-2">Video Meci</div>
-                            <div class="flex flex-wrap gap-2">
+                        <div class="completed-video">
+                            <div class="completed-video-title">Video Meci</div>
+                            <div class="flex flex-wrap gap-2 justify-center">
                                 ${linksBtns}
                             </div>
                         </div>
                     `;
                 }
+
+                // The score is deliberately part of the team board itself.
+                // No completed-result / separate completed-result-score block is used.
+                const completedResultHTML = isCompletedMatch ? `
+                    <div class="completed-result">
+                        <div class="completed-result-label">Scor final</div>
+                        <div class="completed-result-score">${ev.score}</div>
+                        ${scorersHTML}
+                    </div>
+                ` : "";
 
                 list.innerHTML += `
                     <div class="event-card bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition">
@@ -894,30 +902,32 @@ renderTimeline();
                             </div>
                             <span class="text-xs font-extrabold px-3 py-1.5 rounded-xl border ${style.badge}">${ev.comp}</span>
                         </div>
-                        <div class="event-matchup">
+
+                        <div class="event-matchup ${isCompletedMatch ? "event-matchup-completed" : ""}">
                             <div class="flex items-center gap-2 min-w-0 flex-1">
                                 ${getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" alt="${ev.home}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.home || "Gazde")}</span>`}
                                 <span class="event-team-name truncate">${ev.home || "Gazde"}</span>
                             </div>
-                            <span class="event-vs">VS</span>
+
+                            <div class="event-matchup-center">
+                                <span class="event-vs">${isCompletedMatch ? "" : "VS"}</span>
+                                ${completedResultHTML}
+                            </div>
+
                             <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
                                 <span class="event-team-name truncate text-right">${ev.away || "Adversari"}</span>
                                 ${getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" alt="${ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.away || "Adversari")}</span>`}
                             </div>
                         </div>
-                        ${isCompletedMatch ? `
-                        <div class="event-score-board">
-                            <div class="score-label">Scor final</div>
-                            <div class="score-value">${ev.score}</div>
-                        </div>` : ""}
+
                         ${isCompletedMatch ? "" : `<div class="my-3">${detailsHTML}</div>`}
                         ${isCompletedMatch ? "" : mapButtonsHTML}
-                        ${isCompletedMatch ? "" : scoreHTML}
                         ${videoLinksHTML}
                     </div>
                 `;
             });
         }
+
 
         window.onload = init;
         setInterval(updateCountdown, 1000);
