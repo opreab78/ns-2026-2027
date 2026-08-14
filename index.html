@@ -159,6 +159,26 @@
             white-space:nowrap;
             letter-spacing:-.04em;
         }
+
+        .next-match-competition{
+            font-size:.62rem;
+            line-height:1.15;
+            font-weight:900;
+            letter-spacing:.08em;
+            text-transform:uppercase;
+            color:#7dd3fc;
+            margin-bottom:4px;
+            max-width:180px;
+            margin-left:auto;
+            margin-right:auto;
+        }
+        @media(max-width:480px){
+            .next-match-competition{
+                font-size:.52rem;
+                max-width:120px;
+            }
+        }
+
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -405,7 +425,7 @@
         });
 
         const u15EventsData = [
-            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Live YouTube", url: "https://youtube.com"}] },
+            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Vezi meci", url: "https://youtube.com"}] },
             { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
             { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
             { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
@@ -449,7 +469,7 @@
         ];
 
         const u16EventsData = [
-            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Vezi meci", url: "https://youtube.com"}] },
             { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
             { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
             { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
@@ -615,8 +635,9 @@ function getNextMatch() {
                         <div class="team-name">${home}</div>
                     </div>
                     <div class="text-center">
-                        <div class="match-vs">VS</div>
+                        <div class="next-match-competition">${ev.comp || ""}</div>
                         <div class="text-xs font-bold text-slate-300 mt-1">${ev.title}</div>
+                        <div class="match-vs">VS</div>
                     </div>
                     <div class="team-box">
                         <div class="team-crest">${logoHTML(opponentName, 54)}</div>
@@ -851,7 +872,7 @@ renderTimeline();
                     `;
                 }
 
-                // Video links may appear for any match; goals appear only for completed matches.
+                // For completed matches: only goals and video are additional content.
                 let scorersHTML = "";
                 if (isCompletedMatch && ev.scorers && ev.scorers.trim() !== "") {
                     const formattedScorers = ev.scorers
@@ -869,7 +890,7 @@ renderTimeline();
                 }
 
                 let videoLinksHTML = "";
-                if (ev.videoLinks && ev.videoLinks.length > 0) {
+                if (isCompletedMatch && ev.videoLinks && ev.videoLinks.length > 0) {
                     const linksBtns = ev.videoLinks.map(link => {
                         const isYoutube = link.url.includes('youtube.com') || link.url.includes('youtu.be');
                         const iconClass = isYoutube
