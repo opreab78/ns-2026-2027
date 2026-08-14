@@ -482,20 +482,30 @@
         const teamLogos = {
             "New Stars": "sigla-New-Stars-Football-Club-sfinx-football.ro_.png",
             "Flacăra Moreni": "Flacara_Moreni.png",
-            "CSM Ploieşti": "csm_ploiesti.jpg",
             "CSM Ploiești": "csm_ploiesti.jpg",
             "Star Mioveni": "Star_Mioveni.jpg",
             "CN Dinicu Golescu": "cn_dinicu_golescu.jpg",
-            "MX PRO Academy": "mx_pro_academy.png",
             "MX Pro Academy": "mx_pro_academy.png",
             "Unirea Bascov": "unirea_bascov.jpg",
-            "LPS Viitorul Piteşti": "L.P.S.-VIITORUL-PITESTI.webp",
-            "LPS Viitorul Pitești": "L.P.S.-VIITORUL-PITESTI.webp",
+            "LPS Viitorul Pitești": "L.P.S.-VIITORUL-PITESTI-logo.png",
             "Kinder Brașov": "kinder_brasov.jpg"
         };
 
+        function normalizeTeamName(name) {
+            return (name || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, " ")
+                .trim();
+        }
+
+        const normalizedTeamLogos = Object.fromEntries(
+            Object.entries(teamLogos).map(([name, logo]) => [normalizeTeamName(name), logo])
+        );
+
         function getTeamLogo(teamName) {
-            return teamLogos[(teamName || "").trim()] || "";
+            return normalizedTeamLogos[normalizeTeamName(teamName)] || "";
         }
 
         function logoHTML(teamName, size = 54) {
