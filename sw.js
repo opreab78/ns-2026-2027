@@ -1,40 +1,41 @@
-const CACHE_NAME = 'ns-calendar-cache-v1';
+const CACHE_NAME = 'new-stars-pwa-v3';
+const APP_SHELL = [
+  './',
+  './index.html',
+  './manifest.json',
+  './ns-icon-192.png',
+  './ns-icon-512.png',
+  './ns-icon-512-maskable.png',
+  './sigla-New-Stars-Football-Club-sfinx-football.ro_.png'
+];
 
-// Când instalezi app-ul pe telefon
 self.addEventListener('install', event => {
-    self.skipWaiting();
+  event.waitUntil(
+    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).catch(() => {})
+  );
+  self.skipWaiting();
 });
 
-// Curăță cache-urile vechi la activare
 self.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cache => {
-                    if (cache !== CACHE_NAME) {
-                        return caches.delete(cache);
-                    }
-                })
-            );
-        })
-    );
-    self.clients.claim();
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))
+    )
+  );
+  self.clients.claim();
 });
 
-// Strategie "Network First" pentru a garanta actualizările în timp real
 self.addEventListener('fetch', event => {
-    event.respondWith(
-        fetch(event.request)
-            .then(networkResponse => {
-                // Dacă obținem un răspuns din internet, îl salvăm în cache pentru offline
-                return caches.open(CACHE_NAME).then(cache => {
-                    cache.put(event.request, networkResponse.clone());
-                    return networkResponse;
-                });
-            })
-            .catch(() => {
-                // Dacă utilizatorul nu are internet, returnăm versiunea salvată în cache
-                return caches.match(event.request);
-            })
-    );
+  if (event.request.method !== 'GET') return;
+  event.respondWith(
+    fetch(event.request).then(response => {
+      if (response && (response.ok || response.type === 'opaque')) {
+        const copy = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(() => {});
+      }
+      return response;
+    }).catch(() =>
+      caches.match(event.request).then(cached => cached || caches.match('./index.html'))
+    )
+  );
 });

@@ -6,11 +6,12 @@
     <title>New Stars - Calendar</title>
     
     <!-- PWA / Apple Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="New Stars">
     <link rel="apple-touch-icon" href="sigla-New-Stars-Football-Club-sfinx-football.ro_.png">
-    <link rel="manifest" href="manifest.json">
+    <link rel="manifest" href="./manifest_fixed.json">
     <link rel="icon" type="image/png" href="sigla-New-Stars-Football-Club-sfinx-football.ro_.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
@@ -409,135 +410,110 @@
             });
         }
         // --- INSTALL PWA: Android + iPhone/iPad ---
-        let deferredPrompt = null;
-        const installBtn = document.getElementById('install-btn');
+let deferredPrompt = null;
+const installBtn = document.getElementById('install-btn');
 
-        function isIOS() {
-            return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
-                (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
+function isAndroid() {
+    return /Android/i.test(navigator.userAgent);
+}
+function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+}
+function showInstallButton() {
+    if (!installBtn || isStandalone()) return;
+    installBtn.classList.remove('hidden');
+    installBtn.classList.add('flex');
+}
+function hideInstallButton() {
+    if (!installBtn) return;
+    installBtn.classList.add('hidden');
+    installBtn.classList.remove('flex');
+}
+
+function showInstallHelp(title, steps) {
+    const old = document.getElementById('install-help');
+    if (old) old.remove();
+    const overlay = document.createElement('div');
+    overlay.id = 'install-help';
+    overlay.className = 'fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-950/60 p-4';
+    overlay.innerHTML = `
+      <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <div class="text-xl font-black text-slate-900">${title}</div>
+            <div class="mt-1 text-sm font-medium text-slate-500">New Stars Football Club</div>
+          </div>
+          <button type="button" id="close-install-help" class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 font-black" aria-label="Închide">×</button>
+        </div>
+        <div class="mt-6 space-y-4 text-slate-800">
+          ${steps.map((step,i)=>`
+            <div class="flex gap-3">
+              <div class="w-8 h-8 shrink-0 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-black">${i+1}</div>
+              <div class="text-sm leading-6">${step}</div>
+            </div>`).join('')}
+        </div>
+        <button type="button" id="close-install-help-2" class="mt-6 w-full rounded-2xl bg-slate-900 px-5 py-3 text-white font-extrabold">Am înțeles</button>
+      </div>`;
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    document.getElementById('close-install-help').onclick = close;
+    document.getElementById('close-install-help-2').onclick = close;
+    overlay.onclick = e => { if (e.target === overlay) close(); };
+}
+
+window.addEventListener('beforeinstallprompt', e => {
+    e.preventDefault();
+    deferredPrompt = e;
+    showInstallButton();
+});
+
+window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    hideInstallButton();
+});
+
+if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+        if (isStandalone()) return hideInstallButton();
+
+        if (isIOS()) {
+            showInstallHelp('Instalează pe iPhone / iPad', [
+                'În Safari, apasă <strong>Share</strong> <span class="inline-flex items-center justify-center w-7 h-7 mx-1 rounded-lg bg-slate-100">↗</span>.',
+                'Alege <strong>„Add to Home Screen”</strong> / <strong>„Adaugă la ecranul principal”</strong>.',
+                'Apasă <strong>„Add”</strong> / <strong>„Adaugă”</strong>.'
+            ]);
+            return;
         }
 
-        function isAndroid() {
-            return /Android/i.test(navigator.userAgent);
-        }
-
-        function isStandalone() {
-            return window.matchMedia('(display-mode: standalone)').matches ||
-                window.navigator.standalone === true;
-        }
-
-        function showInstallButton() {
-            if (!installBtn || isStandalone()) return;
-            installBtn.classList.remove('hidden');
-            installBtn.classList.add('flex');
-        }
-
-        function hideInstallButton() {
-            if (!installBtn) return;
-            installBtn.classList.add('hidden');
-            installBtn.classList.remove('flex');
-        }
-
-        function showInstallHelp(title, steps) {
-            const existing = document.getElementById('install-help');
-            if (existing) existing.remove();
-
-            const overlay = document.createElement('div');
-            overlay.id = 'install-help';
-            overlay.className = 'fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-950/60 p-4';
-            overlay.innerHTML = `
-                <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
-                    <div class="flex items-start justify-between gap-4">
-                        <div>
-                            <div class="text-xl font-black text-slate-900">${title}</div>
-                            <div class="mt-1 text-sm font-medium text-slate-500">New Stars Football Club</div>
-                        </div>
-                        <button type="button" id="close-install-help"
-                            class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 font-black"
-                            aria-label="Închide">×</button>
-                    </div>
-
-                    <div class="mt-6 space-y-4 text-slate-800">
-                        ${steps.map((step, i) => `
-                            <div class="flex gap-3">
-                                <div class="w-8 h-8 shrink-0 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-black">${i + 1}</div>
-                                <div class="text-sm leading-6">${step}</div>
-                            </div>
-                        `).join('')}
-                    </div>
-
-                    <button type="button" id="close-install-help-2"
-                        class="mt-6 w-full rounded-2xl bg-slate-900 px-5 py-3 text-white font-extrabold">
-                        Am înțeles
-                    </button>
-                </div>
-            `;
-
-            document.body.appendChild(overlay);
-            const close = () => overlay.remove();
-            document.getElementById('close-install-help').onclick = close;
-            document.getElementById('close-install-help-2').onclick = close;
-            overlay.onclick = e => { if (e.target === overlay) close(); };
-        }
-
-        // Android/Chrome: native installation prompt.
-        window.addEventListener('beforeinstallprompt', (e) => {
-            e.preventDefault();
-            deferredPrompt = e;
-            showInstallButton();
-        });
-
-        window.addEventListener('appinstalled', () => {
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const result = await deferredPrompt.userChoice;
+            if (result.outcome === 'accepted') hideInstallButton();
             deferredPrompt = null;
-            hideInstallButton();
-        });
-
-        if (installBtn) {
-            installBtn.addEventListener('click', async () => {
-                if (isStandalone()) {
-                    hideInstallButton();
-                    return;
-                }
-
-                // iOS Safari has no beforeinstallprompt, so provide the exact manual flow.
-                if (isIOS()) {
-                    showInstallHelp('Instalează pe iPhone / iPad', [
-                        'În Safari, apasă butonul <strong>Share</strong> <span class="inline-flex items-center justify-center w-7 h-7 mx-1 rounded-lg bg-slate-100">↗</span> din bara browserului.',
-                        'Alege <strong>„Add to Home Screen”</strong> / <strong>„Adaugă la ecranul principal”</strong>.',
-                        'Apasă <strong>„Add”</strong> / <strong>„Adaugă”</strong>.'
-                    ]);
-                    return;
-                }
-
-                if (deferredPrompt) {
-                    deferredPrompt.prompt();
-                    const result = await deferredPrompt.userChoice;
-                    if (result.outcome === 'accepted') hideInstallButton();
-                    deferredPrompt = null;
-                    return;
-                }
-
-                // Android browsers that do not expose the native prompt.
-                if (isAndroid()) {
-                    showInstallHelp('Instalează pe Android', [
-                        'În Chrome, apasă meniul <strong>⋮</strong> din dreapta sus.',
-                        'Alege <strong>„Install app”</strong> / <strong>„Instalează aplicația”</strong> sau <strong>„Add to Home screen”</strong>.',
-                        'Confirmă instalarea.'
-                    ]);
-                }
-            });
+            return;
         }
 
-        // iOS does not fire beforeinstallprompt, therefore show the button explicitly.
-        if (isIOS() && !isStandalone()) {
-            setTimeout(showInstallButton, 250);
+        if (isAndroid()) {
+            showInstallHelp('Instalează pe Android', [
+                'În Chrome, apasă meniul <strong>⋮</strong> din dreapta sus.',
+                'Alege <strong>„Install app”</strong> / <strong>„Instalează aplicația”</strong> sau <strong>„Add to Home screen”</strong>.',
+                'Confirmă instalarea.'
+            ]);
         }
+    });
+}
 
-        // Never show the install action when already installed.
-        if (isStandalone()) {
-            hideInstallButton();
-        }
-
+// Android/iOS: show the button even when the browser has not exposed
+// beforeinstallprompt yet. When available, the native prompt is used.
+if (!isStandalone() && (isAndroid() || isIOS())) {
+    setTimeout(showInstallButton, 500);
+}
+if (isStandalone()) hideInstallButton();
 
         const u15EventsData = [
             { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Vezi meci", url: "https://youtube.com"}] },
@@ -842,6 +818,7 @@ function getNextMatch() {
 
         function renderTimeline() {
             const el = document.getElementById('season-timeline');
+            if (!el) return;
             const data = [...getActiveData()].sort((a,b) => new Date(a.date) - new Date(b.date));
             el.innerHTML = data.map(e => `
                 <div class="timeline-item">
@@ -1005,7 +982,7 @@ renderTimeline();
                 }
 
                 let videoLinksHTML = "";
-                if (isCompletedMatch && ev.videoLinks && ev.videoLinks.length > 0) {
+                if (ev.videoLinks && ev.videoLinks.length > 0) {
                     const linksBtns = ev.videoLinks.map(link => {
                         const isYoutube = link.url.includes('youtube.com') || link.url.includes('youtu.be');
                         const iconClass = isYoutube

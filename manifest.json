@@ -1,20 +1,32 @@
 {
+  "id": "./",
   "name": "New Stars Football Club",
   "short_name": "New Stars FC",
   "start_url": "./index.html",
+  "scope": "./",
   "display": "standalone",
+  "orientation": "portrait-primary",
   "background_color": "#f8fafc",
-  "theme_color": "#2563eb",
+  "theme_color": "#07152f",
+  "description": "Calendarul și meciurile New Stars Football Club.",
   "icons": [
     {
-      "src": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=192&h=192&fit=crop",
+      "src": "./ns-icon-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
     },
     {
-      "src": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=512&h=512&fit=crop",
+      "src": "./ns-icon-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./ns-icon-512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     }
   ]
 }
