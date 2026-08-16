@@ -1,41 +1,59 @@
-const CACHE_NAME = 'new-stars-pwa-v3';
+const CACHE_NAME = 'new-stars-pwa-v4';
+
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
   './ns-icon-192.png',
   './ns-icon-512.png',
-  './ns-icon-512-maskable.png',
-  './sigla-New-Stars-Football-Club-sfinx-football.ro_.png'
+  './ns-icon-512-maskable.png'
 ];
 
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(APP_SHELL)).catch(() => {})
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(APP_SHELL))
+      .catch(() => {})
   );
+
   self.skipWaiting();
 });
 
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys().then(keys =>
-      Promise.all(keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key)))
+      Promise.all(
+        keys
+          .filter(key => key !== CACHE_NAME)
+          .map(key => caches.delete(key))
+      )
     )
   );
+
   self.clients.claim();
 });
 
 self.addEventListener('fetch', event => {
   if (event.request.method !== 'GET') return;
+
   event.respondWith(
-    fetch(event.request).then(response => {
-      if (response && (response.ok || response.type === 'opaque')) {
-        const copy = response.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, copy)).catch(() => {});
-      }
-      return response;
-    }).catch(() =>
-      caches.match(event.request).then(cached => cached || caches.match('./index.html'))
-    )
+    fetch(event.request)
+      .then(response => {
+        if (response && (response.ok || response.type === 'opaque')) {
+          const copy = response.clone();
+
+          caches.open(CACHE_NAME)
+            .then(cache => cache.put(event.request, copy))
+            .catch(() => {});
+        }
+
+        return response;
+      })
+      .catch(() =>
+        caches.match(event.request)
+          .then(cached =>
+            cached || caches.match('./index.html')
+          )
+      )
   );
 });
