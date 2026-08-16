@@ -1,12 +1,12 @@
-const CACHE_NAME = 'new-stars-pwa-v4';
+const CACHE_NAME = 'new-stars-pwa-v5';
 
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.json',
-  './ns-icon-192.png',
-  './ns-icon-512.png',
-  './ns-icon-512-maskable.png'
+  './icon-192.png',
+  './icon-512.png',
+  './icon-512-maskable.png'
 ];
 
 self.addEventListener('install', event => {
@@ -51,9 +51,7 @@ self.addEventListener('fetch', event => {
       })
       .catch(() =>
         caches.match(event.request)
-          .then(cached =>
-            cached || caches.match('./index.html')
-          )
+          .then(cached => cached || caches.match('./index.html'))
       )
   );
 });
