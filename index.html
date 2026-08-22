@@ -714,12 +714,26 @@ if (isIOS() && !isStandalone()) {
             return `${day} ${monthNames[month - 1]} ${year}`;
         }
 function getNextMatch() {
-            const today = new Date();
-            today.setHours(0,0,0,0);
-            return getActiveData()
-                .filter(e => e.date && new Date(e.date + "T23:59:59") >= today)
-                .sort((a,b) => new Date(a.date) - new Date(b.date))[0] || null;
-        }
+    const now = new Date();
+    
+    return getActiveData()
+        .filter(e => {
+            if (!e.date) return false;
+            
+            // Construim data și ora exactă a meciului. 
+            // Dacă un meci nu are oră setată încă, îi dăm default 23:59:59 pentru a-l ține vizibil toată ziua.
+            const timeString = e.time ? e.time + ":00" : "23:59:59";
+            const matchStart = new Date(`${e.date}T${timeString}`);
+            
+            // Adăugăm 2 ore (în milisecunde: 2 * 60 * 60 * 1000) la ora de start.
+            // Astfel, un meci de la 19:00 va dispărea din "Next Match" la ora 21:00.
+            const matchEnd = new Date(matchStart.getTime() + (2 * 60 * 60 * 1000));
+            
+            // Filtrăm păstrând doar meciurile al căror final teoretic este în viitor
+            return matchEnd > now;
+        })
+        .sort((a,b) => new Date(a.date) - new Date(b.date))[0] || null;
+		}
 
         function initials(name) {
             if (!name) return "?";
