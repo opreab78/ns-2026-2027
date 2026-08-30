@@ -501,6 +501,39 @@ body{
             max-width:720px!important;
             margin:0 auto!important;
         }
+
+/* FINAL BOTTOM NAV: horizontal + centered */
+.bottom-nav{
+  position:fixed!important; left:0!important; right:0!important; bottom:0!important;
+  width:100%!important; height:68px!important; min-height:68px!important;
+  z-index:9999!important; display:flex!important; flex-direction:row!important;
+  align-items:center!important; justify-content:center!important;
+  box-sizing:border-box!important; padding:7px 8px!important;
+  padding-bottom:calc(7px + env(safe-area-inset-bottom))!important;
+  margin:0!important; background:#fff!important;
+  border-top:1px solid #dbe3ee!important; border-radius:0!important;
+  box-shadow:0 -6px 22px rgba(15,23,42,.10)!important;
+}
+.bottom-nav > *{
+  width:100%!important; max-width:720px!important; height:100%!important;
+  display:flex!important; flex-direction:row!important; align-items:center!important;
+  justify-content:space-evenly!important; gap:0!important; margin:0 auto!important;
+}
+.bottom-nav button{
+  flex:1 1 0!important; width:auto!important; max-width:90px!important;
+  height:48px!important; min-width:0!important; min-height:48px!important;
+  margin:0!important; padding:0!important; display:flex!important;
+  flex-direction:row!important; align-items:center!important; justify-content:center!important;
+  border:0!important; border-radius:14px!important; background:transparent!important;
+  color:#334155!important; cursor:pointer!important; pointer-events:auto!important;
+}
+.bottom-nav button.active,.bottom-nav button:hover{background:#eef2f7!important;color:#07152f!important}
+.bottom-nav button i{display:block!important;visibility:visible!important;opacity:1!important;margin:0!important;font-size:1.15rem!important}
+@media(min-width:768px){
+  .bottom-nav{left:50%!important;right:auto!important;transform:translateX(-50%)!important;
+    width:min(760px,calc(100% - 32px))!important;bottom:14px!important;
+    border:1px solid #dbe3ee!important;border-radius:20px!important}
+}
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -1568,24 +1601,23 @@ function goToNav(id, button){
         target.scrollIntoView({behavior:'smooth', block:'start'});
     }
 }
+
+function goToNavFixed(id, button){
+  document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+  if(button) button.classList.add('active');
+  const target=document.getElementById(id);
+  if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+}
 </script>
     <nav class="bottom-nav" aria-label="Navigare rapidă">
-        <button type="button" aria-label="Acasă" onclick="goHomeTop()">
-            <i class="fa-solid fa-house"></i><span class="sr-only">Acasă</span>
-        </button>
-        <button type="button" aria-label="Calendar" onclick="goToNav('calendar-anchor', this)">
-            <i class="fa-solid fa-calendar-days"></i><span class="sr-only">Calendar</span>
-        </button>
-        <button type="button" aria-label="Meciuri" onclick="goToNav('upcoming-nav-target', this)">
-            <i class="fa-solid fa-futbol"></i><span class="sr-only">Meciuri</span>
-        </button>
-        <button type="button" aria-label="Rezultate" onclick="goToNav('results-nav-target', this)">
-            <i class="fa-solid fa-clipboard-check"></i><span class="sr-only">Rezultate</span>
-        </button>
-        <button type="button" aria-label="Golgheteri" onclick="goToNav('scorers-nav-target', this)">
-            <i class="fa-solid fa-trophy"></i><span class="sr-only">Golgheteri</span>
-        </button>
-    </nav>
+  <div>
+    <button type="button" aria-label="Acasă" onclick="goHomeTop()"><i class="fa-solid fa-house"></i></button>
+    <button type="button" aria-label="Calendar" onclick="goToNavFixed('calendar-anchor', this)"><i class="fa-solid fa-calendar-days"></i></button>
+    <button type="button" aria-label="Meciuri" onclick="goToNavFixed('upcoming-nav-target', this)"><i class="fa-solid fa-futbol"></i></button>
+    <button type="button" aria-label="Rezultate" onclick="goToNavFixed('results-nav-target', this)"><i class="fa-solid fa-clipboard-check"></i></button>
+    <button type="button" aria-label="Golgheteri" onclick="goToNavFixed('scorers-nav-target', this)"><i class="fa-solid fa-trophy"></i></button>
+  </div>
+</nav>
 
 </body>
 </html>
