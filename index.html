@@ -849,6 +849,11 @@ body{
   }
 }
 /* Home must never scroll the first card underneath the fixed selector. */
+
+@media(max-width:767px){
+  body{padding-top:180px!important}
+  #next-match{margin-top:28px!important;scroll-margin-top:180px!important}
+}
 </style>
 
 <script>
@@ -1225,37 +1230,44 @@ if (isIOS() && !isStandalone()) {
         }
 
         function switchCategory(category) {
-            currentCategory = category;
-            selectedDate = null;
-            const firstMatch = getActiveData().slice().sort((a,b) => new Date(a.date) - new Date(b.date))[0];
-            if (firstMatch) {
-                const d = new Date(firstMatch.date + "T12:00:00");
-                currentMonth = d.getMonth();
-                currentYear = d.getFullYear();
-            }
+    currentCategory = category;
+    selectedDate = null;
 
-            const btnU15 = document.getElementById('btn-u15');
-            const btnU16 = document.getElementById('btn-u16');
-            const stickyBtnU15 = document.getElementById('sticky-btn-u15');
-            const stickyBtnU16 = document.getElementById('sticky-btn-u16');
-            const mainTitle = document.getElementById('main-title');
-
-            if (category === 'U15') {
-                btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
-                btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
-                if (stickyBtnU15) stickyBtnU15.className = "sticky-category-btn active";
-                if (stickyBtnU16) stickyBtnU16.className = "sticky-category-btn";
-                mainTitle.innerText = "New Stars - U15";
-            } else {
-                btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
-                btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
-                if (stickyBtnU16) stickyBtnU16.className = "sticky-category-btn active";
-                if (stickyBtnU15) stickyBtnU15.className = "sticky-category-btn";
-                mainTitle.innerText = "New Stars - U16";
-            }
-
-            init();
+    const data = getActiveData();
+    if (data && data.length) {
+        const firstMatch = data.slice().sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+        if (firstMatch) {
+            const d = new Date(firstMatch.date + "T12:00:00");
+            currentMonth = d.getMonth();
+            currentYear = d.getFullYear();
         }
+    }
+
+    const btnU15 = document.getElementById('btn-u15');
+    const btnU16 = document.getElementById('btn-u16');
+    const stickyBtnU15 = document.getElementById('sticky-btn-u15');
+    const stickyBtnU16 = document.getElementById('sticky-btn-u16');
+    const mainTitle = document.getElementById('main-title');
+
+    const activeClasses = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
+    const inactiveClasses = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
+
+    if (btnU15) btnU15.className = category === 'U15' ? activeClasses : inactiveClasses;
+    if (btnU16) btnU16.className = category === 'U16' ? activeClasses : inactiveClasses;
+
+    if (stickyBtnU15) stickyBtnU15.className = category === 'U15' ? "sticky-category-btn active" : "sticky-category-btn";
+    if (stickyBtnU16) stickyBtnU16.className = category === 'U16' ? "sticky-category-btn active" : "sticky-category-btn";
+
+    if (mainTitle) mainTitle.innerText = "New Stars - " + category;
+
+    // Re-render every category-dependent section.
+    renderNextMatch();
+    renderCalendar();
+    renderEvents();
+    renderTopScorers();
+    updateCompetitionButtons();
+}
+
 
         function formatDateRO(dateStr) {
             const [year, month, day] = dateStr.split('-').map(Number);
@@ -1574,10 +1586,15 @@ if (isIOS() && !isStandalone()) {
         }
 
         function getFilteredData() {
-            let data = getActiveData();
-            if (activeCompetition !== 'ALL') data = data.filter(e => getCompetitionKey(e.comp) === activeCompetition);
-            return data.slice().sort((a,b) => new Date(a.date) - new Date(b.date));
-        }
+    const data = getActiveData();
+    if (activeCompetition === 'ALL') return data.slice();
+    return data.filter(e => {
+        if (activeCompetition === 'Campionatul Național') return (e.comp || '').includes('Campionatul Național');
+        if (activeCompetition === 'Cupa Național') return (e.comp || '').includes('Cupa Național');
+        if (activeCompetition === 'Cupa Elite') return (e.comp || '').includes('Cupa Elite');
+        return true;
+    });
+}
 
         function getNewStarsHomeAway(ev) {
             const home = ev.home && ev.home !== 'Gazde' ? ev.home : 'New Stars';
