@@ -192,7 +192,11 @@
         @media(max-width:900px){.main-layout{grid-template-columns:1fr}.calendar-card{position:relative;top:auto}.calendar-card{max-width:100%}}
         @media(max-width:767px){.competition-filters{margin-inline:-1px}.main-layout{gap:16px}.section-card{padding:15px;border-radius:19px}.match-card-modern{border-radius:18px;padding:13px}.modern-team img,.modern-team .fallback{width:48px;height:48px}.modern-team-name{font-size:.68rem}.result-score-big{font-size:1.8rem}.calendar-legend{font-size:.57rem}.next-match{margin-bottom:13px}.next-match-grid{gap:9px}.team-crest{width:62px;height:62px}.team-name{font-size:.82rem}.countdown-unit{min-width:52px}.hero{padding:14px}.hero-grid{gap:12px}}
 
-    </style>
+    
+        @media(max-width:767px){
+            .bottom-nav{display:grid!important}
+        }
+</style>
 
     <meta name="theme-color" content="#07152f">
     <meta name="color-scheme" content="dark light">
@@ -910,12 +914,18 @@ if (isIOS() && !isStandalone()) {
         }
 
         function renderTopScorers() {
+            const scorerTitle = document.getElementById('scorers-title');
+            if (scorerTitle) scorerTitle.textContent =
+                activeCompetition === 'ALL'
+                    ? `Golgheterii ${currentCategory}`
+                    : `Golgheterii ${currentCategory} · ${activeCompetition}`;
+
             const container = document.getElementById('top-scorers');
             if (!container) return;
 
             const totals = {};
 
-            getActiveData().forEach(match => {
+            getFilteredData().forEach(match => {
                 if (!match.scorers || typeof match.scorers !== 'string') return;
 
                 const scorerEntries = match.scorers
@@ -1113,121 +1123,95 @@ if (isIOS() && !isStandalone()) {
 
         function renderEvents() {
             const data = getFilteredData();
-            const list = document.getElementById('events-list');
-            list.innerHTML = '';
+            const upcomingList = document.getElementById('upcoming-list');
+            const resultsList = document.getElementById('results-list');
+            if (!upcomingList || !resultsList) return;
 
-            let filteredEvents = data;
+            upcomingList.innerHTML = '';
+            resultsList.innerHTML = '';
 
+            let events = data;
             if (selectedDate) {
-                filteredEvents = filteredEvents.filter(e => e.date === selectedDate);
+                events = events.filter(e => e.date === selectedDate);
             }
 
-            if (filteredEvents.length === 0) {
-                list.innerHTML = `<div class="bg-white p-8 text-center rounded-2xl border border-slate-200 text-slate-600 font-medium text-base">Nu sunt meciuri programate pentru data selectată.</div>`;
-                return;
+            const completed = events
+                .filter(e => isCompletedMatch(e))
+                .sort((a,b) => new Date(b.date) - new Date(a.date));
+
+            const upcoming = events
+                .filter(e => !isCompletedMatch(e))
+                .sort((a,b) => new Date(a.date) - new Date(b.date));
+
+            // If a calendar date is selected, show that day's matches in the
+            // appropriate section. Otherwise show all future / past matches.
+            if (!upcoming.length) {
+                upcomingList.innerHTML = `<div class="bg-white p-7 text-center rounded-2xl border border-slate-200 text-slate-500 font-semibold">Nu există meciuri viitoare pentru selecția curentă.</div>`;
+            } else {
+                upcoming.forEach(ev => upcomingList.insertAdjacentHTML('beforeend', renderMatchCardWithNavigation(ev, false)));
             }
 
-            filteredEvents.forEach(ev => {
-                const style = getCompStyle(ev.comp);
-                const isCompletedMatch = typeof ev.score === "string" && ev.score.trim() !== "";
-                const isNewStarsAway = String(ev.away || "").trim().toLowerCase().includes("new stars");
+            if (!completed.length) {
+                resultsList.innerHTML = `<div class="bg-white p-7 text-center rounded-2xl border border-slate-200 text-slate-500 font-semibold">Nu există rezultate pentru selecția curentă.</div>`;
+            } else {
+                completed.forEach(ev => resultsList.insertAdjacentHTML('beforeend', renderMatchCardWithNavigation(ev, true)));
+            }
 
-                // For upcoming away matches, show stadium + navigation.
-                let detailsHTML = "";
-                if (!isCompletedMatch) {
-                    if (ev.time) {
-                        detailsHTML += `<p class="flex items-center gap-2 text-base"><span class="text-slate-600 font-semibold min-w-[85px]">⌚ Oră:</span> <strong class="text-slate-900 font-bold">${ev.time}</strong></p>`;
-                    }
-                    if (ev.opponent) {
-                        detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <strong class="text-slate-900 font-bold">${ev.opponent}</strong></p>`;
-                    }
-                    if (ev.location) {
-                        detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">📍 Stadion:</span> <strong class="text-slate-900 font-bold">${ev.location}</strong></p>`;
-                    }
-                }
-
-                let mapButtonsHTML = "";
-                if (!isCompletedMatch && isNewStarsAway && ev.lat && ev.lng) {
-                    mapButtonsHTML = `
-                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2">
-                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" rel="noopener" class="bg-sky-50 text-sky-800 border border-sky-200 px-3 py-2.5 rounded-xl font-bold hover:bg-sky-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
-                                <i class="fa-brands fa-waze text-base"></i> Waze
-                            </a>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" rel="noopener" class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-2.5 rounded-xl font-bold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
-                                <i class="fa-solid fa-map-location-dot text-base"></i> Google
-                            </a>
-                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" rel="noopener" class="bg-slate-100 text-slate-800 border border-slate-200 px-3 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
-                                <i class="fa-solid fa-location-arrow text-base"></i> Apple
-                            </a>
-                        </div>
-                    `;
-                }
-
-                let scorersHTML = "";
-                if (isCompletedMatch && ev.scorers && ev.scorers.trim() !== "") {
-                    const formattedScorers = ev.scorers
-                        .split('|')
-                        .map(s => s.trim())
-                        .filter(Boolean)
-                        .join(' • ');
-
-                    scorersHTML = `
-                        <div class="completed-goals">
-                            <i class="fa-solid fa-futbol"></i>
-                            <span class="font-bold">Goluri:</span> ${formattedScorers}
-                        </div>
-                    `;
-                }
-
-                let videoHTML = "";
-                if (ev.videoLinks && ev.videoLinks.length) {
-                    videoHTML = `<div class="video-links mt-3">` +
-                        ev.videoLinks.map(v => `
-                            <a href="${v.url}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-xl bg-red-50 text-red-700 border border-red-200 px-3 py-2 font-bold text-sm">
-                                <i class="fa-brands fa-youtube"></i>${v.label || 'Vezi meciul'}
-                            </a>
-                        `).join('') +
-                        `</div>`;
-                }
-
-                const card = document.createElement('article');
-                card.className = 'match-card';
-                card.innerHTML = `
-                    <div class="match-card-header">
-                        <div>
-                            <div class="match-date">${formatDateRO(ev.date)}${ev.time ? ' · ' + ev.time : ''}</div>
-                            <div class="match-title">${ev.title || ''}</div>
-                        </div>
-                        <span class="comp-badge ${style.badge}">${ev.comp || ''}</span>
-                    </div>
-
-                    <div class="match-teams">
-                        <div class="team-side">
-                            ${getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" class="team-logo" alt="">` : ''}
-                            <div class="team-name">${ev.home || 'Gazde'}</div>
-                        </div>
-
-                        <div class="match-center">
-                            ${isCompletedMatch
-                                ? `<div class="completed-result-score">${ev.score}</div>`
-                                : `<div class="vs-label">VS</div>`}
-                        </div>
-
-                        <div class="team-side">
-                            ${getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" class="team-logo" alt="">` : ''}
-                            <div class="team-name">${ev.away || 'Adversari'}</div>
-                        </div>
-                    </div>
-
-                    ${detailsHTML ? `<div class="match-details">${detailsHTML}</div>` : ''}
-                    ${mapButtonsHTML}
-                    ${scorersHTML}
-                    ${videoHTML}
-                `;
-
-                list.appendChild(card);
-            });
+            const clearBtn = document.getElementById('clear-date');
+            if (clearBtn) clearBtn.classList.toggle('hidden', !selectedDate);
         }
+
+        function renderMatchCardWithNavigation(ev, completed) {
+            const {home, away} = getNewStarsHomeAway(ev);
+            const compKey = getCompetitionKey(ev.comp || '');
+            const compClass =
+                compKey === 'Campionatul Național'
+                    ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
+                    : compKey === 'Cupa Națională'
+                        ? 'text-sky-700 bg-sky-50 border-sky-200'
+                        : 'text-rose-700 bg-rose-50 border-rose-200';
+
+            const isNewStarsAway =
+                normalizeTeamName(away) === normalizeTeamName('New Stars');
+
+            let navigation = '';
+            if (!completed && isNewStarsAway && ev.lat && ev.lng) {
+                navigation = `
+                    <div class="match-navigation">
+                        <div class="match-location">📍 ${ev.location || 'Stadion'}</div>
+                        <div class="navigation-buttons">
+                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" rel="noopener noreferrer">Waze</a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" rel="noopener noreferrer">Google</a>
+                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" rel="noopener noreferrer">Apple</a>
+                        </div>
+                    </div>`;
+            } else if (!completed && !isNewStarsAway && ev.location) {
+                navigation = `<div class="match-meta-modern">📍 ${ev.location}</div>`;
+            }
+
+            return `
+                <article class="match-card-modern">
+                    <div class="match-topline">
+                        <span class="match-date">${formatDateRO(ev.date)}${ev.time ? ' · ' + ev.time : ''}</span>
+                        <span class="match-comp ${compClass}">${ev.comp || ''}</span>
+                    </div>
+
+                    <div class="match-row">
+                        ${renderTeamModern(home)}
+                        <div class="text-center">
+                            ${completed
+                                ? `<div class="result-score-big">${ev.score}</div>`
+                                : `<div class="vs-small">VS</div>`}
+                        </div>
+                        ${renderTeamModern(away)}
+                    </div>
+
+                    ${completed ? renderScorersModern(ev) : navigation}
+                    ${renderVideoLinks(ev)}
+                </article>`;
+        }
+
+
 
 
 
@@ -1252,5 +1236,20 @@ if (isIOS() && !isStandalone()) {
         window.onload = init;
         setInterval(updateCountdown, 1000);
     </script>
+    <nav class="bottom-nav" aria-label="Navigare rapidă">
+        <button type="button" aria-label="Acasă" onclick="goHomeTop()">
+            <i class="fa-solid fa-house"></i><span class="sr-only">Acasă</span>
+        </button>
+        <button type="button" aria-label="Calendar" onclick="scrollToSection('calendar-anchor', this)">
+            <i class="fa-solid fa-calendar-days"></i><span class="sr-only">Calendar</span>
+        </button>
+        <button type="button" aria-label="Rezultate" onclick="scrollToSection('events-anchor', this)">
+            <i class="fa-solid fa-futbol"></i><span class="sr-only">Rezultate</span>
+        </button>
+        <button type="button" aria-label="Golgheteri" onclick="scrollToSection('golgheteri-anchor', this)">
+            <i class="fa-solid fa-trophy"></i><span class="sr-only">Golgheteri</span>
+        </button>
+    </nav>
+
 </body>
 </html>
