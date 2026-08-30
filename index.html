@@ -680,33 +680,6 @@ body{
     scroll-margin-top:122px!important;
   }
 }
-
-/* Final spacing for fixed top U15/U16 selector */
-body{padding-top:118px!important;padding-bottom:110px!important}
-#next-match{margin-top:12px!important;scroll-margin-top:128px!important}
-@media(max-width:767px){
-  body{padding-top:150px!important;padding-bottom:112px!important}
-  #next-match{margin-top:16px!important;scroll-margin-top:150px!important}
-}
-@media(min-width:768px){
-  body{padding-top:112px!important;padding-bottom:112px!important}
-}
-
-/* Final mobile clearance for the fixed U15/U16 selector. */
-body{padding-top:120px!important}
-#next-match{margin-top:16px!important;scroll-margin-top:132px!important}
-@media(max-width:767px){
-  body{padding-top:170px!important}
-  #next-match{margin-top:22px!important;scroll-margin-top:170px!important}
-}
-
-@media(max-width:767px){
-  #next-match{
-    margin-top:28px!important;
-    padding-top:8px!important;
-    scroll-margin-top:190px!important;
-  }
-}
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -846,7 +819,37 @@ body{padding-top:120px!important}
             .brand-logo{width:44px;height:44px;flex-basis:44px}
             #main-title{font-size:1.3rem!important}
         }
-    </style>
+    
+/* FINAL MOBILE CLEARANCE — placed last so it overrides earlier mobile rules */
+@media(max-width:767px){
+  body{
+    padding-top:170px!important;
+    padding-bottom:116px!important;
+  }
+  #next-match{
+    margin-top:24px!important;
+    scroll-margin-top:170px!important;
+  }
+  .sticky-category-nav{
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    position:fixed!important;
+    z-index:9999!important;
+  }
+}
+@media(min-width:768px){
+  body{
+    padding-top:110px!important;
+    padding-bottom:112px!important;
+  }
+  #next-match{
+    margin-top:12px!important;
+    scroll-margin-top:110px!important;
+  }
+}
+/* Home must never scroll the first card underneath the fixed selector. */
+</style>
 
 <script>
         function goHomeTop() {
@@ -855,8 +858,9 @@ body{padding-top:120px!important}
     if (home) home.classList.add("active");
 
     const topBar = document.querySelector('.sticky-category-nav');
-    const offset = topBar ? topBar.getBoundingClientRect().height + 18 : 18;
-    window.scrollTo({ top: Math.max(0, offset), behavior: "smooth" });
+    const barHeight = topBar ? topBar.getBoundingClientRect().height : 70;
+    const extra = window.innerWidth <= 767 ? 28 : 14;
+    window.scrollTo({ top: Math.max(0, barHeight + extra), behavior: "smooth" });
 }
         </script>
 </head>
@@ -1223,7 +1227,6 @@ if (isIOS() && !isStandalone()) {
         function switchCategory(category) {
             currentCategory = category;
             selectedDate = null;
-
             const firstMatch = getActiveData().slice().sort((a,b) => new Date(a.date) - new Date(b.date))[0];
             if (firstMatch) {
                 const d = new Date(firstMatch.date + "T12:00:00");
@@ -1235,27 +1238,24 @@ if (isIOS() && !isStandalone()) {
             const btnU16 = document.getElementById('btn-u16');
             const stickyBtnU15 = document.getElementById('sticky-btn-u15');
             const stickyBtnU16 = document.getElementById('sticky-btn-u16');
+            const mainTitle = document.getElementById('main-title');
 
-            if (btnU15) btnU15.className = category === 'U15'
-                ? "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white"
-                : "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
-            if (btnU16) btnU16.className = category === 'U16'
-                ? "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white"
-                : "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
+            if (category === 'U15') {
+                btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
+                btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
+                if (stickyBtnU15) stickyBtnU15.className = "sticky-category-btn active";
+                if (stickyBtnU16) stickyBtnU16.className = "sticky-category-btn";
+                mainTitle.innerText = "New Stars - U15";
+            } else {
+                btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
+                btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
+                if (stickyBtnU16) stickyBtnU16.className = "sticky-category-btn active";
+                if (stickyBtnU15) stickyBtnU15.className = "sticky-category-btn";
+                mainTitle.innerText = "New Stars - U16";
+            }
 
-            if (stickyBtnU15) stickyBtnU15.className = category === 'U15'
-                ? "sticky-category-btn active"
-                : "sticky-category-btn";
-            if (stickyBtnU16) stickyBtnU16.className = category === 'U16'
-                ? "sticky-category-btn active"
-                : "sticky-category-btn";
-
-            renderNextMatch();
-            renderCalendar();
-            renderEvents();
-            renderTopScorers();
+            init();
         }
-
 
         function formatDateRO(dateStr) {
             const [year, month, day] = dateStr.split('-').map(Number);
@@ -1263,29 +1263,18 @@ if (isIOS() && !isStandalone()) {
         }
         
         function getNextMatch() {
-            const data = getFilteredData();
-            const today = new Date();
-            today.setHours(0,0,0,0);
-
-            return data
+            const now = new Date();
+            
+            return (typeof getFilteredData === "function" ? getFilteredData() : getActiveData())
                 .filter(e => {
                     if (!e.date) return false;
-                    const d = new Date(e.date + "T12:00:00");
-                    if (d < today) return false;
-
-                    const {home, away} = getNewStarsHomeAway(e);
-                    const hasOpponent =
-                        home && away &&
-                        normalizeTeamName(home) !== normalizeTeamName(away) &&
-                        normalizeTeamName(home) !== 'Gazde' &&
-                        normalizeTeamName(away) !== 'Adversari';
-
-                    return hasOpponent;
+                    const timeString = e.time ? e.time + ":00" : "23:59:59";
+                    const matchStart = new Date(`${e.date}T${timeString}`);
+                    const matchEnd = new Date(matchStart.getTime() + (2 * 60 * 60 * 1000));
+                    return matchEnd > now;
                 })
                 .sort((a,b) => new Date(a.date) - new Date(b.date))[0] || null;
-        }
-
-
+		}
 
         function initials(name) {
             if (!name) return "?";
