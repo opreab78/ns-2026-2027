@@ -862,17 +862,27 @@ if (isIOS() && !isStandalone()) {
             `).join('');
         }
 
-        function renderTimeline() {
-            const el = document.getElementById('season-timeline');
-            const data = [...getActiveData()].sort((a,b) => new Date(a.date) - new Date(b.date));
-            el.innerHTML = data.map(e => `
-                <div class="timeline-item">
-                    <div class="timeline-date">${formatDateRO(e.date).replace(/ \d{4}$/,'')}</div>
-                    <div class="timeline-event">${e.title}${e.opponent ? " · " + e.opponent : ""}</div>
-                    <div class="timeline-comp">${e.comp.replace(/ U15| U16/g,'')}</div>
-                </div>
-            `).join('');
-        }
+			function renderTimeline() {
+				const el = document.getElementById('season-timeline');
+				if (!el) return;
+
+				const data = [...getActiveData()]
+					.sort((a,b) => new Date(a.date) - new Date(b.date));
+
+				el.innerHTML = data.map(e => `
+					<div class="timeline-item">
+						<div class="timeline-date">
+							${formatDateRO(e.date).replace(/ \d{4}$/,'')}
+						</div>
+						<div class="timeline-event">
+							${e.title}${e.opponent ? " · " + e.opponent : ""}
+						</div>
+						<div class="timeline-comp">
+							${e.comp.replace(/ U15| U16/g,'')}
+						</div>
+					</div>
+				`).join('');
+			}
 
         function scrollToSection(id, button) {
             document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
