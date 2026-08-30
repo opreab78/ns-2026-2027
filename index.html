@@ -926,6 +926,8 @@ if (isIOS() && !isStandalone()) {
 				}
 				scorersCount[name] += goals;
 			});
+			}
+			});
 
             const sortedScorers = Object.entries(scorersCount)
                 .sort((a, b) => b[1] - a[1]);
@@ -963,7 +965,6 @@ if (isIOS() && !isStandalone()) {
             renderCalendar();
             renderEvents();
             renderNextMatch();
-            renderTimeline();
             renderTopScorers();
         }
 
