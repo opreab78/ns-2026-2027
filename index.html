@@ -180,7 +180,19 @@
             }
         }
 
-</style>
+
+        .competition-filters{display:flex;gap:8px;overflow-x:auto;padding:2px 0 14px;margin:0 0 2px;scrollbar-width:none}.competition-filters::-webkit-scrollbar{display:none}
+        .comp-filter{border:1px solid #dbe3ee;background:#fff;color:#475569;border-radius:999px;padding:10px 14px;font-size:.75rem;font-weight:900;white-space:nowrap;transition:.2s}.comp-filter.active{background:#07152f;color:#fff;border-color:#07152f;box-shadow:0 6px 16px rgba(7,21,47,.15)}
+        .main-layout{display:grid;grid-template-columns:minmax(280px,.8fr) minmax(0,1.5fr);gap:22px;align-items:start}.section-card{background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:18px;box-shadow:0 10px 30px rgba(15,23,42,.06)}
+        .calendar-card{position:sticky;top:14px}.section-heading-row{display:flex;align-items:flex-end;justify-content:space-between;gap:12px}.eyebrow{font-size:.62rem;text-transform:uppercase;letter-spacing:.16em;font-weight:900;color:#94a3b8}.section-heading-row h2,.results-heading h2{font-size:1.25rem;line-height:1.1;font-weight:950;margin:4px 0 0;color:#0f172a}.today-btn,.clear-date{border:1px solid #dbe3ee;background:#fff;border-radius:999px;padding:8px 11px;font-size:.68rem;font-weight:900;color:#334155}.clear-date{color:#2563eb}.hidden{display:none!important}
+        .calendar-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:18px 0 10px}.calendar-header button{width:38px;height:38px;border:1px solid #e2e8f0;background:#f8fafc;border-radius:12px;font-size:1.45rem;line-height:1;color:#334155}.calendar-header h3{text-transform:uppercase;font-size:.82rem;letter-spacing:.08em;font-weight:950;color:#1e293b}
+        .calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calendar-weekdays{color:#94a3b8;font-size:.61rem;font-weight:900;text-align:center;margin-bottom:5px}.day-cell{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;border-radius:12px;font-size:.78rem;font-weight:800;color:#334155;background:#fff;border:1px solid #e2e8f0;cursor:pointer}.day-cell.empty{border:0;background:transparent;cursor:default}.day-cell.has-event{background:#f8fafc}.day-cell.active{background:#07152f!important;color:#fff!important;border-color:#07152f!important}.dots-container{display:flex;gap:3px;margin-top:4px}.comp-dot{width:5px;height:5px;border-radius:50%}.calendar-legend{display:flex;flex-wrap:wrap;gap:10px;margin-top:13px;padding-top:12px;border-top:1px solid #eef2f7;font-size:.61rem;font-weight:800;color:#64748b}.calendar-legend span{display:flex;align-items:center;gap:5px}.legend-dot{width:6px;height:6px;border-radius:50%;display:inline-block}.legend-dot.camp{background:#10b981}.legend-dot.cup{background:#0ea5e9}.legend-dot.elite{background:#f43f5e}
+        .matches-column{min-width:0}.matches-heading{margin-bottom:12px}.results-heading{margin:30px 0 12px}.match-list{display:grid;gap:10px}.match-card-modern{background:#fff;border:1px solid #e2e8f0;border-radius:20px;padding:14px 15px;box-shadow:0 8px 24px rgba(15,23,42,.045);transition:.2s}.match-card-modern:hover{box-shadow:0 12px 30px rgba(15,23,42,.08)}.match-topline{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}.match-date{font-size:.65rem;text-transform:uppercase;font-weight:950;letter-spacing:.08em;color:#64748b}.match-comp{font-size:.58rem;font-weight:900;padding:5px 8px;border-radius:999px;border:1px solid}.match-row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}.modern-team{text-align:center;min-width:0}.modern-team img,.modern-team .fallback{width:52px;height:52px;object-fit:contain;margin:0 auto 6px}.modern-team .fallback{display:flex;align-items:center;justify-content:center;background:#f1f5f9;border-radius:15px;font-size:.8rem;font-weight:950;color:#64748b}.modern-team-name{font-size:.73rem;font-weight:950;line-height:1.15;word-break:break-word}.vs-small{font-size:.65rem;font-weight:950;color:#cbd5e1}.result-score-big{font-size:2rem;font-weight:950;letter-spacing:-.06em;line-height:1;color:#07152f}.match-meta-modern{text-align:center;font-size:.64rem;color:#94a3b8;font-weight:800;margin-top:8px}.scorers-modern{margin-top:10px;padding-top:9px;border-top:1px solid #eef2f7;font-size:.72rem;font-weight:800;color:#475569}.scorer-line{display:flex;justify-content:space-between;gap:10px}.video-modern{margin-top:9px;display:flex;flex-wrap:wrap;justify-content:center;gap:7px}.video-modern a{border:1px solid #e2e8f0;background:#f8fafc;border-radius:10px;padding:7px 10px;font-size:.65rem;font-weight:900;color:#334155}.empty-state{padding:24px;border:1px dashed #cbd5e1;border-radius:18px;text-align:center;color:#94a3b8;font-size:.75rem;font-weight:800;background:#fff}
+        .scorers-section{margin-top:24px}.scorers-card{background:#fff;border:1px solid #e2e8f0;border-radius:22px;padding:8px 15px;box-shadow:0 10px 30px rgba(15,23,42,.05)}
+        @media(max-width:900px){.main-layout{grid-template-columns:1fr}.calendar-card{position:relative;top:auto}.calendar-card{max-width:100%}}
+        @media(max-width:767px){.competition-filters{margin-inline:-1px}.main-layout{gap:16px}.section-card{padding:15px;border-radius:19px}.match-card-modern{border-radius:18px;padding:13px}.modern-team img,.modern-team .fallback{width:48px;height:48px}.modern-team-name{font-size:.68rem}.result-score-big{font-size:1.8rem}.calendar-legend{font-size:.57rem}.next-match{margin-bottom:13px}.next-match-grid{gap:9px}.team-crest{width:62px;height:62px}.team-name{font-size:.82rem}.countdown-unit{min-width:52px}.hero{padding:14px}.hero-grid{gap:12px}}
+
+    </style>
 
     <meta name="theme-color" content="#07152f">
     <meta name="color-scheme" content="dark light">
@@ -359,62 +371,68 @@
 
         <section id="next-match" class="next-match" aria-label="Următorul meci"></section>
 
+        <div class="competition-filters" aria-label="Filtru competiție">
+            <button class="comp-filter active" data-comp="ALL">Toate</button>
+            <button class="comp-filter" data-comp="Campionatul Național">Campionat</button>
+            <button class="comp-filter" data-comp="Cupa Națională">Cupa Națională</button>
+            <button class="comp-filter" data-comp="Cupa Elitelor">Cupa Elitelor</button>
+        </div>
 
+        <div class="main-layout">
+            <section id="calendar-anchor" class="section-card calendar-card">
+                <div class="section-heading-row">
+                    <div>
+                        <div class="eyebrow">Program</div>
+                        <h2>Calendar</h2>
+                    </div>
+                    <button onclick="goToday()" class="today-btn">Astăzi</button>
+                </div>
+                <div class="calendar-header">
+                    <button onclick="changeMonth(-1)" aria-label="Luna anterioară">‹</button>
+                    <h3 id="month-year-display"></h3>
+                    <button onclick="changeMonth(1)" aria-label="Luna următoare">›</button>
+                </div>
+                <div class="calendar-grid calendar-weekdays">
+                    <div>Lu</div><div>Ma</div><div>Mi</div><div>Jo</div><div>Vi</div><div>Sâ</div><div>Du</div>
+                </div>
+                <div id="calendar-days" class="calendar-grid"></div>
+                <div class="calendar-legend">
+                    <span><i class="legend-dot camp"></i> Campionat</span>
+                    <span><i class="legend-dot cup"></i> Cupă Națională</span>
+                    <span><i class="legend-dot elite"></i> Cupa Elitelor</span>
+                </div>
+            </section>
 
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
-            <!-- COLOANA STÂNGA: CALENDAR -->
-            <div id="calendar-anchor" class="md:col-span-1 space-y-4">
-                <div class="section-card calendar-card bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-4">
-                    <div class="flex justify-between items-center mb-4">
-                        <button onclick="changeMonth(-1)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition flex items-center justify-center text-lg">&lt;</button>
-                        <h2 id="month-year-display" class="month-nav font-bold text-slate-800 text-base uppercase tracking-wide"></h2>
-                        <button onclick="changeMonth(1)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition flex items-center justify-center text-lg">&gt;</button>
+            <section id="events-anchor" class="matches-column">
+                <div class="section-heading-row matches-heading">
+                    <div>
+                        <div class="eyebrow">Sezon 2026 / 2027</div>
+                        <h2 id="matches-title">Următoarele meciuri</h2>
                     </div>
-                    <div class="calendar-grid text-xs text-slate-500 font-bold mb-2 text-center">
-                        <div>Lu</div><div>Ma</div><div>Mi</div><div>Jo</div><div>Vi</div><div>Sâ</div><div>Du</div>
+                    <button id="clear-date" class="clear-date hidden" onclick="clearSelectedDate()">Toate datele</button>
+                </div>
+                <div id="upcoming-list" class="match-list"></div>
+
+                <div class="results-heading">
+                    <div>
+                        <div class="eyebrow">Istoric</div>
+                        <h2>Rezultate</h2>
                     </div>
-                    <div id="calendar-days" class="calendar-grid"></div>
+                </div>
+                <div id="results-list" class="match-list"></div>
+            </section>
+        </div>
+
+        <section id="golgheteri-anchor" class="scorers-section">
+            <div class="section-heading-row">
+                <div>
+                    <div class="eyebrow">Marcatori</div>
+                    <h2 id="scorers-title">Golgheterii U16</h2>
                 </div>
             </div>
+            <div id="top-scorers" class="scorers-card"></div>
+        </section>
 
-            <!-- COLOANA DREAPTA: LISTA MECIURI & GOLGHETERI -->
-            <div class="md:col-span-2 space-y-6">
-                <!-- LISTA MECIURI -->
-                <div id="events-anchor"><div id="events-list"></div></div>
-                
-                <!-- GOLGHETERI -->
-                <div id="golgheteri-anchor"><div id="golgheteri-list"></div></div>
-            </div>
-            
-        </div>
-    </div>
-		
-		<div class="mt-8 mb-6">
-			<h2 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
-				⚽ Top Golgheteri
-			</h2>
-			<div id="top-scorers" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col">
-				<!-- Clasamentul va fi generat automat aici -->
-			</div>
-		</div>
-		
-    <nav class="bottom-nav" aria-label="Navigare mobilă">
-        <button class="active" type="button" aria-label="Acasă" title="Acasă" onclick="goHomeTop(); return false;">
-            <i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only">Acasă</span>
-        </button>
-        <button type="button" aria-label="Calendar" title="Calendar" onclick="scrollToSection('calendar-anchor', this)">
-            <i class="fa-regular fa-calendar" aria-hidden="true"></i><span class="sr-only">Calendar</span>
-        </button>
-        <button type="button" aria-label="Meciuri" title="Meciuri" onclick="scrollToSection('events-anchor', this)">
-            <i class="fa-solid fa-trophy" aria-hidden="true"></i><span class="sr-only">Meciuri</span>
-        </button>
-        <button type="button" aria-label="Golgheteri" title="Golgheteri" onclick="scrollToSection('golgheteri-anchor', this)">
-            <i class="fa-solid fa-futbol" aria-hidden="true"></i><span class="sr-only">Golgheteri</span>
-        </button>
-    </nav>
-	
-		
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -569,20 +587,20 @@ if (isIOS() && !isStandalone()) {
             { date: "2027-04-21", title: "Semifinale", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
             { date: "2027-05-19", title: "Finala", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
 
-            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U15", time: "19:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "3:1", scorers: "⚽Draganuta Dimi, ⚽Cârjan Iannis, ⚽Serban Bogdan", videoLinks: [{label: "Live", url: "https://www.youtube.com/watch?v=6GVWqVjc4PE"}] },
-            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U15", time: "17:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "8:3", scorers: "⚽⚽Mihai Patrick, ⚽⚽Cârjan Iannis, ⚽Oprea Cezar, ⚽Serban Bogdan", videoLinks: [{label: "Live", url: "https://www.youtube.com/watch?v=T3L5WoyH6Gw"}] },
+            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U15", time: "19:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "3:1", scorers: "⚽Draganuta Dimi, ⚽Cârjan Iannis, ⚽Serban Bogdan", videoLinks: [{label: "Vezi meci", url: "https://www.youtube.com/watch?v=6GVWqVjc4PE"}] },
+            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U15", time: "17:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "8:3", scorers: "⚽⚽Mihai Patrick, ⚽⚽Cârjan Iannis, ⚽Oprea Cezar, ⚽Serban Bogdan", videoLinks: [{label: "Vezi meci", url: "https://www.youtube.com/watch?v=T3L5WoyH6Gw"}] },
             { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U15", time: "14:00", opponent: "MX PRO Academy", location: "Cocoșești", lat: "44.99562155095854", lng: "25.985000556719196", home: "MX PRO Academy", away: "New Stars", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U15", time: "18:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U15", time: "14:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U15", time: "14:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-26", title: "Etapa 6", comp: "Campionatul Național U15", time: "14:00", opponent: "Unirea Bascov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Unirea Bascov", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-03", title: "Etapa 7", comp: "Campionatul Național U15", time: "14:00", opponent: "CSM Ploieşti", location: "Baza Sportivă Teleajen", lat: "44.942930783857655", lng: "26.091011020530072", home: "CSM Ploieşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-10", title: "Etapa 8", comp: "Campionatul Național U15", time: "14:00", opponent: "CN Dinicu Golescu", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CN Dinicu Golescu", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-10-24", title: "Etapa 10", comp: "Campionatul Național U15", time: "17:00", opponent: "Kinder Brașov", location: "Textila Prejmer", lat: "45.7476840190597", lng: "25.776540693736028", home: "Kinder Brașov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-24", title: "Etapa 10", comp: "Campionatul Național U15", time: "17:00", opponent: "Kinder Brașov", location: "Hărman Arena", lat: "45.7179999400426", lng: "25.680626449605285", home: "Kinder Brașov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-31", title: "Etapa 11", comp: "Campionatul Național U15", time: "14:00", opponent: "Flacăra Moreni", location: "Flacăra", lat: "44.98205482985092", lng: "25.65009898047085", home: "Flacăra Moreni", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-11-07", title: "Etapa 12", comp: "Campionatul Național U15", time: "14:00", opponent: "MX PRO Academy", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "MX PRO Academy", score: "", scorers: "", videoLinks: [] },
             { date: "2026-11-14", title: "Etapa 13", comp: "Campionatul Național U15", time: "14:00", opponent: "Star Mioveni", location: "Făgetu", lat: "44.90770000670563", lng: "24.900870717828703", home: "Star Mioveni", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-11-21", title: "Etapa 14", comp: "Campionatul Național U15", time: "14:00", opponent: "LPS Viitorul Piteşti", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "LPS Viitorul Piteşti", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-11-28", title: "Etapa 15", comp: "Campionatul Național U15", time: "14:00", opponent: "Unirea Bascov", location: "Stadion: Valea ursului", lat: "44.887261042829394", lng: "24.77873362322879", home: "Unirea Bascov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-28", title: "Etapa 15", comp: "Campionatul Național U15", time: "14:00", opponent: "Unirea Bascov", location: "Stadion: Comunal VALEA URSULUI - AG", lat: "44.887261042829394", lng: "24.77873362322879", home: "Unirea Bascov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2027-03-13", title: "Etapa 16", comp: "Campionatul Național U15", time: "14:00", opponent: "CSM Ploieşti", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CSM Ploieşti", score: "", scorers: "", videoLinks: [] },
             { date: "2027-03-20", title: "Etapa 17", comp: "Campionatul Național U15", time: "14:00", opponent: "CN Dinicu Golescu", location: "Muscelul 2 CÂMPULUNG", lat: "45.26549452962842", lng: "25.046907087948732", home: "CN Dinicu Golescu", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2027-04-03", title: "Etapa 19", comp: "Campionatul Național U15", time: "14:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "", scorers: "", videoLinks: [] },
@@ -614,19 +632,19 @@ if (isIOS() && !isStandalone()) {
             { date: "2027-05-19", title: "Finala", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
 
             { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U16", time: "17:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "1:3", scorers: "⚽Hoang Ming", videoLinks: [{label: "Live", url: "https://www.youtube.com/watch?v=y7M_q1jBdj8&t=306s"}, {label: "Veo", url: "https://www.youtube.com/live/zd0O3TBnefc?is=KP0oamR_tqROJ3QG"}] },
-            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U16", time: "15:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "8:3", scorers: "⚽⚽⚽⚽Barbu Marco, ⚽⚽Hoang Ming, ⚽Matei David, ⚽Borş Eric", videoLinks: [{label: "Live", url: "https://www.youtube.com/watch?v=r9mGvqwrMh8"}] },
+            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U16", time: "15:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "8:3", scorers: "⚽⚽⚽⚽Barbu Marco, ⚽⚽Hoang Ming, ⚽Matei David, ⚽Borş Eric", videoLinks: [{label: "Vezi meci", url: "https://www.youtube.com/watch?v=r9mGvqwrMh8"}] },
             { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U16", time: "12:00", opponent: "MX PRO Academy", location: "Cocoșești", lat: "44.99562155095854", lng: "25.985000556719196", home: "MX PRO Academy", away: "New Stars", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U16", time: "20:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U16", time: "12:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U16", time: "12:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-26", title: "Etapa 6", comp: "Campionatul Național U16", time: "12:00", opponent: "Unirea Bascov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Unirea Bascov", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-03", title: "Etapa 7", comp: "Campionatul Național U16", time: "12:00", opponent: "CSM Ploieşti", location: "Baza Sportivă Teleajen", lat: "44.942930783857655", lng: "26.091011020530072", home: "CSM Ploieşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-10", title: "Etapa 8", comp: "Campionatul Național U16", time: "12:00", opponent: "CN Dinicu Golescu", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CN Dinicu Golescu", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-10-24", title: "Etapa 10", comp: "Campionatul Național U16", time: "15:00", opponent: "Kinder Brașov", location: "Textila Prejmer", lat: "45.7476840190597", lng: "25.776540693736028", home: "Kinder Brașov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-24", title: "Etapa 10", comp: "Campionatul Național U16", time: "15:00", opponent: "Kinder Brașov", location: "Hărman Arena", lat: "45.7179999400426", lng: "25.680626449605285", home: "Kinder Brașov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-31", title: "Etapa 11", comp: "Campionatul Național U16", time: "12:00", opponent: "Flacăra Moreni", location: "Flacăra", lat: "44.98205482985092", lng: "25.65009898047085", home: "Flacăra Moreni", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-11-07", title: "Etapa 12", comp: "Campionatul Național U16", time: "12:00", opponent: "MX PRO Academy", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "MX PRO Academy", score: "", scorers: "", videoLinks: [] },
             { date: "2026-11-14", title: "Etapa 13", comp: "Campionatul Național U16", time: "12:00", opponent: "Star Mioveni", location: "Făgetu", lat: "44.90770000670563", lng: "24.900870717828703", home: "Star Mioveni", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-11-21", title: "Etapa 14", comp: "Campionatul Național U16", time: "12:00", opponent: "LPS Viitorul Piteşti", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "LPS Viitorul Piteşti", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-11-28", title: "Etapa 15", comp: "Campionatul Național U16", time: "12:00", opponent: "Unirea Bascov", location: "Stadion: Valea ursului", lat: "44.887261042829394", lng: "24.77873362322879", home: "Unirea Bascov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-28", title: "Etapa 15", comp: "Campionatul Național U16", time: "12:00", opponent: "Unirea Bascov", location: "Stadion: Comunal VALEA URSULUI - AG", lat: "44.887261042829394", lng: "24.77873362322879", home: "Unirea Bascov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2027-03-13", title: "Etapa 16", comp: "Campionatul Național U16", time: "12:00", opponent: "CSM Ploieşti", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CSM Ploieşti", score: "", scorers: "", videoLinks: [] },
             { date: "2027-03-20", title: "Etapa 17", comp: "Campionatul Național U16", time: "12:00", opponent: "CN Dinicu Golescu", location: "Muscelul 2 CÂMPULUNG", lat: "45.26549452962842", lng: "25.046907087948732", home: "CN Dinicu Golescu", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2027-04-03", title: "Etapa 19", comp: "Campionatul Național U16", time: "12:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "", scorers: "", videoLinks: [] },
@@ -734,7 +752,7 @@ if (isIOS() && !isStandalone()) {
         function getNextMatch() {
             const now = new Date();
             
-            return getActiveData()
+            return (typeof getFilteredData === "function" ? getFilteredData() : getActiveData())
                 .filter(e => {
                     if (!e.date) return false;
                     const timeString = e.time ? e.time + ":00" : "23:59:59";
@@ -892,7 +910,7 @@ if (isIOS() && !isStandalone()) {
         }
 
         function renderTopScorers() {
-            const container = document.getElementById('top-scorers') || document.getElementById('golgheteri-list');
+            const container = document.getElementById('top-scorers');
             if (!container) return;
 
             const totals = {};
@@ -901,7 +919,7 @@ if (isIOS() && !isStandalone()) {
                 if (!match.scorers || typeof match.scorers !== 'string') return;
 
                 const scorerEntries = match.scorers
-                    .split(',')
+                    .split(/[,|]/)
                     .map(s => s.trim())
                     .filter(Boolean);
 
@@ -951,6 +969,7 @@ if (isIOS() && !isStandalone()) {
         function init() {
             const data = getActiveData();
             data.sort((a, b) => new Date(a.date) - new Date(b.date));
+            updateCompetitionButtons();
             renderCalendar();
             renderEvents();
             renderNextMatch();
@@ -958,7 +977,7 @@ if (isIOS() && !isStandalone()) {
         }
 
         function renderCalendar() {
-            const data = getActiveData();
+            const data = getFilteredData();
             const container = document.getElementById('calendar-days');
             container.innerHTML = '';
             document.getElementById('month-year-display').innerText = `${monthNames[currentMonth]} ${currentYear}`;
@@ -1025,134 +1044,104 @@ if (isIOS() && !isStandalone()) {
             renderCalendar();
         }
 
-        function renderEvents() {
-            const data = getActiveData();
-            const list = document.getElementById('events-list');
-            list.innerHTML = '';
+        let activeCompetition = 'ALL';
 
-            let filteredEvents = data;
-
-            if (selectedDate) {
-                filteredEvents = filteredEvents.filter(e => e.date === selectedDate);
-            }
-
-            if (filteredEvents.length === 0) {
-                list.innerHTML = `<div class="bg-white p-8 text-center rounded-2xl border border-slate-200 text-slate-600 font-medium text-base">Nu sunt meciuri programate pentru data selectată.</div>`;
-                return;
-            }
-
-            filteredEvents.forEach(ev => {
-                const style = getCompStyle(ev.comp);
-                const isCompletedMatch = typeof ev.score === "string" && ev.score.trim() !== "";
-
-                let detailsHTML = "";
-                if (ev.time) {
-                    detailsHTML += `<p class="flex items-center gap-2 text-base"><span class="text-slate-600 font-semibold min-w-[85px]">⌚ Oră:</span> <strong class="text-slate-900 font-bold">${ev.time}</strong></p>`;
-                }
-                if (ev.opponent) {
-                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <strong class="text-slate-900 font-bold">${ev.opponent}</strong></p>`;
-                } else {
-                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <span class="text-slate-500 italic font-medium">Urmează să fie stabilit</span></p>`;
-                }
-                if (ev.location) {
-                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">📍 Locație:</span> <strong class="text-slate-900 font-bold">${ev.location}</strong></p>`;
-                }
-
-                let mapButtonsHTML = "";
-                if (ev.lat && ev.lng) {
-                    mapButtonsHTML = `
-                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2">
-                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-800 border border-sky-200 px-3 py-2.5 rounded-xl font-bold hover:bg-sky-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
-                                <i class="fa-brands fa-waze text-base"></i> Waze
-                            </a>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-2.5 rounded-xl font-bold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
-                                <i class="fa-solid fa-map-location-dot text-base"></i> Google
-                            </a>
-                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-800 border border-slate-200 px-3 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
-                                <i class="fa-solid fa-location-arrow text-base"></i> Apple
-                            </a>
-                        </div>
-                    `;
-                }
-
-                let scorersHTML = "";
-                if (isCompletedMatch && ev.scorers && ev.scorers.trim() !== "") {
-                    const formattedScorers = ev.scorers
-                        .split('|')
-                        .map(s => s.trim())
-                        .filter(Boolean)
-                        .join(' • ');
-
-                    scorersHTML = `
-                        <div class="completed-goals">
-                            <span class="font-bold">Goluri:</span> ${formattedScorers}
-                        </div>
-                    `;
-                }
-
-                let videoLinksHTML = "";
-                if (isCompletedMatch && ev.videoLinks && ev.videoLinks.length > 0) {
-                    const linksBtns = ev.videoLinks.map(link => {
-                        const isYoutube = link.url.includes('youtube.com') || link.url.includes('youtu.be');
-                        const iconClass = isYoutube
-                            ? 'fa-brands fa-youtube text-red-600'
-                            : 'fa-solid fa-satellite-dish text-blue-600';
-
-                        return `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 px-3 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
-                            <i class="${iconClass} text-base"></i> ${link.label}
-                        </a>`;
-                    }).join('');
-
-                    videoLinksHTML = `
-                        <div class="completed-video">
-                            <div class="flex flex-wrap gap-2 justify-center">
-                                ${linksBtns}
-                            </div>
-                        </div>
-                    `;
-                }
-
-                const completedResultHTML = isCompletedMatch ? `
-                    <div class="completed-result">
-                        <div class="completed-result-score">${ev.score}</div>
-                    </div>
-                ` : "";
-
-                list.innerHTML += `
-                    <div class="event-card bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition">
-                        <div class="flex flex-wrap justify-between items-start mb-3 gap-2">
-                            <div>
-                                <h3 class="text-xl font-extrabold text-slate-900">${ev.title}</h3>
-                                <div class="text-sm font-semibold text-slate-600 mt-0.5">${formatDateRO(ev.date)}</div>
-                            </div>
-                            <span class="text-xs font-extrabold px-3 py-1.5 rounded-xl border ${style.badge}">${ev.comp}</span>
-                        </div>
-
-                        <div class="event-matchup ${isCompletedMatch ? "event-matchup-completed" : ""}">
-                            <div class="flex items-center gap-2 min-w-0 flex-1">
-                                ${getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" alt="${ev.home}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.home || "Gazde")}</span>`}
-                                <span class="event-team-name truncate">${ev.home || "Gazde"}</span>
-                            </div>
-
-                            <div class="event-matchup-center">
-                                <span class="event-vs">${isCompletedMatch ? "" : "VS"}</span>
-                                ${completedResultHTML}
-                            </div>
-
-                            <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
-                                <span class="event-team-name truncate text-right">${ev.away || "Adversari"}</span>
-                                ${getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" alt="${ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.away || "Adversari")}</span>`}
-                            </div>
-                        </div>
-
-                        ${isCompletedMatch ? scorersHTML : ""}
-                        ${isCompletedMatch ? "" : `<div class="my-3">${detailsHTML}</div>`}
-                        ${isCompletedMatch ? "" : mapButtonsHTML}
-                        ${videoLinksHTML}
-                    </div>
-                `;
-            });
+        function getCompetitionKey(comp) {
+            const c = String(comp || '').toLowerCase();
+            if (c.includes('campionatul național')) return 'Campionatul Național';
+            if (c.includes('cupa național')) return 'Cupa Națională';
+            if (c.includes('cupa elitelor')) return 'Cupa Elitelor';
+            return 'ALL';
         }
+
+        function getFilteredData() {
+            let data = getActiveData();
+            if (activeCompetition !== 'ALL') data = data.filter(e => getCompetitionKey(e.comp) === activeCompetition);
+            return data.slice().sort((a,b) => new Date(a.date) - new Date(b.date));
+        }
+
+        function getNewStarsHomeAway(ev) {
+            const home = ev.home && ev.home !== 'Gazde' ? ev.home : 'New Stars';
+            const away = ev.away && ev.away !== 'Adversari' ? ev.away : (ev.opponent || 'Adversar');
+            return {home, away};
+        }
+
+        function isCompletedMatch(ev) { return typeof ev.score === 'string' && ev.score.trim() !== ''; }
+
+        function renderTeamModern(name, align='center') {
+            const logo = getTeamLogo(name);
+            const cls = align === 'right' ? 'modern-team text-right' : 'modern-team';
+            return `<div class="${cls}">${logo ? `<img src="${logo}" alt="${name}" loading="lazy">` : `<span class="fallback">${initials(name)}</span>`}<div class="modern-team-name">${name}</div></div>`;
+        }
+
+        function renderVideoLinks(ev) {
+            if (!ev.videoLinks || !ev.videoLinks.length) return '';
+            return `<div class="video-modern">${ev.videoLinks.map(link => {
+                const url = link.url || link;
+                const label = link.label || 'Video Meci';
+                if (!url) return '';
+                return `<a href="${url}" target="_blank" rel="noopener noreferrer">▶ ${label}</a>`;
+            }).join('')}</div>`;
+        }
+
+        function renderScorersModern(ev) {
+            if (!ev.scorers || typeof ev.scorers !== 'string' || !ev.scorers.trim()) return '';
+            const entries = ev.scorers.split(/[|,]/).map(s => s.trim()).filter(Boolean);
+            if (!entries.length) return '';
+            return `<div class="scorers-modern">${entries.map(entry => {
+                const goals = (entry.match(/⚽/g)||[]).length;
+                const name = entry.replace(/⚽/g,'').trim();
+                return goals ? `<div class="scorer-line"><span>${name}</span><span>${'⚽'.repeat(goals)}</span></div>` : '';
+            }).join('')}</div>`;
+        }
+
+        function renderMatchCard(ev, completed) {
+            const {home, away} = getNewStarsHomeAway(ev);
+            const style = getCompStyle(ev.comp || '');
+            const compClass = getCompetitionKey(ev.comp)==='Campionatul Național' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : getCompetitionKey(ev.comp)==='Cupa Națională' ? 'text-sky-700 bg-sky-50 border-sky-200' : 'text-rose-700 bg-rose-50 border-rose-200';
+            return `<article class="match-card-modern">
+                <div class="match-topline"><span class="match-date">${formatDateRO(ev.date)}</span><span class="match-comp ${compClass}">${ev.comp || ''}</span></div>
+                <div class="match-row">
+                    ${renderTeamModern(home)}
+                    <div class="text-center">${completed ? `<div class="result-score-big">${ev.score}</div>` : `<div class="vs-small">VS</div>`}</div>
+                    ${renderTeamModern(away)}
+                </div>
+                ${completed ? renderScorersModern(ev) : `<div class="match-meta-modern">${ev.time ? '⏰ '+ev.time : ''}${ev.location ? (ev.time ? ' · ' : '')+'📍 '+ev.location : ''}</div>`}
+                ${renderVideoLinks(ev)}
+            </article>`;
+        }
+
+        function renderEvents() {
+            const data = getFilteredData();
+            let selected = selectedDate ? data.filter(e => e.date === selectedDate) : data;
+            const upcoming = selected.filter(e => !isCompletedMatch(e) && new Date(e.date+'T23:59:59') >= new Date()).sort((a,b)=>new Date(a.date)-new Date(b.date));
+            const results = selected.filter(isCompletedMatch).sort((a,b)=>new Date(b.date)-new Date(a.date));
+
+            const up = document.getElementById('upcoming-list');
+            const res = document.getElementById('results-list');
+            const clear = document.getElementById('clear-date');
+            clear.classList.toggle('hidden', !selectedDate);
+
+            up.innerHTML = upcoming.length ? upcoming.map(e=>renderMatchCard(e,false)).join('') : `<div class="empty-state">Nu există meciuri viitoare${selectedDate ? ' pentru data selectată' : ''}.</div>`;
+            res.innerHTML = results.length ? results.map(e=>renderMatchCard(e,true)).join('') : `<div class="empty-state">Nu există rezultate${selectedDate ? ' pentru data selectată' : ''}.</div>`;
+        }
+
+        function updateCompetitionButtons() {
+            document.querySelectorAll('.comp-filter').forEach(btn => btn.classList.toggle('active', btn.dataset.comp === activeCompetition));
+        }
+
+        document.querySelectorAll('.comp-filter').forEach(btn => btn.addEventListener('click', () => {
+            activeCompetition = btn.dataset.comp;
+            selectedDate = null;
+            updateCompetitionButtons();
+            renderCalendar();
+            renderEvents();
+            renderNextMatch();
+        }));
+
+        function clearSelectedDate() { selectedDate = null; renderCalendar(); renderEvents(); }
+        function goToday() { const d=new Date(); currentMonth=d.getMonth(); currentYear=d.getFullYear(); selectedDate=null; renderCalendar(); renderEvents(); }
+
 
 
         window.onload = init;
