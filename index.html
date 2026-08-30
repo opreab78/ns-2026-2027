@@ -317,6 +317,157 @@ body{padding-bottom:90px!important}
         border-radius:0 0 18px 18px!important;
     }
 }
+
+/* === FINAL STICKY NAVIGATION FIX === */
+#original-category-switch{display:none!important}
+
+.sticky-category-nav{
+    position:fixed!important;
+    top:0!important;
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+    z-index:9999!important;
+    display:flex!important;
+    justify-content:center!important;
+    padding:8px 12px!important;
+    padding-top:calc(8px + env(safe-area-inset-top))!important;
+    background:rgba(248,250,252,.97)!important;
+    border-bottom:1px solid #dbe3ee!important;
+    box-shadow:0 4px 18px rgba(15,23,42,.08)!important;
+    backdrop-filter:blur(16px)!important;
+}
+.sticky-category-inner{
+    width:min(360px,100%)!important;
+    display:grid!important;
+    grid-template-columns:1fr 1fr!important;
+    gap:4px!important;
+    padding:4px!important;
+    border-radius:15px!important;
+    background:#e2e8f0!important;
+}
+.sticky-category-btn{
+    width:100%!important;
+    min-height:40px!important;
+    border:0!important;
+    border-radius:11px!important;
+    background:transparent!important;
+    color:#475569!important;
+    font-size:.9rem!important;
+    font-weight:900!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+}
+.sticky-category-btn.active{
+    background:#ffffff!important;
+    color:#0b2858!important;
+    box-shadow:0 3px 10px rgba(15,23,42,.12)!important;
+}
+body{
+    padding-top:66px!important;
+    padding-bottom:94px!important;
+}
+
+/* Bottom navigation: full-width, centered, visible on every viewport. */
+.bottom-nav{
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:68px!important;
+    z-index:9998!important;
+    display:flex!important;
+    justify-content:center!important;
+    align-items:center!important;
+    margin:0!important;
+    padding:8px 12px!important;
+    padding-bottom:calc(8px + env(safe-area-inset-bottom))!important;
+    background:#ffffff!important;
+    border-top:1px solid #dbe3ee!important;
+    border-radius:0!important;
+    box-shadow:0 -6px 22px rgba(15,23,42,.10)!important;
+    backdrop-filter:blur(16px)!important;
+}
+.bottom-nav > *{
+    width:min(720px,100%)!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,1fr)!important;
+    align-items:center!important;
+    justify-items:center!important;
+    gap:4px!important;
+}
+.bottom-nav button{
+    width:52px!important;
+    height:48px!important;
+    min-width:52px!important;
+    min-height:48px!important;
+    margin:0 auto!important;
+    padding:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:0!important;
+    border-radius:14px!important;
+    background:transparent!important;
+    color:#334155!important;
+    font-size:1.08rem!important;
+}
+.bottom-nav button.active,
+.bottom-nav button:hover{
+    background:#eef2f7!important;
+    color:#07152f!important;
+}
+.bottom-nav i{
+    display:block!important;
+    margin:0!important;
+    font-size:1.15rem!important;
+}
+
+/* Navigation provider links inside away-match cards centered. */
+.navigation-buttons{
+    width:100%!important;
+    display:flex!important;
+    justify-content:center!important;
+    align-items:center!important;
+    flex-wrap:wrap!important;
+    gap:8px!important;
+}
+.navigation-buttons a{
+    display:inline-flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:6px!important;
+    float:none!important;
+    margin:0!important;
+}
+
+/* Keep content from hiding behind fixed bars. */
+@media(min-width:768px){
+    body{padding-top:70px!important;padding-bottom:100px!important}
+    .bottom-nav{
+        width:min(760px,calc(100% - 32px))!important;
+        left:50%!important;
+        right:auto!important;
+        transform:translateX(-50%)!important;
+        bottom:14px!important;
+        min-height:68px!important;
+        border:1px solid #dbe3ee!important;
+        border-radius:20px!important;
+        padding:8px 18px!important;
+    }
+    .sticky-category-nav{
+        padding-left:24px!important;
+        padding-right:24px!important;
+    }
+}
+@media(max-width:380px){
+    .sticky-category-inner{max-width:300px!important}
+    .bottom-nav{padding-left:5px!important;padding-right:5px!important}
+    .bottom-nav button{width:46px!important;min-width:46px!important}
+}
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -468,6 +619,13 @@ body{padding-bottom:90px!important}
         </script>
 </head>
 <body class="p-3 md:p-8 text-slate-900">
+    <div id="sticky-category-nav" class="sticky-category-nav" aria-label="Selectează categoria">
+        <div class="sticky-category-inner">
+            <button id="sticky-btn-u16" type="button" class="sticky-category-btn active" onclick="switchCategory('U16')">U16</button>
+            <button id="sticky-btn-u15" type="button" class="sticky-category-btn" onclick="switchCategory('U15')">U15</button>
+        </div>
+    </div>
+
     <div class="app-shell max-w-6xl mx-auto">
 
     
@@ -487,7 +645,7 @@ body{padding-bottom:90px!important}
                 <button id="install-btn" class="hidden w-full md:w-auto px-4 py-2.5 rounded-lg text-sm font-bold shadow bg-emerald-600 text-white hover:bg-emerald-700 transition flex items-center justify-center gap-2">
                     <i class="fa-solid fa-download"></i> Instalează Aplicația
                 </button>
-                <div class="flex bg-slate-200 p-1.5 rounded-xl w-full md:w-auto justify-center">
+                <div id="original-category-switch" class="flex bg-slate-200 p-1.5 rounded-xl w-full md:w-auto justify-center">
                     <button id="btn-u16" onclick="switchCategory('U16')" class="flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white">U16</button>
                 <button id="btn-u15" onclick="switchCategory('U15')" class="flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900">U15</button>
                 </div>
@@ -854,15 +1012,21 @@ if (isIOS() && !isStandalone()) {
 
             const btnU15 = document.getElementById('btn-u15');
             const btnU16 = document.getElementById('btn-u16');
+            const stickyBtnU15 = document.getElementById('sticky-btn-u15');
+            const stickyBtnU16 = document.getElementById('sticky-btn-u16');
             const mainTitle = document.getElementById('main-title');
 
             if (category === 'U15') {
                 btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
                 btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
+                if (stickyBtnU15) stickyBtnU15.className = "sticky-category-btn active";
+                if (stickyBtnU16) stickyBtnU16.className = "sticky-category-btn";
                 mainTitle.innerText = "New Stars - U15";
             } else {
                 btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
                 btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
+                if (stickyBtnU16) stickyBtnU16.className = "sticky-category-btn active";
+                if (stickyBtnU15) stickyBtnU15.className = "sticky-category-btn";
                 mainTitle.innerText = "New Stars - U16";
             }
 
