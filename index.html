@@ -680,6 +680,17 @@ body{
     scroll-margin-top:122px!important;
   }
 }
+
+/* Final spacing for fixed top U15/U16 selector */
+body{padding-top:118px!important;padding-bottom:110px!important}
+#next-match{margin-top:12px!important;scroll-margin-top:128px!important}
+@media(max-width:767px){
+  body{padding-top:150px!important;padding-bottom:112px!important}
+  #next-match{margin-top:16px!important;scroll-margin-top:150px!important}
+}
+@media(min-width:768px){
+  body{padding-top:112px!important;padding-bottom:112px!important}
+}
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -1193,6 +1204,7 @@ if (isIOS() && !isStandalone()) {
         function switchCategory(category) {
             currentCategory = category;
             selectedDate = null;
+
             const firstMatch = getActiveData().slice().sort((a,b) => new Date(a.date) - new Date(b.date))[0];
             if (firstMatch) {
                 const d = new Date(firstMatch.date + "T12:00:00");
@@ -1204,24 +1216,24 @@ if (isIOS() && !isStandalone()) {
             const btnU16 = document.getElementById('btn-u16');
             const stickyBtnU15 = document.getElementById('sticky-btn-u15');
             const stickyBtnU16 = document.getElementById('sticky-btn-u16');
-            const mainTitle = document.getElementById('main-title');
 
-            if (category === 'U15') {
-                btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
-                btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
-                if (stickyBtnU15) stickyBtnU15.className = "sticky-category-btn active";
-                if (stickyBtnU16) stickyBtnU16.className = "sticky-category-btn";
-                mainTitle.innerText = "New Stars - U15";
-            } else {
-                btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
-                btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
-                if (stickyBtnU16) stickyBtnU16.className = "sticky-category-btn active";
-                if (stickyBtnU15) stickyBtnU15.className = "sticky-category-btn";
-                mainTitle.innerText = "New Stars - U16";
-            }
+            if (btnU15) btnU15.className = category === 'U15'
+                ? "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white"
+                : "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
+            if (btnU16) btnU16.className = category === 'U16'
+                ? "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white"
+                : "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
 
-            init();
+            if (stickyBtnU15) stickyBtnU15.className = category === 'U15'
+                ? "sticky-category-btn active"
+                : "sticky-category-btn";
+            if (stickyBtnU16) stickyBtnU16.className = category === 'U16'
+                ? "sticky-category-btn active"
+                : "sticky-category-btn";
+
+            renderAll();
         }
+
 
         function formatDateRO(dateStr) {
             const [year, month, day] = dateStr.split('-').map(Number);
