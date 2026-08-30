@@ -892,53 +892,60 @@ if (isIOS() && !isStandalone()) {
         }
 
         function renderTopScorers() {
-            const container = document.getElementById('top-scorers');
+            const container = document.getElementById('top-scorers') || document.getElementById('golgheteri-list');
             if (!container) return;
 
             const totals = {};
 
             getActiveData().forEach(match => {
-                if (!Array.isArray(match.scorers)) return;
+                if (!match.scorers || typeof match.scorers !== 'string') return;
 
-                match.scorers.forEach(scorer => {
-                    if (!scorer || typeof scorer !== 'string') return;
+                const scorerEntries = match.scorers
+                    .split(',')
+                    .map(s => s.trim())
+                    .filter(Boolean);
 
-                    const goals = (scorer.match(/⚽/g) || []).length;
+                scorerEntries.forEach(entry => {
+                    const goals = (entry.match(/⚽/g) || []).length;
                     if (goals === 0) return;
 
-                    const name = scorer.replace(/⚽/g, '').trim();
+                    const name = entry.replace(/⚽/g, '').trim();
                     if (!name) return;
 
                     totals[name] = (totals[name] || 0) + goals;
                 });
             });
 
-            const sorted = Object.entries(totals)
+            const sortedScorers = Object.entries(totals)
                 .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'ro'));
 
-            if (!sorted.length) {
-                container.innerHTML = `
-                    <div class="text-sm text-slate-500 font-medium">
-                        Nu există încă golgheteri înregistrați.
-                    </div>
-                `;
+            if (sortedScorers.length === 0) {
+                container.innerHTML = '<div class="text-sm text-slate-400 font-semibold p-2">Niciun golgheter înregistrat încă.</div>';
                 return;
             }
 
-            container.innerHTML = sorted.map(([name, goals], index) => `
-                <div class="flex items-center justify-between gap-3 py-2">
-                    <div class="flex items-center gap-3 min-w-0">
-                        <div class="w-7 h-7 shrink-0 rounded-full bg-slate-100 flex items-center justify-center text-xs font-black text-slate-600">
-                            ${index + 1}
+            container.innerHTML = sortedScorers.map((scorer, index) => {
+                let medal = `<span class="text-slate-500 text-xs font-bold">${index + 1}</span>`;
+                if (index === 0) medal = '🥇';
+                else if (index === 1) medal = '🥈';
+                else if (index === 2) medal = '🥉';
+
+                return `
+                <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 mb-2 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                            ${medal}
                         </div>
-                        <div class="font-bold text-slate-900 truncate">${name}</div>
+                        <span class="text-sm font-bold text-slate-800">${scorer[0]}</span>
                     </div>
-                    <div class="shrink-0 font-black text-slate-900">
-                        ${goals} ${goals === 1 ? 'gol' : 'goluri'}
+                    <div class="shrink-0 rounded-lg bg-emerald-50 border border-emerald-200 px-3 py-1 font-black text-emerald-800">
+                        ${scorer[1]} ⚽
                     </div>
                 </div>
-            `).join('');
+                `;
+            }).join('');
         }
+
 
 
         function init() {
@@ -1152,5 +1159,4 @@ if (isIOS() && !isStandalone()) {
         setInterval(updateCountdown, 1000);
     </script>
 </body>
-</html>
 </html>
