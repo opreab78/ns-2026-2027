@@ -612,6 +612,50 @@ body{
     padding-bottom:112px!important;
   }
 }
+
+/* Final sticky spacing: never cover header or last scorer rows. */
+.app-shell{
+  margin-top:0!important;
+}
+body{
+  padding-top:82px!important;
+  padding-bottom:110px!important;
+}
+.nav-anchor{
+  display:block!important;
+  position:relative!important;
+  height:0!important;
+  scroll-margin-top:94px!important;
+  scroll-margin-bottom:110px!important;
+}
+#calendar-anchor,#events-anchor,#results-nav-target,#scorers-nav-target{
+  scroll-margin-top:94px!important;
+  scroll-margin-bottom:110px!important;
+}
+#scorers-nav-target{
+  padding-bottom:28px!important;
+}
+.sticky-category-nav{
+  min-height:66px!important;
+}
+@media(max-width:767px){
+  body{
+    padding-top:88px!important;
+    padding-bottom:116px!important;
+  }
+  .sticky-category-nav{
+    min-height:70px!important;
+  }
+  #scorers-nav-target{
+    padding-bottom:36px!important;
+  }
+}
+@media(min-width:768px){
+  body{
+    padding-top:88px!important;
+    padding-bottom:116px!important;
+  }
+}
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -755,11 +799,11 @@ body{
 
 <script>
         function goHomeTop() {
-            window.scrollTo({ top: 0, behavior: "smooth" });
-            document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
-            const home = document.querySelector('.bottom-nav button[aria-label="Acasă"]');
-            if (home) home.classList.add("active");
-        }
+    document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
+    const home = document.querySelector('.bottom-nav button[aria-label="Acasă"]');
+    if (home) home.classList.add("active");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
         </script>
 </head>
 <body class="p-3 md:p-8 text-slate-900">
@@ -807,7 +851,7 @@ body{
 
         <div class="main-layout">
             <section id="calendar-anchor" class="section-card calendar-card">
-                <span id="upcoming-nav-target" class="nav-anchor"></span><div class="section-heading-row">
+                <div class="section-heading-row">
                     <div>
                         <div class="eyebrow"></div>
                         <h2>Calendar</h2>
@@ -840,10 +884,11 @@ body{
                 </div>
                 <div id="upcoming-list" class="match-list"></div>
 
+                <span id="results-nav-target" class="nav-anchor"></span>
                 <div class="results-heading">
                     <div>
                         <div class="eyebrow"></div>
-                        <h2><span id="results-nav-target" class="nav-anchor"></span>Rezultate</h2>
+                        <h2>Rezultate</h2>
                     </div>
                 </div>
                 <div id="results-list" class="match-list"></div>
@@ -1681,21 +1726,23 @@ function goToNav(id, button){
 }
 
 function goToNavFixed(id, button){
-  document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
-  if(button) button.classList.add('active');
-  const target=document.getElementById(id);
-  if(target){
-    const topOffset = 92;
+    document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+    if(button) button.classList.add('active');
+
+    const target = document.getElementById(id);
+    if(!target) return;
+
+    const topBar = document.querySelector('.sticky-category-nav');
+    const topOffset = topBar ? topBar.getBoundingClientRect().height + 12 : 12;
     const y = target.getBoundingClientRect().top + window.pageYOffset - topOffset;
-    window.scrollTo({top:Math.max(0,y),behavior:'smooth'});
-  }
+    window.scrollTo({top: Math.max(0, y), behavior:'smooth'});
 }
 </script>
     <nav class="bottom-nav" aria-label="Navigare rapidă">
   <div>
     <button type="button" aria-label="Acasă" onclick="goHomeTop()"><i class="fa-solid fa-house"></i></button>
     <button type="button" aria-label="Calendar" onclick="goToNavFixed('calendar-anchor', this)"><i class="fa-solid fa-calendar-days"></i></button>
-    <button type="button" aria-label="Meciuri" onclick="goToNavFixed('upcoming-nav-target', this)"><i class="fa-solid fa-futbol"></i></button>
+    <button type="button" aria-label="Meciuri" onclick="goToNavFixed('events-anchor', this)"><i class="fa-solid fa-futbol"></i></button>
     <button type="button" aria-label="Rezultate" onclick="goToNavFixed('results-nav-target', this)"><i class="fa-solid fa-clipboard-check"></i></button>
     <button type="button" aria-label="Golgheteri" onclick="goToNavFixed('scorers-nav-target', this)"><i class="fa-solid fa-trophy"></i></button>
   </div>
