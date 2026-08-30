@@ -404,7 +404,16 @@
             <i class="fa-solid fa-futbol" aria-hidden="true"></i><span class="sr-only">Golgheteri</span>
         </button>
     </nav>
-
+	
+		<div class="mt-8 mb-6">
+			<h2 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
+				⚽ Top Golgheteri
+			</h2>
+			<div id="top-scorers" class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm flex flex-col">
+				<!-- Clasamentul va fi generat automat aici -->
+			</div>
+		</div>
+		
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -754,162 +763,393 @@ if (isIOS() && !isStandalone()) {
             
             // Finalizarea codului truncat din mesaj
             box.dataset.matchDate = ev.date + (ev.time ? "T" + ev.time + ":00" : "T14:00:00");
+
             box.innerHTML = `
-                <div class="next-match-competition">${ev.comp}</div>
                 <div class="next-match-grid">
                     <div class="team-box">
-                        ${logoHTML(home)}
+                        <div class="team-crest"><img src="sigla-New-Stars-Football-Club-sfinx-football.ro_.png" alt="New Stars" style="width:54px;height:54px;object-fit:contain"></div>
                         <div class="team-name">${home}</div>
                     </div>
-                    <div class="match-vs">VS</div>
+                    <div class="text-center">
+                        <div class="next-match-competition">${ev.comp || ""}</div>
+                        <div class="text-xs font-bold text-slate-300 mt-1">${ev.title}</div>
+                        <div class="match-vs">VS</div>
+                    </div>
                     <div class="team-box">
-                        ${logoHTML(opponentName)}
+                        <div class="team-crest">${logoHTML(opponentName, 54)}</div>
                         <div class="team-name">${opponentName}</div>
                     </div>
                 </div>
-                <div class="match-meta">${formatDateRO(ev.date)}${ev.time ? ' • ' + ev.time : ''} • ${ev.location}</div>
+                <div class="match-meta">📅 ${formatDateRO(ev.date)} ${ev.time ? " · ⏰ " + ev.time : ""}${ev.location ? " · 📍 " + ev.location : ""}</div>
+                <div id="countdown" class="countdown"></div>
+            `;
+            updateCountdown();
+        }
+
+        function updateCountdown() {
+            const box = document.getElementById('next-match');
+            const target = box?.dataset.matchDate;
+            const out = document.getElementById('countdown');
+            if (!target || !out) return;
+
+            const diff = new Date(target).getTime() - Date.now();
+            const safe = Math.max(0, diff);
+            const d = Math.floor(safe / 86400000);
+            const h = Math.floor((safe % 86400000) / 3600000);
+            const m = Math.floor((safe % 3600000) / 60000);
+            const s = Math.floor((safe % 60000) / 1000);
+
+            out.innerHTML = `
+                <div class="countdown-unit"><div class="countdown-number">${d}</div><div class="countdown-label">zile</div></div>
+                <div class="countdown-unit"><div class="countdown-number">${String(h).padStart(2,'0')}</div><div class="countdown-label">ore</div></div>
+                <div class="countdown-unit"><div class="countdown-number">${String(m).padStart(2,'0')}</div><div class="countdown-label">min</div></div>
+                <div class="countdown-unit"><div class="countdown-number">${String(s).padStart(2,'0')}</div><div class="countdown-label">sec</div></div>
             `;
         }
 
-        // NOUL MODUL: GOLGHETERI
-        function renderGolgheteri() {
+        function renderForm() {
+            const events = getActiveData()
+                .filter(e => e.score && e.score.trim() !== "")
+                .sort((a,b) => new Date(b.date) - new Date(a.date))
+                .slice(0,5);
+
+            const badges = document.getElementById('form-badges');
+            if (!events.length) {
+                badges.innerHTML = '<span class="text-xs font-bold text-slate-400">—</span>';
+                return;
+            }
+
+            badges.innerHTML = events.reverse().map(e => {
+                const parts = e.score.split(/[-:]/).map(x => parseInt(x.trim(),10));
+                let cls = 'draw', letter = 'E';
+                if (parts.length >= 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
+                    const nsHome = e.home === "New Stars";
+                    const gf = nsHome ? parts[0] : parts[1];
+                    const ga = nsHome ? parts[1] : parts[0];
+                    if (gf > ga) { cls = 'win'; letter = 'V'; }
+                    else if (gf < ga) { cls = 'loss'; letter = 'Î'; }
+                }
+                return `<span class="form-badge ${cls}" title="${e.title}">${letter}</span>`;
+            }).join('');
+        }
+
+
+        function renderRecentResults() {
+            const el = document.getElementById('recent-results');
+            const events = getActiveData()
+                .filter(e => e.score && e.score.trim() !== "")
+                .sort((a,b) => new Date(b.date) - new Date(a.date))
+                .slice(0,5);
+
+            if (!events.length) {
+                el.innerHTML = '<div class="text-sm text-slate-400 font-semibold">Nu există încă rezultate introduse.</div>';
+                return;
+            }
+
+            el.innerHTML = events.map(e => `
+                <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 min-w-0">
+                            ${(e.home || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" class="w-7 h-7 object-contain rounded-md" alt="New Stars">` : (getTeamLogo(e.home) ? `<img src="${getTeamLogo(e.home)}" class="w-7 h-7 object-contain rounded-md" alt="">` : '')}
+                            <span class="text-xs font-black text-slate-800 truncate">${e.home || 'Gazde'} — ${e.away || 'Adversari'}</span>
+                            ${(e.away || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" class="w-7 h-7 object-contain rounded-md" alt="New Stars">` : (getTeamLogo(e.away) ? `<img src="${getTeamLogo(e.away)}" class="w-7 h-7 object-contain rounded-md" alt="">` : '')}
+                        </div>
+                        <div class="text-[11px] text-slate-500 font-semibold">${formatDateRO(e.date)}</div>
+                    </div>
+                    <div class="shrink-0 rounded-lg bg-white border border-slate-200 px-3 py-1.5 font-black text-slate-900">${e.score}</div>
+                </div>
+            `).join('');
+        }
+
+        function renderTimeline() {
+            const el = document.getElementById('season-timeline');
+            const data = [...getActiveData()].sort((a,b) => new Date(a.date) - new Date(b.date));
+            el.innerHTML = data.map(e => `
+                <div class="timeline-item">
+                    <div class="timeline-date">${formatDateRO(e.date).replace(/ \d{4}$/,'')}</div>
+                    <div class="timeline-event">${e.title}${e.opponent ? " · " + e.opponent : ""}</div>
+                    <div class="timeline-comp">${e.comp.replace(/ U15| U16/g,'')}</div>
+                </div>
+            `).join('');
+        }
+
+        function scrollToSection(id, button) {
+            document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+            if (button) button.classList.add('active');
+            const target = document.getElementById(id);
+            if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+
+        function renderTopScorers() {
+            const container = document.getElementById('top-scorers');
+            if (!container) return;
+
             const data = getActiveData();
-            const stats = {};
+            const scorersCount = {};
 
             data.forEach(match => {
-                if (match.scorers) {
-                    const scorersList = match.scorers.split(',');
-                    scorersList.forEach(scorerStr => {
-                        scorerStr = scorerStr.trim();
-                        if (!scorerStr) return;
+                if (match.scorers && typeof match.scorers === 'string' && match.scorers.trim() !== "") {
+                    const scorers = match.scorers.split('|').map(s => s.trim()).filter(Boolean);
+                    
+                    scorers.forEach(scorerInfo => {
+                        let name = scorerInfo;
+                        let goals = 1;
                         
-                        // Numărăm golurile (numărăm iconițele ⚽)
-                        const goalCount = (scorerStr.match(/⚽/g) || []).length;
-                        if (goalCount > 0) {
-                            // Extragem numele eliminând iconițele ⚽
-                            const name = scorerStr.replace(/⚽/g, '').trim();
-                            if (stats[name]) {
-                                stats[name] += goalCount;
-                            } else {
-                                stats[name] = goalCount;
-                            }
+                        // Extrage numărul de goluri dacă formatul este ex: "Cezar 2" sau "Ionescu (3)"
+                        const matchQty = scorerInfo.match(/^(.*?)\s*\(?(\d+)\)?$/);
+                        if (matchQty) {
+                            name = matchQty[1].trim();
+                            goals = parseInt(matchQty[2], 10);
                         }
+                        
+                        if (!scorersCount[name]) {
+                            scorersCount[name] = 0;
+                        }
+                        scorersCount[name] += goals;
                     });
                 }
             });
 
-            // Convertim în array și sortăm (1. descrescător după goluri, 2. alfabetic)
-            const sortedScorers = Object.keys(stats).map(name => ({
-                name: name,
-                goals: stats[name]
-            })).sort((a, b) => {
-                if (b.goals !== a.goals) {
-                    return b.goals - a.goals;
-                }
-                return a.name.localeCompare(b.name);
-            });
+            const sortedScorers = Object.entries(scorersCount)
+                .sort((a, b) => b[1] - a[1]);
 
-            const container = document.getElementById('golgheteri-list');
-            if (!container) return;
-            
             if (sortedScorers.length === 0) {
-                container.innerHTML = '<div class="section-card bg-white rounded-2xl p-5 border border-slate-200 shadow-sm"><h3 class="font-black text-xl text-slate-800 mb-4 border-b pb-3 border-slate-100"><i class="fa-solid fa-futbol text-blue-600 mr-2"></i>Clasament Golgheteri</h3><div class="text-slate-500 font-medium text-center py-4">Nu există marcatori înregistrați încă în această categorie.</div></div>';
+                container.innerHTML = '<div class="text-sm text-slate-400 font-semibold p-2">Niciun golgheter înregistrat încă.</div>';
                 return;
             }
 
-            let html = '<div class="section-card bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">';
-            html += '<h3 class="font-black text-xl text-slate-800 mb-4 border-b pb-3 border-slate-100"><i class="fa-solid fa-futbol text-blue-600 mr-2"></i>Clasament Golgheteri</h3>';
-            html += '<ul class="space-y-3">';
-            
-            sortedScorers.forEach((scorer, index) => {
-                // Generăm atâtea mingi câte goluri a dat jucătorul
-                const goalIcons = '⚽'.repeat(scorer.goals);
-                html += `
-                    <li class="flex items-center justify-between p-3 bg-slate-50 rounded-xl border border-slate-100">
-                        <div class="flex items-center gap-3">
-                            <span class="w-6 text-center font-bold text-slate-400">#${index + 1}</span>
-                            <span class="font-bold text-slate-700">${scorer.name}</span>
-                        </div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-sm tracking-widest text-blue-500" title="${scorer.goals} goluri">${goalIcons}</span>
-                            <span class="font-black text-blue-600 w-6 text-right">${scorer.goals}</span>
-                        </div>
-                    </li>
-                `;
-            });
-            
-            html += '</ul></div>';
-            container.innerHTML = html;
-        }
+            container.innerHTML = sortedScorers.map((scorer, index) => {
+                let medal = `<span class="text-slate-500 text-xs font-bold">${index + 1}</span>`;
+                if (index === 0) medal = '🥇';
+                else if (index === 1) medal = '🥈';
+                else if (index === 2) medal = '🥉';
 
-        function renderEvents() {
-            const eventsList = document.getElementById('events-list');
-            const data = getActiveData();
-            
-            let html = '';
-            data.forEach(ev => {
-                if (!ev.date) return;
-                html += `
-                <div class="event-card bg-white">
-                    <div class="flex justify-between items-start mb-2">
-                        <h3 class="event-title font-bold text-lg">${ev.title}</h3>
-                        <span class="text-xs font-bold px-2 py-1 rounded-md ${getCompStyle(ev.comp).badge}">${ev.comp}</span>
-                    </div>
-                    <div class="text-sm text-slate-500 mb-2 font-medium">
-                        <i class="fa-regular fa-calendar mr-1"></i> ${formatDateRO(ev.date)} 
-                        ${ev.time ? `<i class="fa-regular fa-clock ml-2 mr-1"></i> ${ev.time}` : ''}
-                    </div>
-                    <div class="event-matchup">
-                        <div class="flex items-center gap-2 w-full">
-                            ${logoHTML(ev.home, 32)}
-                            <span class="event-team-name">${ev.home || "Gazde"}</span>
+                return `
+                <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5 mb-2 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <div class="w-7 h-7 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-sm">
+                            ${medal}
                         </div>
-                        <div class="event-vs text-center px-2">${ev.score || 'VS'}</div>
-                        <div class="flex items-center gap-2 w-full justify-end text-right">
-                            <span class="event-team-name">${ev.away || ev.opponent || "Adversari"}</span>
-                            ${logoHTML(ev.away || ev.opponent, 32)}
-                        </div>
+                        <span class="text-sm font-bold text-slate-800">${scorer[0]}</span>
                     </div>
-                    ${ev.scorers ? `<div class="text-xs mt-3 text-slate-600 bg-slate-50 p-2 rounded-lg leading-relaxed border border-slate-100"><strong>Marcatori:</strong> ${ev.scorers}</div>` : ''}
+                    <div class="shrink-0 rounded-lg bg-emerald-50 border border-emerald-200 px-3 py-1 font-black text-emerald-800">
+                        ${scorer[1]} ⚽
+                    </div>
                 </div>
                 `;
-            });
-            eventsList.innerHTML = html;
-        }
-
-        function renderCalendar() {
-            // Placeholder pentru randarea funcționalității calendarului existentă
-            document.getElementById('month-year-display').innerText = `${monthNames[currentMonth]} ${currentYear}`;
-            const daysContainer = document.getElementById('calendar-days');
-            daysContainer.innerHTML = '';
-            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            for(let i = 1; i <= daysInMonth; i++) {
-                daysContainer.innerHTML += `<div class="day-cell border border-slate-100 text-slate-600">${i}</div>`;
-            }
-        }
-
-        function changeMonth(delta) {
-            currentMonth += delta;
-            if(currentMonth > 11) { currentMonth = 0; currentYear++; }
-            if(currentMonth < 0) { currentMonth = 11; currentYear--; }
-            init();
-        }
-
-        function scrollToSection(id, btn) {
-            document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
-            document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
-            if(btn) btn.classList.add('active');
+            }).join('');
         }
 
         function init() {
-            renderNextMatch();
-            renderEvents();
+            const data = getActiveData();
+            data.sort((a, b) => new Date(a.date) - new Date(b.date));
             renderCalendar();
-            renderGolgheteri();
+            renderEvents();
+            renderNextMatch();
+            renderTimeline();
+            renderTopScorers();
         }
 
-        document.addEventListener('DOMContentLoaded', init);
+        function renderCalendar() {
+            const data = getActiveData();
+            const container = document.getElementById('calendar-days');
+            container.innerHTML = '';
+            document.getElementById('month-year-display').innerText = `${monthNames[currentMonth]} ${currentYear}`;
+            
+            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+            const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+            const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
 
+            for (let i = 0; i < startDay; i++) {
+                container.innerHTML += `<div class="day-cell empty"></div>`;
+            }
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+                
+                let matchData = data.filter(e => e.date === dateStr);
+                const hasEvent = matchData.length > 0;
+                const isActive = selectedDate === dateStr;
+                
+                let classes = "day-cell";
+                if (hasEvent) classes += " has-event";
+                if (isActive) classes += " active";
+
+                let innerHtml = `<span>${i}</span>`;
+                
+                if (hasEvent) {
+                    let uniqueComps = [...new Set(matchData.map(e => {
+                        if (e.comp.includes("Campionatul Național")) return "Campionatul Național";
+                        if (e.comp.includes("Cupa Național")) return "Cupa Național";
+                        if (e.comp.includes("Cupa Elitelor")) return "Cupa Elitelor";
+                        return "Altul";
+                    }))];
+
+                    let dotsHtml = `<div class="dots-container">`;
+                    uniqueComps.forEach(comp => {
+                        const style = getCompStyle(comp);
+                        dotsHtml += `<div class="comp-dot ${style.dot}"></div>`;
+                    });
+                    dotsHtml += `</div>`;
+                    innerHtml += dotsHtml;
+                }
+
+                container.innerHTML += `<div class="${classes}" onclick="toggleDate('${dateStr}')">${innerHtml}</div>`;
+            }
+        }
+
+        function toggleDate(dateStr) {
+            if (selectedDate === dateStr) {
+                selectedDate = null;
+            } else {
+                selectedDate = dateStr;
+                const [year, month] = dateStr.split('-').map(Number);
+                currentMonth = month - 1;
+                currentYear = year;
+            }
+            renderCalendar();
+            renderEvents();
+        }
+
+        function changeMonth(dir) {
+            currentMonth += dir;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        }
+
+        function renderEvents() {
+            const data = getActiveData();
+            const list = document.getElementById('events-list');
+            list.innerHTML = '';
+
+            let filteredEvents = data;
+
+            if (selectedDate) {
+                filteredEvents = filteredEvents.filter(e => e.date === selectedDate);
+            }
+
+            if (filteredEvents.length === 0) {
+                list.innerHTML = `<div class="bg-white p-8 text-center rounded-2xl border border-slate-200 text-slate-600 font-medium text-base">Nu sunt meciuri programate pentru data selectată.</div>`;
+                return;
+            }
+
+            filteredEvents.forEach(ev => {
+                const style = getCompStyle(ev.comp);
+                const isCompletedMatch = typeof ev.score === "string" && ev.score.trim() !== "";
+
+                let detailsHTML = "";
+                if (ev.time) {
+                    detailsHTML += `<p class="flex items-center gap-2 text-base"><span class="text-slate-600 font-semibold min-w-[85px]">⌚ Oră:</span> <strong class="text-slate-900 font-bold">${ev.time}</strong></p>`;
+                }
+                if (ev.opponent) {
+                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <strong class="text-slate-900 font-bold">${ev.opponent}</strong></p>`;
+                } else {
+                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <span class="text-slate-500 italic font-medium">Urmează să fie stabilit</span></p>`;
+                }
+                if (ev.location) {
+                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">📍 Locație:</span> <strong class="text-slate-900 font-bold">${ev.location}</strong></p>`;
+                }
+
+                let mapButtonsHTML = "";
+                if (ev.lat && ev.lng) {
+                    mapButtonsHTML = `
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2">
+                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-800 border border-sky-200 px-3 py-2.5 rounded-xl font-bold hover:bg-sky-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
+                                <i class="fa-brands fa-waze text-base"></i> Waze
+                            </a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-2.5 rounded-xl font-bold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
+                                <i class="fa-solid fa-map-location-dot text-base"></i> Google
+                            </a>
+                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-800 border border-slate-200 px-3 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
+                                <i class="fa-solid fa-location-arrow text-base"></i> Apple
+                            </a>
+                        </div>
+                    `;
+                }
+
+                let scorersHTML = "";
+                if (isCompletedMatch && ev.scorers && ev.scorers.trim() !== "") {
+                    const formattedScorers = ev.scorers
+                        .split('|')
+                        .map(s => s.trim())
+                        .filter(Boolean)
+                        .join(' • ');
+
+                    scorersHTML = `
+                        <div class="completed-goals">
+                            <span class="font-bold">Goluri:</span> ${formattedScorers}
+                        </div>
+                    `;
+                }
+
+                let videoLinksHTML = "";
+                if (isCompletedMatch && ev.videoLinks && ev.videoLinks.length > 0) {
+                    const linksBtns = ev.videoLinks.map(link => {
+                        const isYoutube = link.url.includes('youtube.com') || link.url.includes('youtu.be');
+                        const iconClass = isYoutube
+                            ? 'fa-brands fa-youtube text-red-600'
+                            : 'fa-solid fa-satellite-dish text-blue-600';
+
+                        return `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 px-3 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <i class="${iconClass} text-base"></i> ${link.label}
+                        </a>`;
+                    }).join('');
+
+                    videoLinksHTML = `
+                        <div class="completed-video">
+                            <div class="flex flex-wrap gap-2 justify-center">
+                                ${linksBtns}
+                            </div>
+                        </div>
+                    `;
+                }
+
+                const completedResultHTML = isCompletedMatch ? `
+                    <div class="completed-result">
+                        <div class="completed-result-score">${ev.score}</div>
+                    </div>
+                ` : "";
+
+                list.innerHTML += `
+                    <div class="event-card bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition">
+                        <div class="flex flex-wrap justify-between items-start mb-3 gap-2">
+                            <div>
+                                <h3 class="text-xl font-extrabold text-slate-900">${ev.title}</h3>
+                                <div class="text-sm font-semibold text-slate-600 mt-0.5">${formatDateRO(ev.date)}</div>
+                            </div>
+                            <span class="text-xs font-extrabold px-3 py-1.5 rounded-xl border ${style.badge}">${ev.comp}</span>
+                        </div>
+
+                        <div class="event-matchup ${isCompletedMatch ? "event-matchup-completed" : ""}">
+                            <div class="flex items-center gap-2 min-w-0 flex-1">
+                                ${getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" alt="${ev.home}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.home || "Gazde")}</span>`}
+                                <span class="event-team-name truncate">${ev.home || "Gazde"}</span>
+                            </div>
+
+                            <div class="event-matchup-center">
+                                <span class="event-vs">${isCompletedMatch ? "" : "VS"}</span>
+                                ${completedResultHTML}
+                            </div>
+
+                            <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
+                                <span class="event-team-name truncate text-right">${ev.away || "Adversari"}</span>
+                                ${getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" alt="${ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.away || "Adversari")}</span>`}
+                            </div>
+                        </div>
+
+                        ${isCompletedMatch ? scorersHTML : ""}
+                        ${isCompletedMatch ? "" : `<div class="my-3">${detailsHTML}</div>`}
+                        ${isCompletedMatch ? "" : mapButtonsHTML}
+                        ${videoLinksHTML}
+                    </div>
+                `;
+            });
+        }
+
+
+        window.onload = init;
+        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
