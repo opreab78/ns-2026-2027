@@ -3,612 +3,1086 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Stars - Program Meciuri 2026-2027</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome pentru iconițe -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <title>New Stars - Calendar</title>
     
-    <!-- PWA Config -->
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#1e293b">
-    <link rel="apple-touch-icon" href="icon-192.png">
+    <!-- PWA / Apple Meta Tags -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="New Stars">
+    <link rel="apple-touch-icon" href="./ns-icon-192.png">
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" href="sigla-New-Stars-Football-Club-sfinx-football.ro_.png">
 
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #f8fafc;
-            color: #1e293b;
+        body { background-color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+        .day-cell { aspect-ratio: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; border-radius: 0.5rem; transition: all 0.2s; font-size: 0.95rem; font-weight: 600; color: #334155; }
+        .day-cell.empty { background: transparent; cursor: default; }
+        .day-cell:not(.empty) { background-color: #ffffff; border: 1px solid #cbd5e1; cursor: pointer; }
+        .day-cell:not(.empty):hover { background-color: #f1f5f9; border-color: #94a3b8; }
+        .day-cell.has-event { font-weight: bold; background-color: #f8fafc; }
+        .day-cell.active { background-color: #2563eb !important; color: white !important; border-color: #1d4ed8 !important; }
+        .dots-container { display: flex; gap: 4px; margin-top: 4px; height: 6px; }
+        .comp-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .day-cell.active .comp-dot { border: 1px solid rgba(255,255,255,0.5); }
+    
+        .next-match{
+            position:relative;overflow:hidden;
+            border-radius:26px;
+            padding:clamp(18px,4vw,28px);
+            margin-bottom:18px;
+            color:#fff;
+            background:
+              radial-gradient(circle at 82% 18%,rgba(56,189,248,.25),transparent 18rem),
+              linear-gradient(135deg,#06132c 0%,#0a2b5e 58%,#123d7b 100%);
+            box-shadow:0 20px 55px rgba(7,21,47,.22);
         }
-        .countdown-unit {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 12px;
-            padding: 8px 12px;
-            min-width: 60px;
-            text-align: center;
+        .next-match:before{
+            content:"NEXT MATCH";position:absolute;left:50%;right:auto;top:18px;transform:translateX(-50%);
+            font-size:.62rem;letter-spacing:.18em;font-weight:900;color:#7dd3fc;
         }
-        .countdown-number {
-            font-size: 1.25rem;
-            font-weight: 900;
-            color: #ffffff;
-            line-height: 1;
+        .next-match-grid{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:20px}
+        .team-box{text-align:center;min-width:0}
+        .team-crest{
+            width:74px;height:74px;margin:0 auto 9px;border-radius:22px;
+            display:flex;align-items:center;justify-content:center;
+            background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+            font-family:'Manrope',sans-serif;font-size:1.15rem;font-weight:900;
+            box-shadow:0 12px 30px rgba(0,0,0,.18);
         }
-        .countdown-label {
-            font-size: 0.65rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #cbd5e1;
-            margin-top: 4px;
+        .team-name{font-family:'Manrope',sans-serif;font-size:clamp(.9rem,2vw,1.15rem);font-weight:900;line-height:1.15}
+        .match-vs{font-size:1.15rem;font-weight:900;color:#93c5fd}
+        .match-meta{text-align:center;margin-top:14px;color:#cbd5e1;font-size:.82rem;font-weight:700}
+        .countdown{display:flex;justify-content:center;gap:7px;margin-top:16px}
+        .countdown-unit{min-width:58px;padding:9px 7px;border-radius:13px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.1);text-align:center}
+        .countdown-number{font-size:1.2rem;font-weight:900;color:#fff;line-height:1}
+        .countdown-label{font-size:.55rem;text-transform:uppercase;letter-spacing:.08em;color:#93c5fd;margin-top:4px;font-weight:800}
+
+        .season-timeline{
+            background:rgba(255,255,255,.82);border:1px solid var(--line);
+            border-radius:22px;padding:17px;margin-top:14px;box-shadow:0 10px 28px rgba(15,23,42,.06)
         }
-        .event-card {
-            border-radius: 16px;
-            border: 1px solid #e2e8f0;
-            transition: all 0.2s ease;
-            padding: 20px;
-            margin-bottom: 16px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        .timeline-title{font-family:'Manrope',sans-serif;font-weight:900;font-size:1rem;margin-bottom:12px}
+        .timeline-scroll{display:flex;gap:10px;overflow:auto;padding:3px 2px 7px;scrollbar-width:thin}
+        .timeline-item{min-width:112px;border:1px solid #dbe4ef;background:#fff;border-radius:15px;padding:10px}
+        .timeline-date{font-size:.65rem;font-weight:900;color:#2563eb;text-transform:uppercase}
+        .timeline-event{font-size:.75rem;font-weight:800;color:#0f172a;margin-top:4px;line-height:1.2}
+        .timeline-comp{font-size:.62rem;color:#64748b;margin-top:4px;font-weight:700}
+        .form-panel{
+            background:#fff;border:1px solid var(--line);border-radius:22px;padding:17px;
+            margin-top:14px;box-shadow:0 10px 28px rgba(15,23,42,.06)
         }
-        .event-card:hover {
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
-            border-color: #cbd5e1;
+
+        .bottom-nav{display:none}
+        @media(max-width:767px){
+            .next-match{border-radius:21px;padding:18px 14px;margin-bottom:12px}
+            .next-match:before{left:50%;right:auto;top:13px;transform:translateX(-50%);font-size:.52rem}
+            .next-match-grid{gap:8px}
+            .team-crest{width:58px;height:58px;border-radius:17px;font-size:.9rem}
+            .team-crest-img{width:58px!important;height:58px!important;border-radius:17px}
+            .team-crest-fallback{width:58px;height:58px;border-radius:17px;font-size:.9rem}
+            .team-name{font-size:.82rem}
+            .match-vs{font-size:.95rem}
+            .countdown{gap:4px}
+            .countdown-unit{min-width:50px;padding:8px 4px}
+            .countdown-number{font-size:1.05rem}
+            .bottom-nav{
+                position:fixed;z-index:50;left:10px;right:10px;bottom:10px;
+                display:grid;grid-template-columns:repeat(3,1fr);gap:5px;
+                padding:6px;border-radius:19px;background:rgba(7,21,47,.94);
+                box-shadow:0 15px 35px rgba(7,21,47,.3);backdrop-filter:blur(16px)
+            }
+            .bottom-nav button{border:0;background:transparent;color:#cbd5e1;padding:8px 5px;border-radius:13px;font-size:.63rem;font-weight:800}
+            .bottom-nav button.active{background:#fff;color:#0b2858}
+            .bottom-nav i{display:block;font-size:.9rem;margin-bottom:3px}
+            body{padding-bottom:78px!important}
         }
-        .event-matchup {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 16px;
-            border: 1px solid #f1f5f9;
+
+    
+        @media(max-width:767px){
+            .bottom-nav{
+                left:50% !important;
+                right:auto !important;
+                transform:translateX(-50%) !important;
+                width:156px !important;
+                height:50px !important;
+                min-height:50px !important;
+                padding:4px !important;
+                display:grid !important;
+                grid-template-columns:repeat(3, 1fr) !important;
+                gap:3px !important;
+                align-items:center !important;
+                justify-items:center !important;
+                border-radius:16px !important;
+            }
+            .bottom-nav button{
+                width:46px !important;
+                height:42px !important;
+                min-width:46px !important;
+                min-height:42px !important;
+                padding:0 !important;
+                margin:0 !important;
+                display:flex !important;
+                align-items:center !important;
+                justify-content:center !important;
+                text-align:center !important;
+                font-size:0 !important;
+                line-height:1 !important;
+                gap:0 !important;
+            }
+            .bottom-nav button i{
+                display:block !important;
+                margin:0 !important;
+                font-size:1rem !important;
+                line-height:1 !important;
+            }
+            .bottom-nav button .sr-only{
+                position:absolute !important;
+                width:1px !important;
+                height:1px !important;
+                padding:0 !important;
+                margin:-1px !important;
+                overflow:hidden !important;
+                clip:rect(0,0,0,0) !important;
+                white-space:nowrap !important;
+                border:0 !important;
+            }
         }
-        .event-team-name {
-            font-size: 0.875rem;
-            font-weight: 800;
-            color: #0f172a;
+
+.completed-result-score{
+            font-size:2.35rem !important;
+            line-height:1 !important;
+            font-weight:950 !important;
+            color:#071f4b;
+            white-space:nowrap;
+            letter-spacing:-.04em;
         }
-        .event-vs {
-            font-size: 0.75rem;
-            font-weight: 900;
-            color: #64748b;
-            background: #e2e8f0;
-            padding: 4px 8px;
-            border-radius: 6px;
+
+        .next-match-competition{
+            font-size:.62rem;
+            line-height:1.15;
+            font-weight:900;
+            letter-spacing:.08em;
+            text-transform:uppercase;
+            color:#7dd3fc;
+            margin-bottom:4px;
+            max-width:180px;
+            margin-left:auto;
+            margin-right:auto;
         }
-        .completed-result-score {
-            font-size: 1.25rem;
-            font-weight: 900;
-            color: #0284c7;
-            background: #e0f2fe;
-            padding: 4px 12px;
-            border-radius: 8px;
+        @media(max-width:480px){
+            .next-match-competition{
+                font-size:.52rem;
+                max-width:120px;
+            }
         }
-        /* Calendar Styles */
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, minmax(0, 1fr));
-            gap: 4px;
+
+</style>
+
+    <meta name="theme-color" content="#07152f">
+    <meta name="color-scheme" content="dark light">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root{
+            --navy:#07152f;
+            --navy2:#0b2148;
+            --blue:#2563eb;
+            --cyan:#38bdf8;
+            --green:#22c55e;
+            --ink:#0f172a;
+            --muted:#64748b;
+            --line:rgba(148,163,184,.22);
+            --surface:rgba(255,255,255,.94);
         }
-        .day-cell {
-            aspect-ratio: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            position: relative;
-            background: #f8fafc;
-            border: 1px solid transparent;
+        *{box-sizing:border-box}
+        html{scroll-behavior:smooth}
+        body{
+            margin:0;
+            min-height:100vh;
+            background:
+                radial-gradient(circle at 15% 0%, rgba(37,99,235,.16), transparent 32rem),
+                radial-gradient(circle at 95% 12%, rgba(56,189,248,.12), transparent 28rem),
+                linear-gradient(180deg,#f8fbff 0%,#eef4fb 100%);
+            font-family:'Inter','Segoe UI',sans-serif;
+            color:var(--ink);
         }
-        .day-cell:hover {
-            background: #e2e8f0;
+        body:before{
+            content:"";
+            position:fixed; inset:0; pointer-events:none; z-index:-1;
+            background-image:linear-gradient(rgba(15,23,42,.025) 1px,transparent 1px),linear-gradient(90deg,rgba(15,23,42,.025) 1px,transparent 1px);
+            background-size:32px 32px;
+            mask-image:linear-gradient(to bottom,black,transparent 75%);
         }
-        .day-cell.empty {
-            cursor: default;
-            background: transparent;
+        .app-shell{max-width:1180px!important}
+        .hero{
+            position:relative; overflow:hidden;
+            border-radius:28px;
+            padding:clamp(18px,4vw,34px);
+            background:linear-gradient(135deg,#06132c 0%,#0b2858 60%,#123b7a 100%);
+            box-shadow:0 24px 70px rgba(7,21,47,.22);
+            color:white;
+            margin-bottom:22px;
         }
-        .day-cell.has-event {
-            background: #f0fdf4;
-            border-color: #bbf7d0;
-            color: #166534;
+        .hero:after{
+            content:""; position:absolute; width:280px;height:280px;right:-90px;top:-120px;
+            border-radius:50%; background:rgba(56,189,248,.16); filter:blur(4px);
         }
-        .day-cell.active {
-            background: #0284c7 !important;
-            color: white !important;
-            border-color: #0284c7 !important;
+        .hero-grid{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:22px}
+        .brand{display:flex;align-items:center;gap:15px;min-width:0}
+        .brand-logo{width:64px;height:64px;flex:0 0 64px;object-fit:contain;filter:drop-shadow(0 8px 15px rgba(0,0,0,.25))}
+        .eyebrow{font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800;color:#7dd3fc;margin-bottom:5px}
+        #main-title{font-family:'Manrope',sans-serif;font-size:clamp(1.45rem,4vw,2.3rem)!important;line-height:1.08;color:#fff!important;margin:0}
+        .hero-sub{color:#cbd5e1;font-size:.9rem;margin-top:7px;font-weight:600}
+        .hero-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+        #install-btn{border:1px solid rgba(255,255,255,.15)!important;background:#22c55e!important;box-shadow:0 8px 25px rgba(34,197,94,.22)!important}
+        .category-switch{display:flex!important;background:rgba(255,255,255,.10)!important;border:1px solid rgba(255,255,255,.13);padding:4px!important;border-radius:14px!important}
+        .category-switch button{min-width:72px}
+        .category-switch button:not(.bg-blue-600){color:#e2e8f0!important}
+        .category-switch .bg-blue-600{background:#fff!important;color:#0b2858!important;box-shadow:0 5px 16px rgba(0,0,0,.18)!important}
+        .section-card{
+            background:var(--surface);
+            border:1px solid var(--line);
+            box-shadow:0 12px 35px rgba(15,23,42,.07);
+            backdrop-filter:blur(14px);
         }
-        .dots-container {
-            display: flex;
-            gap: 2px;
-            position: absolute;
-            bottom: 4px;
+        .calendar-card{border-radius:24px!important}
+        .calendar-grid{gap:5px!important}
+        .day-cell{
+            min-width:0;
+            aspect-ratio:1;
+            border-radius:12px!important;
+            font-size:.82rem!important;
+            border-color:#dbe4ef!important;
         }
-        .comp-dot {
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
+        .day-cell:not(.empty):hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(37,99,235,.10)}
+        .day-cell.active{background:linear-gradient(135deg,#2563eb,#1747b4)!important;box-shadow:0 8px 18px rgba(37,99,235,.25)}
+        .dots-container{gap:3px!important}
+        .comp-dot{width:5px!important;height:5px!important}
+        .event-card{
+            position:relative; overflow:hidden;
+            border-radius:22px!important;
+            border:1px solid var(--line)!important;
+            padding:22px!important;
+            box-shadow:0 12px 34px rgba(15,23,42,.07)!important;
+            transition:transform .2s,box-shadow .2s,border-color .2s;
         }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(255, 255, 255, 0.9);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid #e2e8f0;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            z-index: 50;
+        .event-card:hover{transform:translateY(-3px);box-shadow:0 18px 42px rgba(15,23,42,.11)!important;border-color:rgba(37,99,235,.22)!important}
+        .event-card:before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:linear-gradient(#2563eb,#38bdf8)}
+        .event-title{font-family:'Manrope',sans-serif}
+
+        .team-crest-img{display:block;object-fit:contain;border-radius:16px;filter:drop-shadow(0 8px 14px rgba(0,0,0,.18))}
+        .team-crest-fallback{width:74px;height:74px;border-radius:22px;align-items:center;justify-content:center;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);font-family:'Manrope',sans-serif;font-size:1.15rem;font-weight:900;color:#fff;box-shadow:0 12px 30px rgba(0,0,0,.18)}
+        .event-matchup{display:flex;align-items:center;gap:10px;margin-top:12px;padding:11px 12px;border-radius:16px;background:#f8fafc;border:1px solid #e8eef5}
+        .event-team-logo{width:40px;height:40px;object-fit:contain;border-radius:10px;display:block!important}
+        .event-team-logo-fallback{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#e2e8f0;color:#334155;font-size:.65rem;font-weight:900}
+        .event-team-name{font-size:.78rem;font-weight:900;line-height:1.15}
+        .event-vs{font-size:.65rem;font-weight:900;color:#94a3b8}
+
+
+        .month-nav{font-family:'Manrope',sans-serif}
+        .mobile-only{display:none}
+        @media(max-width:767px){
+            body{padding:0!important}
+            .app-shell{width:100%;padding:10px 10px 28px!important}
+            .hero{border-radius:22px;padding:16px 15px;margin-bottom:14px}
+            .hero-grid{align-items:flex-start;flex-direction:column;gap:15px}
+            .brand{gap:11px}
+            .brand-logo{width:52px;height:52px;flex-basis:52px}
+            .hero-actions{width:100%;justify-content:stretch;display:grid;grid-template-columns:1fr}
+            .category-switch{width:100%!important}
+            .category-switch button{flex:1!important;padding:10px 8px!important}
+            #install-btn{width:100%!important}
+            .grid{gap:12px!important}
+            .calendar-card{position:static!important;padding:13px!important}
+            .day-cell{font-size:.78rem!important;border-radius:10px!important}
+            .calendar-grid{gap:3px!important}
+            #events-list{gap:10px!important}
+            .event-card{padding:17px!important;border-radius:18px!important}
+            .event-card h3{font-size:1.05rem!important;line-height:1.2}
+            .event-card .text-base{font-size:.9rem!important}
+            .event-card .min-w-\[85px\]{min-width:78px!important}
+            .event-card .flex-wrap{gap:7px!important}
+            .event-card a{min-height:43px}
+            .mobile-only{display:block}
+            .desktop-label{display:none}
         }
-        .bottom-nav button {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #64748b;
-            font-size: 0.7rem;
-            font-weight: 600;
-            background: none;
-            border: none;
-            cursor: pointer;
-            transition: color 0.15s;
+        @media(min-width:768px){
+            .app-shell{padding-top:30px!important;padding-bottom:50px!important}
         }
-        .bottom-nav button.active {
-            color: #0284c7;
-        }
-        .bottom-nav button i {
-            font-size: 1.25rem;
-            margin-bottom: 2px;
+        @media(max-width:380px){
+            .day-cell{font-size:.72rem!important}
+            .brand-logo{width:44px;height:44px;flex-basis:44px}
+            #main-title{font-size:1.3rem!important}
         }
     </style>
+
+<script>
+        function goHomeTop() {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
+            const home = document.querySelector('.bottom-nav button[aria-label="Acasă"]');
+            if (home) home.classList.add("active");
+        }
+        </script>
 </head>
-<body class="pb-24">
+<body class="p-3 md:p-8 text-slate-900">
+    <div class="app-shell max-w-6xl mx-auto">
 
-    <!-- Header Principal -->
-    <header class="bg-slate-900 text-white shadow-md sticky top-0 z-40">
-        <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
-            <div class="flex items-center space-x-3">
-                <div class="w-10 h-10 bg-blue-600 rounded-xl flex items-center justify-center font-black text-xl shadow-lg shadow-blue-500/30">NS</div>
-                <div>
-                    <h1 class="font-black text-base tracking-tight leading-none">NEW STARS</h1>
-                    <p class="text-[0.65rem] text-slate-400 font-semibold uppercase tracking-wider mt-0.5">Sezonul 2026-2027</p>
+    
+        
+        <!-- HEADER & SELECTOR CATEGORIE -->
+        <header class="hero">
+            <div class="hero-grid">
+                <div class="brand">
+                    <img src="sigla-New-Stars-Football-Club-sfinx-football.ro_.png" alt="Logo New Stars" class="brand-logo">
+                    <div>
+                                                <h1 id="main-title">New Stars - U16</h1>
+                                            </div>
+                </div>
+            <div class="hero-actions">
+                <!-- BUTOANE COMUTARE U15 / U16 + INSTALARE -->
+                <div class="flex flex-col md:flex-row gap-2 w-full md:w-auto items-center">
+                <button id="install-btn" class="hidden w-full md:w-auto px-4 py-2.5 rounded-lg text-sm font-bold shadow bg-emerald-600 text-white hover:bg-emerald-700 transition flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-download"></i> Instalează Aplicația
+                </button>
+                <div class="flex bg-slate-200 p-1.5 rounded-xl w-full md:w-auto justify-center">
+                    <button id="btn-u16" onclick="switchCategory('U16')" class="flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white">U16</button>
+                <button id="btn-u15" onclick="switchCategory('U15')" class="flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900">U15</button>
                 </div>
             </div>
+        </div></div></header>
+
+        <section id="next-match" class="next-match" aria-label="Următorul meci"></section>
+
+
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            <!-- Comutator Echipă (U15 / U16) -->
-            <div class="bg-slate-800 p-1 rounded-xl flex border border-slate-700">
-                <button id="btn-u15" onclick="switchTeam('U15')" class="px-3 py-1.5 rounded-lg text-xs font-black transition bg-blue-600 text-white shadow">U15</button>
-                <button id="btn-u16" onclick="switchTeam('U16')" class="px-3 py-1.5 rounded-lg text-xs font-black transition text-slate-400 hover:text-white">U16</button>
+            <!-- COLOANA STÂNGA: CALENDAR -->
+            <div id="calendar-anchor" class="md:col-span-1 space-y-4">
+                <div class="section-card calendar-card bg-white p-4 md:p-5 rounded-2xl border border-slate-200 shadow-sm sticky top-4">
+                    <div class="flex justify-between items-center mb-4">
+                        <button onclick="changeMonth(-1)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition flex items-center justify-center text-lg">&lt;</button>
+                        <h2 id="month-year-display" class="month-nav font-bold text-slate-800 text-base uppercase tracking-wide"></h2>
+                        <button onclick="changeMonth(1)" class="w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition flex items-center justify-center text-lg">&gt;</button>
+                    </div>
+                    <div class="calendar-grid text-xs text-slate-500 font-bold mb-2 text-center">
+                        <div>Lu</div><div>Ma</div><div>Mi</div><div>Jo</div><div>Vi</div><div>Sâ</div><div>Du</div>
+                    </div>
+                    <div id="calendar-days" class="calendar-grid"></div>
+                </div>
             </div>
+
+            <!-- COLOANA DREAPTA: LISTA MECIURI -->
+            <div id="events-anchor" class="md:col-span-2 space-y-4"><div id="events-list"></div></div>
+            
         </div>
-    </header>
+    </div>
 
-    <main class="max-w-3xl mx-auto px-4 pt-4 space-y-6">
+    </div>
 
-        <!-- Widget Următorul Meci -->
-        <section id="next-match-section" class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-6 shadow-xl relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-blue-500/10 rounded-full blur-2xl pointer-events-none"></div>
-            
-            <div class="flex justify-between items-center mb-4">
-                <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 px-3 py-1 rounded-full text-[0.65rem] font-black uppercase tracking-wider">Următorul Meci</span>
-                <span id="next-match-comp" class="text-xs font-bold text-slate-400">Campionatul Național</span>
-            </div>
-
-            <div id="next-match-teams" class="flex items-center justify-between my-6">
-                <!-- Se va popula dinamic -->
-            </div>
-
-            <div class="bg-white/5 rounded-2xl p-4 border border-white/10 flex flex-col items-center">
-                <div class="text-xs font-bold text-slate-300 mb-2 uppercase tracking-wide">Timp Rămas</div>
-                <div id="countdown" class="flex gap-2">
-                    <!-- Cronometru dinamic -->
-                </div>
-            </div>
-        </section>
-
-        <!-- Ultimele Rezultate -->
-        <section class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200">
-            <h2 class="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3 flex items-center">
-                <i class="fa-solid fa-clock-rotate-left mr-2 text-blue-600"></i> Ultimele Rezultate
-            </h2>
-            <div id="recent-results" class="space-y-2">
-                <!-- Se va popula dinamic -->
-            </div>
-        </section>
-
-        <!-- Calendar Interactiv -->
-        <section id="calendar-section" class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200">
-            <div class="flex justify-between items-center mb-4">
-                <h2 id="month-year-display" class="font-black text-lg text-slate-900"></h2>
-                <div class="flex gap-1">
-                    <button onclick="changeMonth(-1)" class="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-                    <button onclick="changeMonth(1)" class="w-8 h-8 rounded-xl bg-slate-100 flex items-center justify-center text-slate-600 hover:bg-slate-200 transition"><i class="fa-solid fa-chevron-right text-xs"></i></button>
-                </div>
-            </div>
-
-            <!-- Zilele săptămânii -->
-            <div class="calendar-grid mb-2 text-center text-[0.65rem] font-black text-slate-400 uppercase">
-                <div>Lu</div><div>Ma</div><div>Mi</div><div>Jo</div><div>Vi</div><div>Sâ</div><div>Du</div>
-            </div>
-
-            <!-- Zilele lunii -->
-            <div id="calendar-days" class="calendar-grid">
-                <!-- Se va popula dinamic -->
-            </div>
-        </section>
-
-        <!-- Lista Evenimente / Meciuri -->
-        <section id="schedule-section">
-            <div class="flex justify-between items-center mb-4">
-                <h2 class="font-black text-lg text-slate-900">Program & Meciuri</h2>
-                <button onclick="selectDate(null)" class="text-xs font-bold text-blue-600 hover:underline">Arată tot</button>
-            </div>
-            <div id="events-list">
-                <!-- Se va popula dinamic -->
-            </div>
-        </section>
-
-    </main>
-
-    <!-- Navigare Mobilă Inferioară -->
-    <nav class="bottom-nav">
-        <button onclick="scrollToSection('next-match-section', this)" class="active">
-            <i class="fa-solid fa-house"></i>
-            Acasă
-        </button>
-        <button onclick="scrollToSection('calendar-section', this)">
-            <i class="fa-solid fa-calendar-days"></i>
-            Calendar
-        </button>
-        <button onclick="scrollToSection('schedule-section', this)">
-            <i class="fa-solid fa-futbol"></i>
-            Meciuri
-        </button>
+    <nav class="bottom-nav" aria-label="Navigare mobilă">
+        <button class="active" type="button" aria-label="Acasă" title="Acasă" onclick="goHomeTop(); return false;"><i class="fa-solid fa-house" aria-hidden="true"></i><span class="sr-only">Acasă</span></button>
+        <button type="button" aria-label="Calendar" title="Calendar" onclick="scrollToSection('calendar-anchor', this)"><i class="fa-regular fa-calendar" aria-hidden="true"></i><span class="sr-only">Calendar</span></button>
+        <button type="button" aria-label="Meciuri" title="Meciuri" onclick="scrollToSection('events-anchor', this)"><i class="fa-solid fa-futbol" aria-hidden="true"></i><span class="sr-only">Meciuri</span></button>
     </nav>
 
-    <!-- Date și Scripturi aplicație -->
     <script>
-        // Baze de date separate pentru U15 și U16
-        const scheduleU15 = [
-            {
-                id: 1,
-                date: "2026-09-05",
-                time: "10:00",
-                comp: "Campionatul Național U15",
-                title: "Etapa 1 - Campionat",
-                home: "New Stars",
-                away: "Academia Rapid U15",
-                score: "3 - 1",
-                scorers: "Popescu (2), Ionescu",
-                location: "Baza Sportivă New Stars",
-                lat: 44.4268,
-                lng: 26.1025,
-                videoLinks: [{ label: "Rezumat Video", url: "https://youtube.com" }]
-            },
-            {
-                id: 2,
-                date: "2026-09-12",
-                time: "12:30",
-                comp: "Campionatul Național U15",
-                title: "Etapa 2 - Campionat",
-                home: "CSA Steaua U15",
-                away: "New Stars",
-                score: "",
-                location: "Stadion Ghencea Anexă",
-                lat: 44.4150,
-                lng: 26.0450,
-                videoLinks: []
-            }
-        ];
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js', { scope: './' })
+                    .then(reg => {
+                        reg.addEventListener('updatefound', () => {
+                            const newWorker = reg.installing;
+                            newWorker.addEventListener('statechange', () => {
+                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                                    window.location.reload();
+                                }
+                            });
+                        });
+                    })
+                    .catch(err => console.log('Eroare Service Worker:', err));
+            });
+        }
+        // --- INSTALL PWA: native install only ---
+let deferredPrompt = null;
+const installBtn = document.getElementById('install-btn');
 
-        const scheduleU16 = [
-            {
-                id: 101,
-                date: "2026-09-06",
-                time: "11:00",
-                comp: "Campionatul Național U16",
-                title: "Etapa 1 - U16",
-                home: "New Stars U16",
-                away: "Dinamo U16",
-                score: "2 - 2",
-                scorers: "Dumitrescu, Stancu",
-                location: "Baza Sportivă New Stars",
-                lat: 44.4268,
-                lng: 26.1025,
-                videoLinks: []
-            }
-        ];
+function isIOS() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+        (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+}
 
-        let currentTeam = 'U15';
-        let currentDate = new Date(2026, 8, 1); // Septembrie 2026 (luna 8)
-        let currentMonth = currentDate.getMonth();
-        let currentYear = currentDate.getFullYear();
-        let selectedDate = null;
+function isStandalone() {
+    return window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true;
+}
 
-        const monthNames = ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"];
+function showInstallButton() {
+    if (!installBtn || isStandalone()) return;
+    installBtn.classList.remove('hidden');
+    installBtn.classList.add('flex');
+}
 
-        function getActiveData() {
-            return currentTeam === 'U15' ? scheduleU15 : scheduleU16;
+function hideInstallButton() {
+    if (!installBtn) return;
+    installBtn.classList.add('hidden');
+    installBtn.classList.remove('flex');
+}
+
+// Android/Chrome/Edge: this is the ONLY trigger used for native PWA installation.
+// We deliberately do NOT show an Android fallback to "Add to Home screen".
+window.addEventListener('beforeinstallprompt', (event) => {
+    event.preventDefault();
+    deferredPrompt = event;
+    showInstallButton();
+});
+
+window.addEventListener('appinstalled', () => {
+    deferredPrompt = null;
+    hideInstallButton();
+});
+
+function showIOSInstallInstructions() {
+    const existing = document.getElementById('ios-install-help');
+    if (existing) existing.remove();
+
+    const overlay = document.createElement('div');
+    overlay.id = 'ios-install-help';
+    overlay.className = 'fixed inset-0 z-[100] flex items-end sm:items-center justify-center bg-slate-950/60 p-4';
+    overlay.innerHTML = `
+        <div class="w-full max-w-md rounded-3xl bg-white p-6 shadow-2xl">
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <div class="text-xl font-black text-slate-900">Instalează aplicația</div>
+                    <div class="mt-1 text-sm font-medium text-slate-500">New Stars Football Club</div>
+                </div>
+                <button type="button" id="close-ios-install"
+                    class="w-9 h-9 rounded-full bg-slate-100 text-slate-600 font-black">×</button>
+            </div>
+
+            <div class="mt-6 space-y-4 text-slate-800">
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 shrink-0 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-black">1</div>
+                    <div class="text-sm leading-6">În Safari, apasă <strong>Share</strong> <span class="inline-flex items-center justify-center w-7 h-7 mx-1 rounded-lg bg-slate-100">↗</span>.</div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 shrink-0 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-black">2</div>
+                    <div class="text-sm leading-6">Alege <strong>„Add to Home Screen”</strong> / <strong>„Adaugă la ecranul principal”</strong>.</div>
+                </div>
+                <div class="flex gap-3">
+                    <div class="w-8 h-8 shrink-0 rounded-full bg-blue-50 text-blue-700 flex items-center justify-center font-black">3</div>
+                    <div class="text-sm leading-6">Apasă <strong>„Add”</strong> / <strong>„Adaugă”</strong>.</div>
+                </div>
+            </div>
+
+            <button type="button" id="close-ios-install-2"
+                class="mt-6 w-full rounded-2xl bg-slate-900 px-5 py-3 text-white font-extrabold">
+                Am înțeles
+            </button>
+        </div>
+    `;
+
+    document.body.appendChild(overlay);
+    const close = () => overlay.remove();
+    document.getElementById('close-ios-install').onclick = close;
+    document.getElementById('close-ios-install-2').onclick = close;
+    overlay.onclick = (e) => { if (e.target === overlay) close(); };
+}
+
+if (installBtn) {
+    installBtn.addEventListener('click', async () => {
+        if (isStandalone()) {
+            hideInstallButton();
+            return;
         }
 
-        function switchTeam(team) {
-            currentTeam = team;
-            document.getElementById('btn-u15').className = team === 'U15' ? "px-3 py-1.5 rounded-lg text-xs font-black transition bg-blue-600 text-white shadow" : "px-3 py-1.5 rounded-lg text-xs font-black transition text-slate-400 hover:text-white";
-            document.getElementById('btn-u16').className = team === 'U16' ? "px-3 py-1.5 rounded-lg text-xs font-black transition bg-blue-600 text-white shadow" : "px-3 py-1.5 rounded-lg text-xs font-black transition text-slate-400 hover:text-white";
-            
+        // iOS has no beforeinstallprompt. The Home Screen installation is
+        // standalone because the manifest declares display: standalone.
+        if (isIOS()) {
+            showIOSInstallInstructions();
+            return;
+        }
+
+        // Android: only use the real browser installation prompt.
+        if (!deferredPrompt) {
+            hideInstallButton();
+            return;
+        }
+
+        deferredPrompt.prompt();
+        const choice = await deferredPrompt.userChoice;
+        if (choice.outcome === 'accepted') {
+            hideInstallButton();
+        }
+        deferredPrompt = null;
+    });
+}
+
+// Never manufacture an install button on Android. If Chrome doesn't provide
+// beforeinstallprompt, the site is not currently offering native installation.
+if (isStandalone()) {
+    hideInstallButton();
+}
+
+// iOS has no native prompt event, so its button is intentionally explicit.
+if (isIOS() && !isStandalone()) {
+    setTimeout(showInstallButton, 300);
+}
+
+        const u15EventsData = [
+            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Vezi meci", url: "https://youtube.com"}] },
+            { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-02-27", title: "Etapa 5", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-09", title: "Semifinale Grupe", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+
+            { date: "2026-09-01", title: "Etapa Eliminatorie 1", comp: "Cupa Național U15", time: "11:00", opponent: "NFC Arena Academy", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "NFC Arena Academy", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-28", title: "Etapa Eliminatorie 2", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-12-06", title: "Șaisprezecimi", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-06", title: "Optimi", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-31", title: "Sferturi", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-21", title: "Semifinale", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-19", title: "Finala", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+
+            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U15", time: "19:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "3:1", scorers: "⚽Draganuta Dimi, ⚽Cârjan Iannis, ⚽Serban Bogdan", videoLinks: [] },
+            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U15", time: "17:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "6:3", scorers: "⚽⚽Mihai Patrick, ⚽⚽Cârjan Iannis, ⚽Oprea Cezar, ⚽Serban Bogdan", videoLinks: [{label: "Live", url: "https://www.youtube.com/watch?v=T3L5WoyH6Gw"}] },
+            { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U15", time: "14:00", opponent: "MX PRO Academy", location: "Cocoșești", lat: "44.99562155095854", lng: "25.985000556719196", home: "MX PRO Academy", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U15", time: "20:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U15", time: "14:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-09-26", title: "Etapa 6", comp: "Campionatul Național U15", time: "14:00", opponent: "Unirea Bascov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Unirea Bascov", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-03", title: "Etapa 7", comp: "Campionatul Național U15", time: "14:00", opponent: "CSM Ploieşti", location: "Baza Sportivă Teleajen", lat: "44.942930783857655", lng: "26.091011020530072", home: "CSM Ploieşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-10", title: "Etapa 8", comp: "Campionatul Național U15", time: "14:00", opponent: "CN Dinicu Golescu", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CN Dinicu Golescu", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-24", title: "Etapa 10", comp: "Campionatul Național U15", time: "17:00", opponent: "Kinder Brașov", location: "Textila – Lunca Câlnicului", lat: "45.75315475265822", lng: "25.7767392421678", home: "Kinder Brașov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-31", title: "Etapa 11", comp: "Campionatul Național U15", time: "14:00", opponent: "Flacăra Moreni", location: "Flacăra", lat: "44.98205482985092", lng: "25.65009898047085", home: "Flacăra Moreni", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-07", title: "Etapa 12", comp: "Campionatul Național U15", time: "14:00", opponent: "MX PRO Academy", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "MX PRO Academy", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-14", title: "Etapa 13", comp: "Campionatul Național U15", time: "14:00", opponent: "Star Mioveni", location: "Baza Sportivă Grup Şcolar Colibaşi", lat: "44.937666750662075", lng: "24.921499173559944", home: "Star Mioveni", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-21", title: "Etapa 14", comp: "Campionatul Național U15", time: "14:00", opponent: "LPS Viitorul Piteşti", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "LPS Viitorul Piteşti", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-28", title: "Etapa 15", comp: "Campionatul Național U15", time: "14:00", opponent: "Unirea Bascov", location: "Stadion: Comunal VALEA URSULUI - AG", lat: "44.887261042829394", lng: "24.77873362322879", home: "Unirea Bascov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-13", title: "Etapa 16", comp: "Campionatul Național U15", time: "14:00", opponent: "CSM Ploieşti", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CSM Ploieşti", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-20", title: "Etapa 17", comp: "Campionatul Național U15", time: "14:00", opponent: "CN Dinicu Golescu", location: "Muscelul 2 CÂMPULUNG", lat: "45.26549452962842", lng: "25.046907087948732", home: "CN Dinicu Golescu", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-03", title: "Etapa 19", comp: "Campionatul Național U15", time: "14:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-10", title: "Etapa 20", comp: "Campionatul Național U15", time: "14:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-17", title: "Etapa 21", comp: "Campionatul Național U15", time: "14:00", opponent: "MX PRO Academy", location: "Cocoșești", lat: "44.99562155095854", lng: "25.985000556719196", home: "MX PRO Academy", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-24", title: "Etapa 22", comp: "Campionatul Național U15", time: "14:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-08", title: "Etapa 23", comp: "Campionatul Național U15", time: "14:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-15", title: "Etapa 24", comp: "Campionatul Național U15", time: "14:00", opponent: "Unirea Bascov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Unirea Bascov", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-22", title: "Etapa 25", comp: "Campionatul Național U15", time: "14:00", opponent: "CSM Ploieşti", location: "Baza Sportivă Teleajen", lat: "44.942930783857655", lng: "26.091011020530072", home: "CSM Ploieşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-29", title: "Etapa 26", comp: "Campionatul Național U15", time: "14:00", opponent: "CN Dinicu Golescu", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CN Dinicu Golescu", score: "", scorers: "", videoLinks: [] }
+        ];
+
+        const u16EventsData = [
+            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Vezi meci", url: "https://youtube.com"}] },
+            { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-02-27", title: "Etapa 5", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-09", title: "Semifinale Grupe", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+
+            { date: "2026-09-01", title: "Etapa Eliminatorie 1", comp: "Cupa Național U16", time: "09:00", opponent: "NFC Arena Academy", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "NFC Arena Academy", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-28", title: "Etapa Eliminatorie 2", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-12-06", title: "Șaisprezecimi", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-06", title: "Optimi", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-31", title: "Sferturi", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-21", title: "Semifinale", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-19", title: "Finala", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+
+            { date: "2026-08-22", title: "Etapa 1", comp: "Campionatul Național U16", time: "17:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "1:3", scorers: "⚽Hoang Ming", videoLinks: [{label: "Live", url: "https://www.youtube.com/watch?v=y7M_q1jBdj8&t=306s"}, {label: "Veo", url: "https://www.youtube.com/live/zd0O3TBnefc?is=KP0oamR_tqROJ3QG"}] },
+            { date: "2026-08-29", title: "Etapa 2", comp: "Campionatul Național U16", time: "15:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "8:3", scorers: "⚽⚽⚽⚽Barbu Marco, ⚽⚽Hoang Ming, ⚽Matei David, ⚽Borş Eric", [{label: "Live", url: "https://www.youtube.com/watch?v=r9mGvqwrMh8"}] },
+            { date: "2026-09-05", title: "Etapa 3", comp: "Campionatul Național U16", time: "12:00", opponent: "MX PRO Academy", location: "Cocoșești", lat: "44.99562155095854", lng: "25.985000556719196", home: "MX PRO Academy", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-09-12", title: "Etapa 4", comp: "Campionatul Național U16", time: "18:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U16", time: "12:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-09-26", title: "Etapa 6", comp: "Campionatul Național U16", time: "12:00", opponent: "Unirea Bascov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Unirea Bascov", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-03", title: "Etapa 7", comp: "Campionatul Național U16", time: "12:00", opponent: "CSM Ploieşti", location: "Baza Sportivă Teleajen", lat: "44.942930783857655", lng: "26.091011020530072", home: "CSM Ploieşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-10", title: "Etapa 8", comp: "Campionatul Național U16", time: "12:00", opponent: "CN Dinicu Golescu", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CN Dinicu Golescu", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-24", title: "Etapa 10", comp: "Campionatul Național U16", time: "15:00", opponent: "Kinder Brașov", location: "Textila – Lunca Câlnicului", lat: "45.75315475265822", lng: "25.7767392421678", home: "Kinder Brașov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-31", title: "Etapa 11", comp: "Campionatul Național U16", time: "12:00", opponent: "Flacăra Moreni", location: "Flacăra", lat: "44.98205482985092", lng: "25.65009898047085", home: "Flacăra Moreni", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-07", title: "Etapa 12", comp: "Campionatul Național U16", time: "12:00", opponent: "MX PRO Academy", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "MX PRO Academy", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-14", title: "Etapa 13", comp: "Campionatul Național U16", time: "12:00", opponent: "Star Mioveni", location: "Baza Sportivă Grup Şcolar Colibaşi", lat: "44.937666750662075", lng: "24.921499173559944", home: "Star Mioveni", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-21", title: "Etapa 14", comp: "Campionatul Național U16", time: "12:00", opponent: "LPS Viitorul Piteşti", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "LPS Viitorul Piteşti", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-11-28", title: "Etapa 15", comp: "Campionatul Național U16", time: "12:00", opponent: "Unirea Bascov", location: "Stadion: Comunal VALEA URSULUI - AG", lat: "44.887261042829394", lng: "24.77873362322879", home: "Unirea Bascov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-13", title: "Etapa 16", comp: "Campionatul Național U16", time: "12:00", opponent: "CSM Ploieşti", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CSM Ploieşti", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-20", title: "Etapa 17", comp: "Campionatul Național U16", time: "12:00", opponent: "CN Dinicu Golescu", location: "Muscelul 2 CÂMPULUNG", lat: "45.26549452962842", lng: "25.046907087948732", home: "CN Dinicu Golescu", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-03", title: "Etapa 19", comp: "Campionatul Național U16", time: "12:00", opponent: "Kinder Brașov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Kinder Brașov", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-10", title: "Etapa 20", comp: "Campionatul Național U16", time: "12:00", opponent: "Flacăra Moreni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Flacăra Moreni", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-17", title: "Etapa 21", comp: "Campionatul Național U16", time: "12:00", opponent: "MX PRO Academy", location: "Cocoșești", lat: "44.99562155095854", lng: "25.985000556719196", home: "MX PRO Academy", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-24", title: "Etapa 22", comp: "Campionatul Național U16", time: "12:00", opponent: "Star Mioveni", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Star Mioveni", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-08", title: "Etapa 23", comp: "Campionatul Național U16", time: "12:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-15", title: "Etapa 24", comp: "Campionatul Național U16", time: "12:00", opponent: "Unirea Bascov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Unirea Bascov", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-22", title: "Etapa 25", comp: "Campionatul Național U16", time: "12:00", opponent: "CSM Ploieşti", location: "Baza Sportivă Teleajen", lat: "44.942930783857655", lng: "26.091011020530072", home: "CSM Ploieşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-29", title: "Etapa 26", comp: "Campionatul Național U16", time: "12:00", opponent: "CN Dinicu Golescu", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CN Dinicu Golescu", score: "", scorers: "", videoLinks: [] }
+        ];
+
+        let currentCategory = "U16";
+        let currentMonth = 9;
+        let currentYear = 2026;
+        let selectedDate = null;
+        const monthNames = ["Ianuarie", "Februarie", "Martie", "Aprilie", "Mai", "Iunie", "Iulie", "August", "Septembrie", "Octombrie", "Noiembrie", "Decembrie"];
+
+        const compStyles = {
+            "Campionatul Național": { badge: "bg-emerald-100 text-emerald-800 border-emerald-300", dot: "bg-emerald-500" },
+            "Cupa Național": { badge: "bg-sky-100 text-sky-800 border-sky-300", dot: "bg-sky-500" },
+            "Cupa Elitelor": { badge: "bg-rose-100 text-rose-800 border-rose-300", dot: "bg-rose-500" }
+        };
+
+        function getCompStyle(compName) {
+            if (compName.includes("Campionatul Național")) return compStyles["Campionatul Național"];
+            if (compName.includes("Cupa Național")) return compStyles["Cupa Național"];
+            if (compName.includes("Cupa Elitelor")) return compStyles["Cupa Elitelor"];
+            return { badge: "bg-slate-100 text-slate-800 border-slate-300", dot: "bg-slate-500" };
+        }
+
+
+        const teamLogos = {
+            "New Stars": "sigla-New-Stars-Football-Club-sfinx-football.ro_.png",
+            "Flacăra Moreni": "Flacara_Moreni.png",
+            "CSM Ploiești": "csm_ploiesti.jpg",
+            "Star Mioveni": "Star_Mioveni.jpg",
+            "CN Dinicu Golescu": "cn_dinicu_golescu.jpg",
+            "MX Pro Academy": "mx_pro_academy.png",
+            "Unirea Bascov": "unirea_bascov.jpg",
+            "LPS Viitorul Pitești": "L.P.S.-VIITORUL-PITESTI-logo.png",
+            "Kinder Brașov": "kinder_brasov.jpg",
+			"NFC Arena Academy": "NFC_Arena_Academy.jpg",
+        };
+
+        function normalizeTeamName(name) {
+            return (name || "")
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, " ")
+                .trim();
+        }
+
+        const normalizedTeamLogos = Object.fromEntries(
+            Object.entries(teamLogos).map(([name, logo]) => [normalizeTeamName(name), logo])
+        );
+
+        function getTeamLogo(teamName) {
+            return normalizedTeamLogos[normalizeTeamName(teamName)] || "";
+        }
+
+        function logoHTML(teamName, size = 54) {
+            const logo = getTeamLogo(teamName);
+            if (!logo) return `<div class="team-crest-fallback">${initials(teamName)}</div>`;
+            return `<img src="${logo}" alt="${teamName}" class="team-crest-img" style="width:${size}px;height:${size}px" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><span class="team-crest-fallback" style="display:none">${initials(teamName)}</span>`;
+        }
+
+        function getActiveData() {
+            return currentCategory === 'U15' ? u15EventsData : u16EventsData;
+        }
+
+        function switchCategory(category) {
+            currentCategory = category;
+            selectedDate = null;
+            const firstMatch = getActiveData().slice().sort((a,b) => new Date(a.date) - new Date(b.date))[0];
+            if (firstMatch) {
+                const d = new Date(firstMatch.date + "T12:00:00");
+                currentMonth = d.getMonth();
+                currentYear = d.getFullYear();
+            }
+
+            const btnU15 = document.getElementById('btn-u15');
+            const btnU16 = document.getElementById('btn-u16');
+            const mainTitle = document.getElementById('main-title');
+
+            if (category === 'U15') {
+                btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
+                btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
+                mainTitle.innerText = "New Stars - U15";
+            } else {
+                btnU16.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition shadow bg-blue-600 text-white";
+                btnU15.className = "flex-1 md:flex-none px-8 py-2 rounded-lg text-base font-bold transition text-slate-700 hover:text-slate-900";
+                mainTitle.innerText = "New Stars - U16";
+            }
+
             init();
         }
 
-        function formatDateRO(dateString) {
-            const d = new Date(dateString);
-            return `${d.getDate()} ${monthNames[d.getMonth()]} ${d.getFullYear()}`;
+        function formatDateRO(dateStr) {
+            const [year, month, day] = dateStr.split('-').map(Number);
+            return `${day} ${monthNames[month - 1]} ${year}`;
         }
+function getNextMatch() {
+    const now = new Date();
+    
+    return getActiveData()
+        .filter(e => {
+            if (!e.date) return false;
+            
+            // Construim data și ora exactă a meciului. 
+            // Dacă un meci nu are oră setată încă, îi dăm default 23:59:59 pentru a-l ține vizibil toată ziua.
+            const timeString = e.time ? e.time + ":00" : "23:59:59";
+            const matchStart = new Date(`${e.date}T${timeString}`);
+            
+            // Adăugăm 2 ore (în milisecunde: 2 * 60 * 60 * 1000) la ora de start.
+            // Astfel, un meci de la 19:00 va dispărea din "Next Match" la ora 21:00.
+            const matchEnd = new Date(matchStart.getTime() + (2 * 60 * 60 * 1000));
+            
+            // Filtrăm păstrând doar meciurile al căror final teoretic este în viitor
+            return matchEnd > now;
+        })
+        .sort((a,b) => new Date(a.date) - new Date(b.date))[0] || null;
+		}
 
-        function getCompStyle(comp) {
-            if (comp.includes("Campionat")) return { badge: "bg-blue-50 text-blue-700 border-blue-200", dot: "bg-blue-500" };
-            return { badge: "bg-purple-50 text-purple-700 border-purple-200", dot: "bg-purple-500" };
-        }
-
-        function logoHTML(teamName, size = 40) {
-            const initials = teamName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-            return `<div style="width: ${size}px; height: ${size}px;" class="rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center font-black text-xs text-slate-700 shadow-inner">${initials}</div>`;
+        function initials(name) {
+            if (!name) return "?";
+            const words = name.trim().split(/\s+/).filter(Boolean);
+            return (words.length === 1 ? words[0].slice(0,2) : words.slice(0,2).map(w => w[0]).join("")).toUpperCase();
         }
 
         function renderNextMatch() {
-            const events = getActiveData();
-            const now = new Date();
-            
-            // Găsește primul meci viitor care nu are scor setat sau este în viitor
-            const nextMatch = events.find(e => new Date(e.date + (e.time ? 'T' + e.time : 'T00:00')) >= now && (!e.score || e.score === ""));
-            
-            const containerTeams = document.getElementById('next-match-teams');
-            const compDisplay = document.getElementById('next-match-comp');
-            
-            if (!nextMatch) {
-                compDisplay.innerText = "Program";
-                containerTeams.innerHTML = '<div class="w-full text-center text-sm font-bold text-slate-400 py-4">Nu există meciuri viitoare programate.</div>';
-                document.getElementById('countdown').innerHTML = '<div class="text-xs text-slate-400">-</div>';
+            const ev = getNextMatch();
+            const box = document.getElementById('next-match');
+            if (!ev) {
+                box.innerHTML = '<div class="text-center font-bold">Nu există momentan un meci următor cu adversar stabilit.</div>';
                 return;
             }
 
-            compDisplay.innerText = nextMatch.comp;
-            const home = (nextMatch.home && nextMatch.home !== "Gazde") ? nextMatch.home : "New Stars";
-            const away = (nextMatch.away && nextMatch.away !== "Adversari") ? nextMatch.away : "Adversar";
+            const home = (ev.home && ev.home !== "Gazde") ? ev.home : "New Stars";
+            const opponentName = ev.opponent || ((ev.away && ev.away !== "Adversari") ? ev.away : "Adversar neconfirmat");
+            box.dataset.matchDate = ev.date + (ev.time ? "T" + ev.time + ":00" : "T14:00:00");
 
-            containerTeams.innerHTML = `
-                <div class="flex-1 flex flex-col items-center text-center">
-                    ${logoHTML(home, 56)}
-                    <div class="font-black text-sm mt-2 text-white">${home}</div>
+            box.innerHTML = `
+                <div class="next-match-grid">
+                    <div class="team-box">
+                        <div class="team-crest"><img src="sigla-New-Stars-Football-Club-sfinx-football.ro_.png" alt="New Stars" style="width:54px;height:54px;object-fit:contain"></div>
+                        <div class="team-name">${home}</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="next-match-competition">${ev.comp || ""}</div>
+                        <div class="text-xs font-bold text-slate-300 mt-1">${ev.title}</div>
+                        <div class="match-vs">VS</div>
+                    </div>
+                    <div class="team-box">
+                        <div class="team-crest">${logoHTML(opponentName, 54)}</div>
+                        <div class="team-name">${opponentName}</div>
+                    </div>
                 </div>
-                <div class="px-4 text-center">
-                    <div class="text-xs font-black text-blue-400 bg-blue-500/10 border border-blue-500/20 px-3 py-1.5 rounded-xl uppercase tracking-wider">VS</div>
-                </div>
-                <div class="flex-1 flex flex-col items-center text-center">
-                    ${logoHTML(away, 56)}
-                    <div class="font-black text-sm mt-2 text-white">${away}</div>
-                </div>
+                <div class="match-meta">📅 ${formatDateRO(ev.date)} ${ev.time ? " · ⏰ " + ev.time : ""}${ev.location ? " · 📍 " + ev.location : ""}</div>
+                <div id="countdown" class="countdown"></div>
             `;
-
-            window.nextMatchDateTime = new Date(nextMatch.date + 'T' + (nextMatch.time || '10:00')).getTime();
+            updateCountdown();
         }
 
         function updateCountdown() {
-            if (!window.nextMatchDateTime) return;
-            const now = new Date().getTime();
-            const safe = window.nextMatchDateTime - now;
+            const box = document.getElementById('next-match');
+            const target = box?.dataset.matchDate;
             const out = document.getElementById('countdown');
+            if (!target || !out) return;
 
-            if (safe <= 0) {
-                out.innerHTML = '<div class="text-sm font-bold text-white mt-4">Meciul a început sau s-a terminat!</div>';
-                return;
-            }
-
-            const d = Math.floor(safe / (1000 * 60 * 60 * 24));
-            const h = Math.floor((safe / (1000 * 60 * 60)) % 24);
-            const m = Math.floor((safe / 1000 / 60) % 60);
-            const s = Math.floor((safe / 1000) % 60);
+            const diff = new Date(target).getTime() - Date.now();
+            const safe = Math.max(0, diff);
+            const d = Math.floor(safe / 86400000);
+            const h = Math.floor((safe % 86400000) / 3600000);
+            const m = Math.floor((safe % 3600000) / 60000);
+            const s = Math.floor((safe % 60000) / 1000);
 
             out.innerHTML = `
-                <div class="countdown-unit"><div class="countdown-number">${d}</div><div class="countdown-label">Zile</div></div>
-                <div class="countdown-unit"><div class="countdown-number">${h.toString().padStart(2, '0')}</div><div class="countdown-label">Ore</div></div>
-                <div class="countdown-unit"><div class="countdown-number">${m.toString().padStart(2, '0')}</div><div class="countdown-label">Min</div></div>
-                <div class="countdown-unit"><div class="countdown-number">${s.toString().padStart(2, '0')}</div><div class="countdown-label">Sec</div></div>
+                <div class="countdown-unit"><div class="countdown-number">${d}</div><div class="countdown-label">zile</div></div>
+                <div class="countdown-unit"><div class="countdown-number">${String(h).padStart(2,'0')}</div><div class="countdown-label">ore</div></div>
+                <div class="countdown-unit"><div class="countdown-number">${String(m).padStart(2,'0')}</div><div class="countdown-label">min</div></div>
+                <div class="countdown-unit"><div class="countdown-number">${String(s).padStart(2,'0')}</div><div class="countdown-label">sec</div></div>
             `;
         }
 
-        setInterval(updateCountdown, 1000);
+        function renderForm() {
+            const events = getActiveData()
+                .filter(e => e.score && e.score.trim() !== "")
+                .sort((a,b) => new Date(b.date) - new Date(a.date))
+                .slice(0,5);
 
-        function renderRecentResults() {
-            const container = document.getElementById('recent-results');
-            const now = new Date();
-            
-            const pastMatches = getActiveData()
-                .filter(e => e.score && e.score !== "" && new Date(e.date) < now)
-                .sort((a, b) => new Date(b.date) - new Date(a.date))
-                .slice(0, 3);
-
-            if (pastMatches.length === 0) {
-                container.innerHTML = '<div class="text-xs text-slate-500 font-medium text-center py-2">Nu există rezultate recente.</div>';
+            const badges = document.getElementById('form-badges');
+            if (!events.length) {
+                badges.innerHTML = '<span class="text-xs font-bold text-slate-400">—</span>';
                 return;
             }
 
-            container.innerHTML = pastMatches.map(match => {
-                const homeTeam = (match.home && match.home !== "Gazde") ? match.home : "New Stars";
-                const awayTeam = (match.away && match.away !== "Adversari") ? match.away : "Adversar";
-                
-                return `
-                <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100">
-                    <div class="flex-1 text-right text-xs font-bold truncate pr-2">${homeTeam}</div>
-                    <div class="bg-blue-100 text-blue-800 font-black px-2.5 py-1 rounded-lg text-xs whitespace-nowrap">${match.score}</div>
-                    <div class="flex-1 text-left text-xs font-bold truncate pl-2">${awayTeam}</div>
+            badges.innerHTML = events.reverse().map(e => {
+                const parts = e.score.split(/[-:]/).map(x => parseInt(x.trim(),10));
+                let cls = 'draw', letter = 'E';
+                if (parts.length >= 2 && Number.isFinite(parts[0]) && Number.isFinite(parts[1])) {
+                    const nsHome = e.home === "New Stars";
+                    const gf = nsHome ? parts[0] : parts[1];
+                    const ga = nsHome ? parts[1] : parts[0];
+                    if (gf > ga) { cls = 'win'; letter = 'V'; }
+                    else if (gf < ga) { cls = 'loss'; letter = 'Î'; }
+                }
+                return `<span class="form-badge ${cls}" title="${e.title}">${letter}</span>`;
+            }).join('');
+        }
+
+
+        function renderRecentResults() {
+            const el = document.getElementById('recent-results');
+            const events = getActiveData()
+                .filter(e => e.score && e.score.trim() !== "")
+                .sort((a,b) => new Date(b.date) - new Date(a.date))
+                .slice(0,5);
+
+            if (!events.length) {
+                el.innerHTML = '<div class="text-sm text-slate-400 font-semibold">Nu există încă rezultate introduse.</div>';
+                return;
+            }
+
+            el.innerHTML = events.map(e => `
+                <div class="flex items-center justify-between gap-3 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-2 min-w-0">
+                            ${(e.home || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" class="w-7 h-7 object-contain rounded-md" alt="New Stars">` : (getTeamLogo(e.home) ? `<img src="${getTeamLogo(e.home)}" class="w-7 h-7 object-contain rounded-md" alt="">` : '')}
+                            <span class="text-xs font-black text-slate-800 truncate">${e.home || 'Gazde'} — ${e.away || 'Adversari'}</span>
+                            ${(e.away || "").trim().toLowerCase().includes("new stars") ? `<img src="${logo}" class="w-7 h-7 object-contain rounded-md" alt="New Stars">` : (getTeamLogo(e.away) ? `<img src="${getTeamLogo(e.away)}" class="w-7 h-7 object-contain rounded-md" alt="">` : '')}
+                        </div>
+                        <div class="text-[11px] text-slate-500 font-semibold">${formatDateRO(e.date)}</div>
+                    </div>
+                    <div class="shrink-0 rounded-lg bg-white border border-slate-200 px-3 py-1.5 font-black text-slate-900">${e.score}</div>
                 </div>
-            `}).join('');
+            `).join('');
+        }
+
+        function renderTimeline() {
+            const el = document.getElementById('season-timeline');
+            const data = [...getActiveData()].sort((a,b) => new Date(a.date) - new Date(b.date));
+            el.innerHTML = data.map(e => `
+                <div class="timeline-item">
+                    <div class="timeline-date">${formatDateRO(e.date).replace(/ \d{4}$/,'')}</div>
+                    <div class="timeline-event">${e.title}${e.opponent ? " · " + e.opponent : ""}</div>
+                    <div class="timeline-comp">${e.comp.replace(/ U15| U16/g,'')}</div>
+                </div>
+            `).join('');
+        }
+function scrollToSection(id, button) {
+            document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
+            if (button) button.classList.add('active');
+            const target = document.getElementById(id);
+            if (target) target.scrollIntoView({behavior:'smooth', block:'start'});
+        }
+
+
+        function init() {
+            const data = getActiveData();
+            data.sort((a, b) => new Date(a.date) - new Date(b.date));
+            renderCalendar();
+            renderEvents();
+            renderNextMatch();
+renderTimeline();
         }
 
         function renderCalendar() {
-            const daysContainer = document.getElementById('calendar-days');
-            const monthDisplay = document.getElementById('month-year-display');
+            const data = getActiveData();
+            const container = document.getElementById('calendar-days');
+            container.innerHTML = '';
+            document.getElementById('month-year-display').innerText = `${monthNames[currentMonth]} ${currentYear}`;
             
-            monthDisplay.innerText = `${monthNames[currentMonth]} ${currentYear}`;
-            daysContainer.innerHTML = '';
-
-            const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+            const startDay = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
             const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-            const startOffset = firstDay === 0 ? 6 : firstDay - 1;
 
-            const eventsData = getActiveData();
-
-            for (let i = 0; i < startOffset; i++) {
-                daysContainer.innerHTML += '<div class="day-cell empty"></div>';
+            for (let i = 0; i < startDay; i++) {
+                container.innerHTML += `<div class="day-cell empty"></div>`;
             }
 
             for (let i = 1; i <= daysInMonth; i++) {
                 const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
-                const dayEvents = eventsData.filter(e => e.date === dateStr);
                 
-                let cellClass = 'day-cell';
-                let dotsHtml = '';
+                let matchData = data.filter(e => e.date === dateStr);
+                const hasEvent = matchData.length > 0;
+                const isActive = selectedDate === dateStr;
                 
-                if (dayEvents.length > 0) {
-                    cellClass += ' has-event';
-                    dotsHtml = '<div class="dots-container">';
-                    dayEvents.forEach(e => {
-                        const style = getCompStyle(e.comp);
+                let classes = "day-cell";
+                if (hasEvent) classes += " has-event";
+                if (isActive) classes += " active";
+
+                let innerHtml = `<span>${i}</span>`;
+                
+                if (hasEvent) {
+                    let uniqueComps = [...new Set(matchData.map(e => {
+                        if (e.comp.includes("Campionatul Național")) return "Campionatul Național";
+                        if (e.comp.includes("Cupa Național")) return "Cupa Național";
+                        if (e.comp.includes("Cupa Elitelor")) return "Cupa Elitelor";
+                        return "Altul";
+                    }))];
+
+                    let dotsHtml = `<div class="dots-container">`;
+                    uniqueComps.forEach(comp => {
+                        const style = getCompStyle(comp);
                         dotsHtml += `<div class="comp-dot ${style.dot}"></div>`;
                     });
-                    dotsHtml += '</div>';
+                    dotsHtml += `</div>`;
+                    innerHtml += dotsHtml;
                 }
 
-                if (selectedDate === dateStr) {
-                    cellClass += ' active';
-                }
-
-                daysContainer.innerHTML += `
-                    <div class="${cellClass}" onclick="selectDate('${dateStr}')">
-                        ${i}
-                        ${dotsHtml}
-                    </div>
-                `;
+                container.innerHTML += `<div class="${classes}" onclick="toggleDate('${dateStr}')">${innerHtml}</div>`;
             }
         }
 
-        function selectDate(dateStr) {
-            selectedDate = dateStr;
-            renderCalendar();
-            renderEvents(dateStr);
-        }
-
-        function changeMonth(step) {
-            currentMonth += step;
-            if (currentMonth < 0) {
-                currentMonth = 11;
-                currentYear--;
-            } else if (currentMonth > 11) {
-                currentMonth = 0;
-                currentYear++;
+        function toggleDate(dateStr) {
+            if (selectedDate === dateStr) {
+                selectedDate = null;
+            } else {
+                selectedDate = dateStr;
+                const [year, month] = dateStr.split('-').map(Number);
+                currentMonth = month - 1;
+                currentYear = year;
             }
             renderCalendar();
             renderEvents();
         }
 
-        function renderEvents(filterDate = null) {
-            const container = document.getElementById('events-list');
-            const eventsData = getActiveData();
-            
-            let filteredEvents = eventsData.filter(e => {
-                const eventDate = new Date(e.date);
-                return eventDate.getMonth() === currentMonth && eventDate.getFullYear() === currentYear;
-            });
+        function changeMonth(dir) {
+            currentMonth += dir;
+            if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+            if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+            renderCalendar();
+        }
 
-            if (filterDate) {
-                filteredEvents = eventsData.filter(e => e.date === filterDate);
+        function renderEvents() {
+            const data = getActiveData();
+            const list = document.getElementById('events-list');
+            list.innerHTML = '';
+
+            let filteredEvents = data;
+
+            if (selectedDate) {
+                filteredEvents = filteredEvents.filter(e => e.date === selectedDate);
             }
 
-            filteredEvents.sort((a, b) => new Date(a.date) - new Date(b.date));
-
             if (filteredEvents.length === 0) {
-                container.innerHTML = '<div class="p-8 text-center text-slate-500 bg-white rounded-2xl border border-slate-200 font-medium">Nu există meciuri programate pentru această selecție.</div>';
+                list.innerHTML = `<div class="bg-white p-8 text-center rounded-2xl border border-slate-200 text-slate-600 font-medium text-base">Nu sunt meciuri programate pentru data selectată.</div>`;
                 return;
             }
 
-            container.innerHTML = filteredEvents.map(ev => {
-                const compStyle = getCompStyle(ev.comp);
-                const hasScore = ev.score && ev.score !== "";
-                const home = (ev.home && ev.home !== "Gazde") ? ev.home : "New Stars";
-                const away = (ev.away && ev.away !== "Adversari") ? ev.away : "Adversar";
-                
-                let linksHtml = '';
-                if (ev.videoLinks && ev.videoLinks.length > 0) {
-                    linksHtml = '<div class="mt-4 flex gap-2 flex-wrap">';
-                    ev.videoLinks.forEach(link => {
-                        linksHtml += `<a href="${link.url}" target="_blank" class="px-3 py-1.5 bg-red-100 text-red-700 rounded-lg text-xs font-bold hover:bg-red-200 transition inline-flex items-center"><i class="fa-brands fa-youtube mr-1.5"></i> ${link.label}</a>`;
-                    });
-                    linksHtml += '</div>';
+            filteredEvents.forEach(ev => {
+                const style = getCompStyle(ev.comp);
+                const isCompletedMatch = typeof ev.score === "string" && ev.score.trim() !== "";
+
+                // Upcoming match details.
+                let detailsHTML = "";
+                if (ev.time) {
+                    detailsHTML += `<p class="flex items-center gap-2 text-base"><span class="text-slate-600 font-semibold min-w-[85px]">⌚ Oră:</span> <strong class="text-slate-900 font-bold">${ev.time}</strong></p>`;
+                }
+                if (ev.opponent) {
+                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <strong class="text-slate-900 font-bold">${ev.opponent}</strong></p>`;
+                } else {
+                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">🛡️ Adversar:</span> <span class="text-slate-500 italic font-medium">Urmează să fie stabilit</span></p>`;
+                }
+                if (ev.location) {
+                    detailsHTML += `<p class="flex items-center gap-2 text-base mt-2"><span class="text-slate-600 font-semibold min-w-[85px]">📍 Locație:</span> <strong class="text-slate-900 font-bold">${ev.location}</strong></p>`;
                 }
 
-                return `
-                    <div class="event-card bg-white">
-                        <div class="flex justify-between items-start mb-3">
-                            <div>
-                                <span class="inline-block px-2.5 py-1 rounded-md text-[0.65rem] font-bold border uppercase tracking-wider mb-2 ${compStyle.badge}">${ev.comp}</span>
-                                <h3 class="event-title text-lg font-black text-slate-900 leading-tight">${ev.title}</h3>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-sm font-bold text-slate-900">${formatDateRO(ev.date)}</div>
-                                ${ev.time ? `<div class="text-xs font-bold text-slate-500 mt-0.5">⏰ ${ev.time}</div>` : ''}
+                let mapButtonsHTML = "";
+                if (ev.lat && ev.lng) {
+                    mapButtonsHTML = `
+                        <div class="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2">
+                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" class="bg-sky-50 text-sky-800 border border-sky-200 px-3 py-2.5 rounded-xl font-bold hover:bg-sky-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
+                                <i class="fa-brands fa-waze text-base"></i> Waze
+                            </a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" class="bg-emerald-50 text-emerald-800 border border-emerald-200 px-3 py-2.5 rounded-xl font-bold hover:bg-emerald-100 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
+                                <i class="fa-solid fa-map-location-dot text-base"></i> Google
+                            </a>
+                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" class="bg-slate-100 text-slate-800 border border-slate-200 px-3 py-2.5 rounded-xl font-bold hover:bg-slate-200 transition flex items-center justify-center gap-1.5 text-sm shadow-sm flex-1">
+                                <i class="fa-solid fa-location-arrow text-base"></i> Apple
+                            </a>
+                        </div>
+                    `;
+                }
+
+                // For completed matches: only goals and video are additional content.
+                let scorersHTML = "";
+                if (isCompletedMatch && ev.scorers && ev.scorers.trim() !== "") {
+                    const formattedScorers = ev.scorers
+                        .split('|')
+                        .map(s => s.trim())
+                        .filter(Boolean)
+                        .join(' • ');
+
+                    scorersHTML = `
+                        <div class="completed-goals">
+                            <span class="font-bold">Goluri:</span> ${formattedScorers}
+                        </div>
+                    `;
+                }
+
+                let videoLinksHTML = "";
+                if (isCompletedMatch && ev.videoLinks && ev.videoLinks.length > 0) {
+                    const linksBtns = ev.videoLinks.map(link => {
+                        const isYoutube = link.url.includes('youtube.com') || link.url.includes('youtu.be');
+                        const iconClass = isYoutube
+                            ? 'fa-brands fa-youtube text-red-600'
+                            : 'fa-solid fa-satellite-dish text-blue-600';
+
+                        return `<a href="${link.url}" target="_blank" rel="noopener noreferrer" class="bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-800 px-3 py-2 rounded-xl text-sm font-bold transition flex items-center justify-center gap-1.5 shadow-sm">
+                            <i class="${iconClass} text-base"></i> ${link.label}
+                        </a>`;
+                    }).join('');
+
+                    videoLinksHTML = `
+                        <div class="completed-video">
+                            <div class="flex flex-wrap gap-2 justify-center">
+                                ${linksBtns}
                             </div>
                         </div>
-                        
-                        <div class="event-matchup">
-                            <div class="flex-1 flex flex-col items-center text-center gap-2">
-                                ${logoHTML(home, 44)}
-                                <div class="event-team-name">${home}</div>
+                    `;
+                }
+
+                // The score is deliberately part of the team board itself.
+                // No completed-result / separate completed-result-score block is used.
+                const completedResultHTML = isCompletedMatch ? `
+                    <div class="completed-result">
+                        <div class="completed-result-score">${ev.score}</div>
+                    </div>
+                ` : "";
+
+                list.innerHTML += `
+                    <div class="event-card bg-white rounded-2xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition">
+                        <div class="flex flex-wrap justify-between items-start mb-3 gap-2">
+                            <div>
+                                <h3 class="text-xl font-extrabold text-slate-900">${ev.title}</h3>
+                                <div class="text-sm font-semibold text-slate-600 mt-0.5">${formatDateRO(ev.date)}</div>
                             </div>
-                            
-                            <div class="flex flex-col items-center justify-center px-2">
-                                ${hasScore ? `<div class="completed-result-score">${ev.score}</div>` : `<div class="event-vs">VS</div>`}
+                            <span class="text-xs font-extrabold px-3 py-1.5 rounded-xl border ${style.badge}">${ev.comp}</span>
+                        </div>
+
+                        <div class="event-matchup ${isCompletedMatch ? "event-matchup-completed" : ""}">
+                            <div class="flex items-center gap-2 min-w-0 flex-1">
+                                ${getTeamLogo(ev.home) ? `<img src="${getTeamLogo(ev.home)}" alt="${ev.home}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.home || "Gazde")}</span>`}
+                                <span class="event-team-name truncate">${ev.home || "Gazde"}</span>
                             </div>
-                            
-                            <div class="flex-1 flex flex-col items-center text-center gap-2">
-                                ${logoHTML(away, 44)}
-                                <div class="event-team-name">${away}</div>
+
+                            <div class="event-matchup-center">
+                                <span class="event-vs">${isCompletedMatch ? "" : "VS"}</span>
+                                ${completedResultHTML}
+                            </div>
+
+                            <div class="flex items-center gap-2 min-w-0 flex-1 justify-end">
+                                <span class="event-team-name truncate text-right">${ev.away || "Adversari"}</span>
+                                ${getTeamLogo(ev.away) ? `<img src="${getTeamLogo(ev.away)}" alt="${ev.away}" class="event-team-logo" loading="lazy">` : `<span class="event-team-logo-fallback">${initials(ev.away || "Adversari")}</span>`}
                             </div>
                         </div>
 
-                        ${ev.scorers ? `<div class="mt-4 text-xs font-medium text-slate-600"><i class="fa-regular fa-futbol mr-1 text-slate-400"></i> ${ev.scorers}</div>` : ''}
-                        ${ev.location ? `<div class="mt-2 text-xs font-medium text-slate-600"><i class="fa-solid fa-location-dot mr-1 text-slate-400"></i> ${ev.location} ${ev.lat ? `<a href="https://maps.google.com/?q=${ev.lat},${ev.lng}" target="_blank" class="text-blue-600 ml-1 underline">Hărți</a>` : ''}</div>` : ''}
-                        ${linksHtml}
+                        ${isCompletedMatch ? scorersHTML : ""}
+                        ${isCompletedMatch ? "" : `<div class="my-3">${detailsHTML}</div>`}
+                        ${isCompletedMatch ? "" : mapButtonsHTML}
+                        ${videoLinksHTML}
                     </div>
                 `;
-            }).join('');
+            });
         }
 
-        function scrollToSection(id, btn) {
-            document.querySelectorAll('.bottom-nav button').forEach(b => b.classList.remove('active'));
-            if (btn) btn.classList.add('active');
-            
-            const element = document.getElementById(id);
-            if (element) {
-                const y = element.getBoundingClientRect().top + window.scrollY - 80;
-                window.scrollTo({ top: y, behavior: 'smooth' });
-            }
-        }
 
-        function init() {
-            renderNextMatch();
-            renderRecentResults();
-            renderCalendar();
-            renderEvents();
-        }
-
-        document.addEventListener('DOMContentLoaded', init);
+        window.onload = init;
+        setInterval(updateCountdown, 1000);
     </script>
 </body>
 </html>
