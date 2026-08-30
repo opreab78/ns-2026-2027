@@ -882,22 +882,24 @@ if (isIOS() && !isStandalone()) {
         }
 
         function renderTopScorers() {
-            const container = document.getElementById('top-scorers');
-            if (!container) return;
+			const container = document.getElementById('top-scorers') || document.getElementById('golgheteri-list');
+			if (!container) return;
 
-            const data = getActiveData();
-            const scorersCount = {};
+			const data = getActiveData();
+			const scorersCount = {};
 
-            data.forEach(match => {
-                if (match.scorers && typeof match.scorers === 'string' && match.scorers.trim() !== "") {
-                    const scorers = match.scorers.split('|').map(s => s.trim()).filter(Boolean);
-                    
-                    scorers.forEach(scorerInfo => {
-                        let name = scorerInfo;
-                        let goals = 1;
+			data.forEach(match => {
+				if (match.scorers && typeof match.scorers === 'string' && match.scorers.trim() !== "") {
+					// Curățăm emoji-ul de minge și împărțim după '|' sau ','
+					const cleanScorers = match.scorers.replace(/⚽/g, '');
+					const scorers = cleanScorers.split(/\||,/).map(s => s.trim()).filter(Boolean);
+            
+					scorers.forEach(scorerInfo => {
+						let name = scorerInfo;
+						let goals = 1;
                         
                         // Extrage numărul de goluri dacă formatul este ex: "Cezar 2" sau "Ionescu (3)"
-                        const matchQty = scorerInfo.match(/^(.*?)\s*\(?(\d+)\)?$/);
+                        const matchQty = scorerInfo.match(/^(.*?)\s*(?:\((\d+)\)|(\d+))?$/);
                         if (matchQty) {
                             name = matchQty[1].trim();
                             goals = parseInt(matchQty[2], 10);
