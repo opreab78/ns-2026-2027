@@ -196,6 +196,13 @@
         @media(max-width:767px){
             .bottom-nav{display:grid!important}
         }
+
+        .navigation-buttons a i{font-size:1rem;line-height:1}
+        .navigation-buttons a{gap:.4rem}
+        @media(max-width:767px){
+            .navigation-buttons a{padding:.55rem .7rem}
+            .navigation-buttons a i{font-size:.95rem}
+        }
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -378,15 +385,15 @@
         <div class="competition-filters" aria-label="Filtru competiție">
             <button class="comp-filter active" data-comp="ALL">Toate</button>
             <button class="comp-filter" data-comp="Campionatul Național">Campionat</button>
-            <button class="comp-filter" data-comp="Cupa Națională">Cupa Națională</button>
-            <button class="comp-filter" data-comp="Cupa Elitelor">Cupa Elitelor</button>
+            <button class="comp-filter" data-comp="Cupa National">Cupa National</button>
+            <button class="comp-filter" data-comp="Cupa Elite">Cupa Elite</button>
         </div>
 
         <div class="main-layout">
             <section id="calendar-anchor" class="section-card calendar-card">
                 <div class="section-heading-row">
                     <div>
-                        <div class="eyebrow">Program</div>
+                        <div class="eyebrow"></div>
                         <h2>Calendar</h2>
                     </div>
                     <button onclick="goToday()" class="today-btn">Astăzi</button>
@@ -403,14 +410,14 @@
                 <div class="calendar-legend">
                     <span><i class="legend-dot camp"></i> Campionat</span>
                     <span><i class="legend-dot cup"></i> Cupă Națională</span>
-                    <span><i class="legend-dot elite"></i> Cupa Elitelor</span>
+                    <span><i class="legend-dot elite"></i> Cupa Elite</span>
                 </div>
             </section>
 
             <section id="events-anchor" class="matches-column">
                 <div class="section-heading-row matches-heading">
                     <div>
-                        <div class="eyebrow">Sezon 2026 / 2027</div>
+                        <div class="eyebrow"></div>
                         <h2 id="matches-title">Următoarele meciuri</h2>
                     </div>
                     <button id="clear-date" class="clear-date hidden" onclick="clearSelectedDate()">Toate datele</button>
@@ -430,7 +437,7 @@
         <section id="golgheteri-anchor" class="scorers-section">
             <div class="section-heading-row">
                 <div>
-                    <div class="eyebrow">Marcatori</div>
+                    <div class="eyebrow"></div>
                     <h2 id="scorers-title">Golgheterii U16</h2>
                 </div>
             </div>
@@ -574,14 +581,14 @@ if (isIOS() && !isStandalone()) {
 }
 
         const u15EventsData = [
-            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Vezi meci", url: "https://youtube.com"}] },
-            { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-02-27", title: "Etapa 5", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-03-09", title: "Semifinale Grupe", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elitelor U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Vezi meci", url: "https://youtube.com"}] },
+            { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-02-27", title: "Etapa 5", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-09", title: "Semifinale Grupe", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
 
             { date: "2026-09-01", title: "Etapa Eliminatorie 1", comp: "Cupa Național U15", time: "11:00", opponent: "NFC Arena Academy", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "NFC Arena Academy", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-28", title: "Etapa Eliminatorie 2", comp: "Cupa Național U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
@@ -618,14 +625,14 @@ if (isIOS() && !isStandalone()) {
         ];
 
         const u16EventsData = [
-            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Vezi meci", url: "https://youtube.com"}] },
-            { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-02-27", title: "Etapa 5", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-03-09", title: "Semifinale Grupe", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
-            { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elitelor U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elite U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [{label: "Vezi meci", url: "https://youtube.com"}] },
+            { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elite U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elite U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-02-20", title: "Etapa 4", comp: "Cupa Elite U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-02-27", title: "Etapa 5", comp: "Cupa Elite U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-03-09", title: "Semifinale Grupe", comp: "Cupa Elite U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-04-06", title: "Semifinale Cupă", comp: "Cupa Elite U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
+            { date: "2027-05-30", title: "Finală Cupa", comp: "Cupa Elite U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
 
             { date: "2026-09-01", title: "Etapa Eliminatorie 1", comp: "Cupa Național U16", time: "09:00", opponent: "NFC Arena Academy", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "NFC Arena Academy", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-28", title: "Etapa Eliminatorie 2", comp: "Cupa Național U16", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
@@ -670,13 +677,13 @@ if (isIOS() && !isStandalone()) {
         const compStyles = {
             "Campionatul Național": { badge: "bg-emerald-100 text-emerald-800 border-emerald-300", dot: "bg-emerald-500" },
             "Cupa Național": { badge: "bg-sky-100 text-sky-800 border-sky-300", dot: "bg-sky-500" },
-            "Cupa Elitelor": { badge: "bg-rose-100 text-rose-800 border-rose-300", dot: "bg-rose-500" }
+            "Cupa Elite": { badge: "bg-rose-100 text-rose-800 border-rose-300", dot: "bg-rose-500" }
         };
 
         function getCompStyle(compName) {
             if (compName.includes("Campionatul Național")) return compStyles["Campionatul Național"];
             if (compName.includes("Cupa Național")) return compStyles["Cupa Național"];
-            if (compName.includes("Cupa Elitelor")) return compStyles["Cupa Elitelor"];
+            if (compName.includes("Cupa Elite")) return compStyles["Cupa Elite"];
             return { badge: "bg-slate-100 text-slate-800 border-slate-300", dot: "bg-slate-500" };
         }
 
@@ -1017,7 +1024,7 @@ if (isIOS() && !isStandalone()) {
                     let uniqueComps = [...new Set(matchData.map(e => {
                         if (e.comp.includes("Campionatul Național")) return "Campionatul Național";
                         if (e.comp.includes("Cupa Național")) return "Cupa Național";
-                        if (e.comp.includes("Cupa Elitelor")) return "Cupa Elitelor";
+                        if (e.comp.includes("Cupa Elite")) return "Cupa Elite";
                         return "Altul";
                     }))];
 
@@ -1059,8 +1066,8 @@ if (isIOS() && !isStandalone()) {
         function getCompetitionKey(comp) {
             const c = String(comp || '').toLowerCase();
             if (c.includes('campionatul național')) return 'Campionatul Național';
-            if (c.includes('cupa național')) return 'Cupa Națională';
-            if (c.includes('cupa elitelor')) return 'Cupa Elitelor';
+            if (c.includes('cupa național')) return 'Cupa National';
+            if (c.includes('cupa elitelor')) return 'Cupa Elite';
             return 'ALL';
         }
 
@@ -1108,7 +1115,7 @@ if (isIOS() && !isStandalone()) {
         function renderMatchCard(ev, completed) {
             const {home, away} = getNewStarsHomeAway(ev);
             const style = getCompStyle(ev.comp || '');
-            const compClass = getCompetitionKey(ev.comp)==='Campionatul Național' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : getCompetitionKey(ev.comp)==='Cupa Națională' ? 'text-sky-700 bg-sky-50 border-sky-200' : 'text-rose-700 bg-rose-50 border-rose-200';
+            const compClass = getCompetitionKey(ev.comp)==='Campionatul Național' ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : getCompetitionKey(ev.comp)==='Cupa National' ? 'text-sky-700 bg-sky-50 border-sky-200' : 'text-rose-700 bg-rose-50 border-rose-200';
             return `<article class="match-card-modern">
                 <div class="match-topline"><span class="match-date">${formatDateRO(ev.date)}</span><span class="match-comp ${compClass}">${ev.comp || ''}</span></div>
                 <div class="match-row">
@@ -1167,7 +1174,7 @@ if (isIOS() && !isStandalone()) {
             const compClass =
                 compKey === 'Campionatul Național'
                     ? 'text-emerald-700 bg-emerald-50 border-emerald-200'
-                    : compKey === 'Cupa Națională'
+                    : compKey === 'Cupa National'
                         ? 'text-sky-700 bg-sky-50 border-sky-200'
                         : 'text-rose-700 bg-rose-50 border-rose-200';
 
@@ -1180,9 +1187,9 @@ if (isIOS() && !isStandalone()) {
                     <div class="match-navigation">
                         <div class="match-location">📍 ${ev.location || 'Stadion'}</div>
                         <div class="navigation-buttons">
-                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" rel="noopener noreferrer">Waze</a>
-                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" rel="noopener noreferrer">Google</a>
-                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" rel="noopener noreferrer">Apple</a>
+                            <a href="https://www.waze.com/ul?ll=${ev.lat},${ev.lng}&navigate=yes" target="_blank" rel="noopener noreferrer" aria-label="Navigare Waze"><i class="fa-brands fa-waze"></i><span>Waze</span></a>
+                            <a href="https://www.google.com/maps/search/?api=1&query=${ev.lat},${ev.lng}" target="_blank" rel="noopener noreferrer" aria-label="Navigare Google Maps"><i class="fa-solid fa-map-location-dot"></i><span>Google</span></a>
+                            <a href="http://maps.apple.com/?q=${ev.lat},${ev.lng}" target="_blank" rel="noopener noreferrer" aria-label="Navigare Apple Maps"><i class="fa-brands fa-apple"></i><span>Apple</span></a>
                         </div>
                     </div>`;
             } else if (!completed && !isNewStarsAway && ev.location) {
