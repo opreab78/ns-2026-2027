@@ -894,24 +894,28 @@ if (isIOS() && !isStandalone()) {
 					const cleanScorers = match.scorers.replace(/⚽/g, '');
 					const scorers = cleanScorers.split(/\||,/).map(s => s.trim()).filter(Boolean);
             
-					scorers.forEach(scorerInfo => {
-						let name = scorerInfo;
-						let goals = 1;
-                        
-                        // Extrage numărul de goluri dacă formatul este ex: "Cezar 2" sau "Ionescu (3)"
-                        const matchQty = scorerInfo.match(/^(.*?)\s*(?:\((\d+)\)|(\d+))?$/);
-                        if (matchQty) {
-                            name = matchQty[1].trim();
-                            goals = parseInt(matchQty[2], 10);
-                        }
-                        
-                        if (!scorersCount[name]) {
-                            scorersCount[name] = 0;
-                        }
-                        scorersCount[name] += goals;
-                    });
-                }
-            });
+			scorers.forEach(scorerInfo => {
+				let name = scorerInfo;
+				let goals = 1;
+    
+			// Verifică dacă există un număr de goluri la final între paranteze: ex. "Cezar (2)"
+					let matchParen = scorerInfo.match(/^(.*?)\s*\((\d+)\)$/);
+			// Verifică dacă există un număr simplu la final: ex. "Cezar 2"
+					let matchSpace = scorerInfo.match(/^(.*?)\s+(\d+)$/);
+
+				if (matchParen) {
+					name = matchParen[1].trim();
+					goals = parseInt(matchParen[2], 10);
+				} else if (matchSpace) {
+					name = matchSpace[1].trim();
+					goals = parseInt(matchSpace[2], 10);
+				}
+
+				if (!scorersCount[name]) {
+					scorersCount[name] = 0;
+				}
+				scorersCount[name] += goals;
+			});
 
             const sortedScorers = Object.entries(scorersCount)
                 .sort((a, b) => b[1] - a[1]);
