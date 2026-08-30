@@ -468,6 +468,39 @@ body{
     .bottom-nav{padding-left:5px!important;padding-right:5px!important}
     .bottom-nav button{width:46px!important;min-width:46px!important}
 }
+
+        @media(max-width:767px){
+            .bottom-nav{display:block!important; padding-left:6px!important; padding-right:6px!important;}
+            .bottom-nav > *{display:grid!important; grid-template-columns:repeat(5,minmax(0,1fr))!important; width:100%!important; max-width:none!important;}
+            .bottom-nav button{display:flex!important; visibility:visible!important; opacity:1!important;}
+        }
+        @media(min-width:768px){
+            .bottom-nav{display:block!important; left:50%!important; transform:translateX(-50%)!important;}
+            .bottom-nav > *{display:grid!important; grid-template-columns:repeat(5,minmax(0,1fr))!important; width:100%!important; max-width:none!important;}
+            .bottom-nav button{display:flex!important; visibility:visible!important; opacity:1!important;}
+        }
+
+        .match-meta{
+            text-align:center!important;
+            display:flex!important;
+            justify-content:center!important;
+            align-items:center!important;
+            flex-wrap:wrap!important;
+        }
+        .match-location{
+            width:100%!important;
+            text-align:center!important;
+        }
+        .bottom-nav{
+            box-sizing:border-box!important;
+            width:100%!important;
+            overflow:visible!important;
+        }
+        .bottom-nav > *{
+            width:100%!important;
+            max-width:720px!important;
+            margin:0 auto!important;
+        }
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -663,7 +696,7 @@ body{
 
         <div class="main-layout">
             <section id="calendar-anchor" class="section-card calendar-card">
-                <div class="section-heading-row">
+                <span id="upcoming-nav-target" class="nav-anchor"></span><div class="section-heading-row">
                     <div>
                         <div class="eyebrow"></div>
                         <h2>Calendar</h2>
@@ -699,14 +732,14 @@ body{
                 <div class="results-heading">
                     <div>
                         <div class="eyebrow"></div>
-                        <h2>Rezultate</h2>
+                        <h2><span id="results-nav-target" class="nav-anchor"></span>Rezultate</h2>
                     </div>
                 </div>
                 <div id="results-list" class="match-list"></div>
             </section>
         </div>
 
-        <section id="golgheteri-anchor" class="scorers-section">
+        <section id="scorers-nav-target" class="scorers-section">
             <div class="section-heading-row">
                 <div>
                     <div class="eyebrow"></div>
@@ -1524,24 +1557,32 @@ if (isIOS() && !isStandalone()) {
 function goToNav(id, button){
     document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
     if(button) button.classList.add('active');
-    const target=document.getElementById(id);
-    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+
+    let target = document.getElementById(id);
+    if (!target && id === 'upcoming-section') target = document.getElementById('upcoming-nav-target');
+    if (!target && id === 'results-section') target = document.getElementById('results-nav-target');
+    if (!target && id === 'scorers-section') target = document.getElementById('scorers-nav-target') || document.getElementById('golgheteri-anchor');
+    if (!target && id === 'calendar-section') target = document.getElementById('calendar-anchor');
+
+    if(target) {
+        target.scrollIntoView({behavior:'smooth', block:'start'});
+    }
 }
 </script>
     <nav class="bottom-nav" aria-label="Navigare rapidă">
         <button type="button" aria-label="Acasă" onclick="goHomeTop()">
             <i class="fa-solid fa-house"></i><span class="sr-only">Acasă</span>
         </button>
-        <button type="button" aria-label="Calendar" onclick="goToNav('calendar-section', this)">
+        <button type="button" aria-label="Calendar" onclick="goToNav('calendar-anchor', this)">
             <i class="fa-solid fa-calendar-days"></i><span class="sr-only">Calendar</span>
         </button>
-        <button type="button" aria-label="Meciuri" onclick="goToNav('upcoming-section', this)">
+        <button type="button" aria-label="Meciuri" onclick="goToNav('upcoming-nav-target', this)">
             <i class="fa-solid fa-futbol"></i><span class="sr-only">Meciuri</span>
         </button>
-        <button type="button" aria-label="Rezultate" onclick="goToNav('results-section', this)">
+        <button type="button" aria-label="Rezultate" onclick="goToNav('results-nav-target', this)">
             <i class="fa-solid fa-clipboard-check"></i><span class="sr-only">Rezultate</span>
         </button>
-        <button type="button" aria-label="Golgheteri" onclick="goToNav('scorers-section', this)">
+        <button type="button" aria-label="Golgheteri" onclick="goToNav('scorers-nav-target', this)">
             <i class="fa-solid fa-trophy"></i><span class="sr-only">Golgheteri</span>
         </button>
     </nav>
