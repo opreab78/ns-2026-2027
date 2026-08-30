@@ -699,6 +699,14 @@ body{padding-top:120px!important}
   body{padding-top:170px!important}
   #next-match{margin-top:22px!important;scroll-margin-top:170px!important}
 }
+
+@media(max-width:767px){
+  #next-match{
+    margin-top:28px!important;
+    padding-top:8px!important;
+    scroll-margin-top:190px!important;
+  }
+}
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -845,7 +853,10 @@ body{padding-top:120px!important}
     document.querySelectorAll(".bottom-nav button").forEach(b => b.classList.remove("active"));
     const home = document.querySelector('.bottom-nav button[aria-label="Acasă"]');
     if (home) home.classList.add("active");
-    window.scrollTo({ top: 0, behavior: "smooth" });
+
+    const topBar = document.querySelector('.sticky-category-nav');
+    const offset = topBar ? topBar.getBoundingClientRect().height + 18 : 18;
+    window.scrollTo({ top: Math.max(0, offset), behavior: "smooth" });
 }
         </script>
 </head>
