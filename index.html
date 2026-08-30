@@ -662,6 +662,24 @@ body{
 #next-match{margin-top:0!important}
 body{padding-top:70px!important}
 @media(max-width:767px){body{padding-top:76px!important}}
+
+/* Reserve enough space below the fixed U15/U16 selector so Next Match is never covered. */
+body{
+  padding-top:128px!important;
+}
+#next-match{
+  margin-top:18px!important;
+  scroll-margin-top:128px!important;
+}
+@media(max-width:767px){
+  body{
+    padding-top:122px!important;
+  }
+  #next-match{
+    margin-top:18px!important;
+    scroll-margin-top:122px!important;
+  }
+}
 </style>
 
     <meta name="theme-color" content="#07152f">
