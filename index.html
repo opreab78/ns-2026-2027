@@ -236,6 +236,87 @@
         @media(min-width:768px){
             .bottom-nav button{min-width:60px;min-height:46px;}
         }
+
+/* FINAL NAV OVERRIDES */
+.sticky-category{
+    position:sticky!important;
+    top:0!important;
+    z-index:100!important;
+    margin-top:0!important;
+    padding:8px!important;
+    background:rgba(248,250,252,.96)!important;
+    backdrop-filter:blur(14px)!important;
+    border-bottom:1px solid rgba(148,163,184,.20)!important;
+}
+.sticky-category button{
+    min-height:42px!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+}
+.bottom-nav{
+    position:fixed!important;
+    left:0!important;
+    right:0!important;
+    bottom:0!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:62px!important;
+    z-index:200!important;
+    display:grid!important;
+    grid-template-columns:repeat(5,1fr)!important;
+    align-items:center!important;
+    justify-items:center!important;
+    gap:4px!important;
+    padding:7px max(10px,env(safe-area-inset-left)) calc(7px + env(safe-area-inset-bottom)) max(10px,env(safe-area-inset-right))!important;
+    border-radius:0!important;
+    background:#ffffff!important;
+    border-top:1px solid #dbe3ee!important;
+    box-shadow:0 -8px 24px rgba(15,23,42,.10)!important;
+    backdrop-filter:blur(16px)!important;
+}
+.bottom-nav button{
+    width:54px!important;
+    height:46px!important;
+    min-width:0!important;
+    min-height:0!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    border:0!important;
+    background:transparent!important;
+    color:#334155!important;
+    padding:0!important;
+    border-radius:14px!important;
+    font-size:1.05rem!important;
+}
+.bottom-nav button:hover,.bottom-nav button.active{
+    background:#eef2f7!important;
+    color:#07152f!important;
+}
+.bottom-nav i{display:block!important;margin:0!important;font-size:1.1rem!important}
+body{padding-bottom:90px!important}
+@media(min-width:768px){
+    .bottom-nav{
+        left:50%!important;
+        right:auto!important;
+        transform:translateX(-50%)!important;
+        width:min(760px,calc(100% - 32px))!important;
+        min-height:64px!important;
+        bottom:12px!important;
+        border:1px solid #dbe3ee!important;
+        border-radius:20px!important;
+        padding:7px 14px!important;
+    }
+    .bottom-nav button{width:58px!important;height:48px!important}
+    .sticky-category{
+        top:0!important;
+        margin-left:auto!important;
+        margin-right:auto!important;
+        max-width:1180px!important;
+        border-radius:0 0 18px 18px!important;
+    }
+}
 </style>
 
     <meta name="theme-color" content="#07152f">
@@ -1275,21 +1356,28 @@ if (isIOS() && !isStandalone()) {
 
         window.onload = init;
         setInterval(updateCountdown, 1000);
-    </script>
+    
+function goToNav(id, button){
+    document.querySelectorAll('.bottom-nav button').forEach(b=>b.classList.remove('active'));
+    if(button) button.classList.add('active');
+    const target=document.getElementById(id);
+    if(target) target.scrollIntoView({behavior:'smooth',block:'start'});
+}
+</script>
     <nav class="bottom-nav" aria-label="Navigare rapidă">
         <button type="button" aria-label="Acasă" onclick="goHomeTop()">
             <i class="fa-solid fa-house"></i><span class="sr-only">Acasă</span>
         </button>
-        <button type="button" aria-label="Calendar" onclick="scrollToSection('calendar-anchor', this)">
+        <button type="button" aria-label="Calendar" onclick="goToNav('calendar-section', this)">
             <i class="fa-solid fa-calendar-days"></i><span class="sr-only">Calendar</span>
         </button>
-        <button type="button" aria-label="Meciuri" onclick="scrollToSection('upcoming-section', this)">
+        <button type="button" aria-label="Meciuri" onclick="goToNav('upcoming-section', this)">
             <i class="fa-solid fa-futbol"></i><span class="sr-only">Meciuri</span>
         </button>
-        <button type="button" aria-label="Rezultate" onclick="scrollToSection('results-section', this)">
+        <button type="button" aria-label="Rezultate" onclick="goToNav('results-section', this)">
             <i class="fa-solid fa-clipboard-check"></i><span class="sr-only">Rezultate</span>
         </button>
-        <button type="button" aria-label="Golgheteri" onclick="scrollToSection('golgheteri-anchor', this)">
+        <button type="button" aria-label="Golgheteri" onclick="goToNav('scorers-section', this)">
             <i class="fa-solid fa-trophy"></i><span class="sr-only">Golgheteri</span>
         </button>
     </nav>
