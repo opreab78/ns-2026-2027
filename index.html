@@ -1597,43 +1597,38 @@ if (isIOS() && !isStandalone()) {
         function normalizeCompetitionName(value) {
             return String(value || '')
                 .normalize('NFD')
-                .replace(/[\\u0300-\\u036f]/g, '')
-                .replace(/\\s+/g, ' ')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/\s+/g, ' ')
                 .trim()
                 .toLowerCase();
         }
 
         function getFilteredData() {
-            let data = [...eventsData];
-            const selectedComp = document.getElementById('competition-filter')?.value || 'all';
-            const selectedCategory = document.getElementById('category-filter')?.value || 'all';
-            const selectedAge = document.getElementById('age-filter')?.value || 'all';
-            const selectedTeam = document.getElementById('team-filter')?.value || 'all';
+            // IMPORTANT: păstrăm sursa existentă U15/U16 și filtrăm doar
+            // competiția selectată. Nu folosim ID-uri de filtre inexistente.
+            const data = getActiveData();
 
-            // Competition is the primary filter. Normalize both sides so only
-            // the selected competition can pass, regardless of case/spacing.
-            if (selectedComp !== 'all') {
-                const wanted = normalizeCompetitionName(selectedComp);
-                data = data.filter(e => normalizeCompetitionName(e.comp) === wanted);
+            if (activeCompetition === 'ALL') {
+                return data.slice();
             }
 
-            if (selectedCategory !== 'all') {
-                data = data.filter(e => normalizeCategory(e.category) === normalizeCategory(selectedCategory));
-            }
+            return data.filter(e => {
+                const comp = normalizeCompetitionName(e.comp);
 
-            if (selectedAge !== 'all') {
-                data = data.filter(e => String(e.age || '') === String(selectedAge));
-            }
+                if (activeCompetition === 'Campionatul Național') {
+                    return comp.includes('campionatul national');
+                }
 
-            if (selectedTeam !== 'all') {
-                data = data.filter(e => {
-                    const {home, away} = getNewStarsHomeAway(e);
-                    return normalizeTeamName(home) === normalizeTeamName(selectedTeam) ||
-                           normalizeTeamName(away) === normalizeTeamName(selectedTeam);
-                });
-            }
+                if (activeCompetition === 'Cupa National') {
+                    return comp.includes('cupa national');
+                }
 
-            return data;
+                if (activeCompetition === 'Cupa Elite') {
+                    return comp.includes('cupa elite');
+                }
+
+                return true;
+            });
         }
 
         function getNewStarsHomeAway(ev) {
