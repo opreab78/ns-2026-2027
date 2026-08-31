@@ -1594,16 +1594,47 @@ if (isIOS() && !isStandalone()) {
             return 'ALL';
         }
 
+        function normalizeCompetitionName(value) {
+            return String(value || '')
+                .normalize('NFD')
+                .replace(/[\\u0300-\\u036f]/g, '')
+                .replace(/\\s+/g, ' ')
+                .trim()
+                .toLowerCase();
+        }
+
         function getFilteredData() {
-    const data = getActiveData();
-    if (activeCompetition === 'ALL') return data.slice();
-    return data.filter(e => {
-        if (activeCompetition === 'Campionatul Național') return (e.comp || '').includes('Campionatul Național');
-        if (activeCompetition === 'Cupa Național') return (e.comp || '').includes('Cupa Național');
-        if (activeCompetition === 'Cupa Elite') return (e.comp || '').includes('Cupa Elite');
-        return true;
-    });
-}
+            let data = [...eventsData];
+            const selectedComp = document.getElementById('competition-filter')?.value || 'all';
+            const selectedCategory = document.getElementById('category-filter')?.value || 'all';
+            const selectedAge = document.getElementById('age-filter')?.value || 'all';
+            const selectedTeam = document.getElementById('team-filter')?.value || 'all';
+
+            // Competition is the primary filter. Normalize both sides so only
+            // the selected competition can pass, regardless of case/spacing.
+            if (selectedComp !== 'all') {
+                const wanted = normalizeCompetitionName(selectedComp);
+                data = data.filter(e => normalizeCompetitionName(e.comp) === wanted);
+            }
+
+            if (selectedCategory !== 'all') {
+                data = data.filter(e => normalizeCategory(e.category) === normalizeCategory(selectedCategory));
+            }
+
+            if (selectedAge !== 'all') {
+                data = data.filter(e => String(e.age || '') === String(selectedAge));
+            }
+
+            if (selectedTeam !== 'all') {
+                data = data.filter(e => {
+                    const {home, away} = getNewStarsHomeAway(e);
+                    return normalizeTeamName(home) === normalizeTeamName(selectedTeam) ||
+                           normalizeTeamName(away) === normalizeTeamName(selectedTeam);
+                });
+            }
+
+            return data;
+        }
 
         function getNewStarsHomeAway(ev) {
             const home = ev.home && ev.home !== 'Gazde' ? ev.home : 'New Stars';
