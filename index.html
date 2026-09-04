@@ -889,12 +889,40 @@ body{
 
         <section id="next-match" class="next-match" aria-label="Următorul meci"></section>
 
+        <!-- FILTRE MODIFICATE: Am adăugat filtrul AMFB care este ascuns implicit -->
         <div class="competition-filters" aria-label="Filtru competiție">
             <button class="comp-filter active" data-comp="ALL">Toate</button>
             <button class="comp-filter" data-comp="Campionatul Național">Campionat</button>
             <button class="comp-filter" data-comp="Cupa National">Cupa National</button>
             <button class="comp-filter" data-comp="Cupa Elite">Cupa Elite</button>
+            <button class="comp-filter" data-comp="AMFB" id="filter-amfb" style="display: none;">AMFB</button>
         </div>
+        
+        <!-- SCRIPT ADĂUGAT PENTRU LOGICA FILTRULUI AMFB -->
+        <script>
+            // Arată filtrul AMFB doar când se selectează categoria U15
+            document.addEventListener('click', function(e) {
+                const u16Btn = document.getElementById('sticky-btn-u16');
+                const u15Btn = document.getElementById('sticky-btn-u15');
+                const filterAmfb = document.getElementById('filter-amfb');
+                const filterAll = document.querySelector('.comp-filter[data-comp="ALL"]');
+
+                if (e.target === u15Btn || e.target === u16Btn) {
+                    // Timeout scurt pentru a lăsa switchCategory() să își ruleze logica
+                    setTimeout(() => {
+                        if (u15Btn && u15Btn.classList.contains('active')) {
+                            filterAmfb.style.display = 'inline-block';
+                        } else {
+                            filterAmfb.style.display = 'none';
+                            // Dacă s-a schimbat categoria și AMFB era selectat anterior, se resetează filtrul la "Toate"
+                            if (filterAmfb.classList.contains('active') && filterAll) {
+                                filterAll.click();
+                            }
+                        }
+                    }, 50);
+                }
+            });
+        </script>
 
         <div class="main-layout">
             <section id="calendar-anchor" class="section-card calendar-card">
@@ -1089,6 +1117,22 @@ if (isIOS() && !isStandalone()) {
 }
 
         const u15EventsData = [
+			{ date: "2026-09-12", title: "Etapa 2", comp: "AMFB", time: "08:30", opponent: "Acad. Epaminonda", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "Acad. Epaminonda", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-09-19", title: "Etapa 3", comp: "AMFB", time: "08:30", opponent: "New Victoria", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "New Stars", away: "New Victoria", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-09-26", title: "Etapa 4", comp: "AMFB", time: "08:30", opponent: "Acad. Udinese", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "Acad. Udinese", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-10-03", title: "Etapa 5", comp: "AMFB", time: "08:30", opponent: "Dinamo 1948", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "New Stars", away: "Dinamo 1948", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-10-10", title: "Etapa 6", comp: "AMFB", time: "08:30", opponent: "Rapid 1923", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "Rapid 1923", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-10-17", title: "Etapa 7", comp: "AMFB", time: "08:30", opponent: "CSU Știința", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "New Stars", away: "CSU Știința", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-10-24", title: "Etapa 8", comp: "AMFB", time: "08:30", opponent: "Herea FA", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "Herea FA", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-10-31", title: "Etapa 9", comp: "AMFB", time: "08:30", opponent: "Oxigen", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "New Stars", away: "Oxigen", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-11-07", title: "Etapa 10", comp: "AMFB", time: "08:30", opponent: "New Victoria", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "New Victoria", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-11-14", title: "Etapa 11", comp: "AMFB", time: "08:30", opponent: "Acad. MCR", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "New Stars", away: "Acad. MCR", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-11-21", title: "Etapa 12", comp: "AMFB", time: "08:30", opponent: "AIF Adrian Mutu", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "AIF Adrian Mutu", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-11-28", title: "Etapa 13", comp: "AMFB", time: "08:30", opponent: "Ajax Noua Generație", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "New Stars", away: "Ajax Noua Generație", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-12-05", title: "Etapa 14", comp: "AMFB", time: "08:30", opponent: "ACS Marius L", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "ACS Marius L", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+			{ date: "2026-12-12", title: "Etapa 15", comp: "AMFB", time: "08:30", opponent: "Acad. Epaminonda", location: "Danilescu", lat: "44.41021967802464", lng: "26.008246069095375", home: "New Stars", away: "Acad. Epaminonda", score: "", scorers: "", videoLinks: [] },
+
+
             { date: "2026-10-21", title: "Etapa 1", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
             { date: "2026-11-29", title: "Etapa 2", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
             { date: "2026-12-06", title: "Etapa 3", comp: "Cupa Elite U15", time: "", opponent: "", location: "", lat: "", lng: "", home: "Gazde", away: "Adversari", score: "", scorers: "", videoLinks: [] },
@@ -1113,6 +1157,7 @@ if (isIOS() && !isStandalone()) {
             { date: "2026-09-19", title: "Etapa 5", comp: "Campionatul Național U15", time: "14:00", opponent: "LPS Viitorul Piteşti", location: "Stadion Aripi", lat: "44.843197726333784", lng: "24.88529958770948", home: "LPS Viitorul Piteşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-09-26", title: "Etapa 6", comp: "Campionatul Național U15", time: "14:00", opponent: "Unirea Bascov", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "Unirea Bascov", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-03", title: "Etapa 7", comp: "Campionatul Național U15", time: "14:00", opponent: "CSM Ploieşti", location: "Baza Sportivă Teleajen", lat: "44.942930783857655", lng: "26.091011020530072", home: "CSM Ploieşti", away: "New Stars", score: "", scorers: "", videoLinks: [] },
+            { date: "2026-10-10", title: "Etapa 8", comp: "Campionatul Național U15", time: "14:00", opponent: "CN Dinicu Golescu", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CN Dinicu Golescu", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-10", title: "Etapa 8", comp: "Campionatul Național U15", time: "14:00", opponent: "CN Dinicu Golescu", location: "Agronomie", lat: "44.47190157366584", lng: "26.062838209634183", home: "New Stars", away: "CN Dinicu Golescu", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-24", title: "Etapa 10", comp: "Campionatul Național U15", time: "17:00", opponent: "Kinder Brașov", location: "Textila - Prejmer", lat: "45.7476773907777", lng: "25.776559517112933", home: "Kinder Brașov", away: "New Stars", score: "", scorers: "", videoLinks: [] },
             { date: "2026-10-31", title: "Etapa 11", comp: "Campionatul Național U15", time: "14:00", opponent: "Flacăra Moreni", location: "Flacăra", lat: "44.98205482985092", lng: "25.65009898047085", home: "Flacăra Moreni", away: "New Stars", score: "", scorers: "", videoLinks: [] },
