@@ -1784,8 +1784,13 @@ if (isIOS() && !isStandalone()) {
             const isNewStarsAway =
                 normalizeTeamName(away) === normalizeTeamName('New Stars');
 
+            // Excepție: la U15, competiția AMFB afișează mereu navigarea
+            // (Waze/Google/Apple), chiar dacă New Stars este gazdă.
+            const isAmfbException =
+                normalizeCompetitionName(ev.comp).includes('amfb');
+
             let navigation = '';
-            if (!completed && isNewStarsAway && ev.lat && ev.lng) {
+            if (!completed && (isNewStarsAway || isAmfbException) && ev.lat && ev.lng) {
                 navigation = `
                     <div class="match-navigation">
                         <div class="match-location">📍 ${ev.location || 'Stadion'}</div>
