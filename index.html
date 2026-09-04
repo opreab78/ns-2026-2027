@@ -1672,6 +1672,10 @@ if (isIOS() && !isStandalone()) {
                     return comp.includes('cupa elite');
                 }
 
+                if (activeCompetition === 'AMFB') {
+                    return comp.includes('amfb');
+                }
+
                 return true;
             });
         }
